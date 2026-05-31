@@ -1,0 +1,1441 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>现代时尚表现力时尚写真提示词生成器</title>
+<style>
+:root{
+  --bg:#090b10;--panel:#121721;--panel2:#0e131b;--line:#263142;--line2:#3b4a62;
+  --text:#edf2fb;--muted:#9aa8bd;--dim:#657186;--hot:#ff6b8f;--gold:#e8c36a;
+  --cyan:#48d6d2;--green:#31c27c;--red:#ff657e;--radius:14px;--shadow:0 18px 50px rgba(0,0,0,.34);
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font-family:"Segoe UI","Microsoft YaHei",sans-serif;background:
+  linear-gradient(135deg,rgba(255,107,143,.14),transparent 28%),
+  linear-gradient(225deg,rgba(72,214,210,.12),transparent 30%),
+  radial-gradient(circle at 50% 0%,rgba(232,195,106,.12),transparent 38%),
+  #090b10}
+.wrap{max-width:1720px;margin:0 auto;padding:20px}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}
+.brand h1{margin:0 0 5px;font-size:25px;letter-spacing:.2px}
+.brand p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.pill{border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:999px;padding:8px 12px;color:var(--muted);font-size:12px;white-space:nowrap}
+.layout{display:grid;grid-template-columns:360px minmax(0,1fr) 430px;gap:14px}
+.card{background:rgba(18,23,33,.94);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:15px}
+.title{font-weight:900;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.small{font-size:12px;color:var(--muted);font-weight:500}
+.warn{border-left:4px solid var(--gold);background:rgba(232,195,106,.08);border-radius:11px;padding:10px 12px;color:#f2ddb0;font-size:12px;line-height:1.55;margin-bottom:12px}
+.form{display:grid;gap:10px}
+label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
+select,input,textarea{width:100%;border:1px solid var(--line);background:#080d14;color:var(--text);border-radius:11px;padding:9px 10px;outline:none;font-size:13px;font-family:inherit}
+textarea{min-height:78px;resize:vertical;line-height:1.55}
+select:focus,input:focus,textarea:focus{border-color:var(--hot);box-shadow:0 0 0 3px rgba(255,107,143,.12)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:9px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.rangeRow{display:grid;grid-template-columns:1fr 42px;gap:8px;align-items:center}.num{color:var(--hot);font-weight:900;text-align:right;font-size:13px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line2);background:#172131;color:var(--text);border-radius:11px;padding:9px 12px;font-weight:800;font-size:13px;cursor:pointer}
+.btn:hover{border-color:var(--hot);background:#1c293d}.primary{background:var(--hot);border-color:var(--hot);color:#fff}.green{background:#168753;border-color:#168753}.ghost{background:#080d14}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#080d14;border:1px solid var(--line);border-radius:12px;padding:9px 10px;color:#cbd5e4;font-size:12px}.switch input{width:auto}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.tab{border:1px solid var(--line);background:#080d14;color:var(--muted);border-radius:10px;padding:8px 10px;font-weight:900;font-size:12px;cursor:pointer}.tab.active{background:var(--hot);border-color:var(--hot);color:white}
+.out{white-space:pre-wrap;word-break:break-word;background:#060a10;border:1px solid var(--line);border-radius:13px;padding:13px;min-height:170px;max-height:410px;overflow:auto;color:#dfe8f8;font-size:13px;line-height:1.75}
+.chipbox{display:flex;gap:7px;flex-wrap:wrap}.chip{font-size:12px;color:#d5deec;border:1px solid var(--line);background:#080d14;border-radius:999px;padding:5px 9px}
+.library{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:520px;overflow:auto;padding-right:3px}
+.item{background:#080d14;border:1px solid var(--line);border-radius:12px;padding:9px;cursor:pointer}.item:hover{border-color:var(--hot)}.item b{font-size:13px}.item p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--green);color:white;border-radius:12px;padding:11px 15px;font-weight:900;box-shadow:0 12px 30px rgba(0,0,0,.35);z-index:10}
+@media(max-width:1220px){.layout{grid-template-columns:1fr}.top{flex-direction:column}.pill{white-space:normal}.library{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <h1>现代时尚表现力时尚写真提示词生成器</h1>
+      <p>以28岁中国女性、现代真人写实摄影、贴身女装、城市街拍和红毯礼服为核心。减少概念堆叠，优先整套服装直出。</p>
+    </div>
+    <div class="pill">时尚表现力贴身女装 · 真人写实 · 9:16 全身照 · Image2</div>
+  </div>
+
+  <div class="layout">
+    <section class="card">
+      <div class="title">① 锁定人物 <span class="small">成人主体</span></div>
+      <div class="warn">默认固定为28岁中国女性、完整遮挡、非露点。重点转为“时尚表现力贴身现代女装 + 饱满胸部曲线 + 真实布料拉力/褶皱 + 全身街拍/商拍构图”，禁止背面，保留真实皮肤、真实方向光。</div>
+      <div class="form">
+        <div><label>人脸模板</label><select id="face"></select></div>
+        <div><label>主体补充</label><textarea id="subjectExtra" placeholder="可补充：同一张脸、发型不变、妆容、肤色、气质、民族风格等"></textarea></div>
+        <div class="two">
+          <div><label>体态锚点</label><select id="body"></select></div>
+          <div><label>画幅</label><select id="ratio"></select></div>
+        </div>
+        <div><label>胸部视觉等级</label><select id="bustScale" onchange="app.generate()"></select></div>
+        <div><label>人物数量</label><select id="people" onchange="app.generate()"></select></div>
+        <div>
+          <label>胸部时尚表现力大小</label>
+          <div class="rangeRow"><input id="glamour" type="range" min="1" max="10" value="10" oninput="app.setNum('glamourN',this.value);app.generate()"><div class="num" id="glamourN">10</div></div>
+        </div>
+        <div class="two">
+          <div><label>风格</label><select id="style"></select></div>
+          <div><label>输出用途</label><select id="videoUse"></select></div>
+        </div>
+        <div><label>去AI味</label><select id="antiAi" onchange="app.generate()"></select></div>
+        <div><label>现代快速设定 50+ 条</label><select id="quickPreset" onchange="app.applyPreset()"></select></div>
+        <div class="switch"><span>成人限定与安全负面词</span><input id="safe" type="checkbox" checked onchange="app.generate()"></div>
+        <div class="switch"><span>写真/图生视频适配：单人、主体清晰、衣服结构稳定</span><input id="i2v" type="checkbox" checked onchange="app.generate()"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="title">② 替换模块 <span class="small">场景 / 衣服 / 部件</span></div>
+      <div class="form">
+        <div class="two">
+          <div><label>场景大类</label><select id="sceneGroup" onchange="app.refreshScene();app.generate()"></select></div>
+          <div><label>具体场景</label><select id="scene" onchange="app.generate()"></select></div>
+        </div>
+        <div class="two">
+          <div><label>贴身整套服装 130+</label><select id="outfit" onchange="app.applyOutfitLink();app.generate()"></select></div>
+          <div><label>上身</label><select id="topwear" onchange="app.markCustomParts();app.generate()"></select></div>
+        </div>
+        <div class="switch"><span>整套服装模式：关闭上身/下身/鞋子替换，避免冲突</span><input id="wholeOutfitOnly" type="checkbox" checked onchange="app.setPartLock();app.generate()"></div>
+        <div class="three">
+          <div><label>下身</label><select id="bottom" onchange="app.markCustomParts();app.generate()"></select></div>
+          <div><label>鞋子</label><select id="shoes" onchange="app.markCustomParts();app.generate()"></select></div>
+          <div><label>首饰/道具</label><select id="jewelry" onchange="app.markCustomParts();app.generate()"></select></div>
+        </div>
+        <div class="three">
+          <div><label>姿势/动作</label><select id="pose" onchange="app.generate()"></select></div>
+          <div><label>镜头</label><select id="camera" onchange="app.generate()"></select></div>
+          <div><label>光线</label><select id="light" onchange="app.generate()"></select></div>
+        </div>
+        <div><label>自定义补充</label><textarea id="custom" oninput="app.generate()" placeholder="例：胸托结构更清晰、薄纱自然飘起、成品图同款水钻质感、保持脸部一致"></textarea></div>
+        <div class="warn" id="outfitModeNote">当前：整套服装联动模式。选择整套服装会自动同步上身、下身、鞋子和首饰。</div>
+        <div class="btns">
+          <button class="btn primary" onclick="app.generate()">生成提示词</button>
+          <button class="btn" onclick="app.randomAll()">随机组合</button>
+          <button class="btn green" onclick="app.batch(10)">生成10条变体</button>
+          <button class="btn ghost" onclick="app.copyAll()">复制正反向</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="tabs">
+        <button class="tab active" onclick="app.showTab('output',this)">输出</button>
+        <button class="tab" onclick="app.showTab('negativeTab',this)">反向</button>
+        <button class="tab" onclick="app.showTab('batchTab',this)">批量</button>
+        <button class="tab" onclick="app.showTab('libraryTab',this)">素材库</button>
+      </div>
+      <div id="output">
+        <div class="btns" style="margin-bottom:10px"><button class="btn primary" onclick="app.copyAll()">复制正向+反向</button></div>
+        <div id="prompt" class="out"></div>
+        <div style="height:12px"></div>
+        <div class="chipbox" id="chips"></div>
+      </div>
+      <div id="negativeTab" style="display:none">
+        <div class="btns" style="margin-bottom:10px"><button class="btn primary" onclick="app.copy('negative')">复制反向词</button></div>
+        <div id="negative" class="out"></div>
+      </div>
+      <div id="batchTab" style="display:none">
+        <div class="btns" style="margin-bottom:10px"><button class="btn primary" onclick="app.copy('batchOut')">复制批量</button><button class="btn" onclick="app.batch(20)">生成20条</button></div>
+        <div id="batchOut" class="out">点击“生成10条变体”。</div>
+      </div>
+      <div id="libraryTab" style="display:none">
+        <div class="tabs">
+          <button class="tab active" onclick="app.renderLibrary('scenes',this)">场景</button>
+          <button class="tab" onclick="app.renderLibrary('outfits',this)">服装</button>
+          <button class="tab" onclick="app.renderLibrary('tops',this)">上身</button>
+          <button class="tab" onclick="app.renderLibrary('bottoms',this)">下身</button>
+          <button class="tab" onclick="app.renderLibrary('shoes',this)">鞋子</button>
+          <button class="tab" onclick="app.renderLibrary('jewelry',this)">首饰</button>
+        </div>
+        <div id="library" class="library"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+'use strict';
+const DATA={
+faces:[
+ ['冷艳御姐脸','28-year-old Chinese woman, sharp oval face, cool almond eyes, straight black hair, glossy lips, confident refined gaze'],
+ ['甜美猫眼脸','28-year-old Chinese woman, soft round-oval face, cat-like eyes, long wavy brown hair, warm smile, polished idol makeup'],
+ ['混血超模脸','adult Eurasian fashion model, high cheekbones, deep eyes, full lips, sleek dark hair, international runway presence'],
+ ['古典东方脸','28-year-old Chinese woman, refined classical facial features, long black hair, gentle eyes, elegant red lip makeup'],
+ ['都市舞台脸','adult futuristic idol dancer, small V-shaped face, silver-black hair, luminous eye makeup, sharp stage expression']
+ ],
+body:[
+ ['最大时尚表现力丰满曲线','adult woman only, extremely glamorous full bustline, very large natural-looking breasts, prominent but tasteful chest silhouette, narrow waist, curvy hourglass body, round hips, long slim legs, confident refined feminine beauty, non-explicit'],
+ ['极限胸托夸张型','adult woman only, exaggerated covered bust as visual center, oversized supported bust silhouette, tiny waist, narrow shoulders, small refined face, slim arms and long legs, ornate bodice support, non-explicit, no nudity'],
+ ['前景霸屏胸部比例','adult woman only, close portrait body anchor, covered bust occupies the lower foreground strongly, dramatic bust-waist contrast, face still clear, stable garment coverage, non-explicit'],
+ ['华丽写真魔改体型','adult woman only, glamorous stylized proportions, very full covered bust, slender waist, smooth hips, long legs, luxury glamour portrait body, realistic skin texture, non-explicit'],
+ ['古风幻想丰满比例细腰','adult woman only, fantasy hanfu-cosplay proportions, extremely full covered bust supported by ornate costume, narrow waist, elegant neck and shoulders, flowing chiffon layers, non-explicit'],
+ ['国风二次元极丰型','adult woman only, refined guofeng fantasy illustration proportions, extremely voluptuous stylized figure, gigantic covered bust volume with natural weight impression, deep but covered cleavage, narrow waist, ornate chest-support costume, non-explicit, no nipple or areola exposure'],
+ ['自然饱满高级型','adult woman only, naturally full refined bustline, soft hourglass curves, relaxed realistic body, clear waistline, tasteful lived-in femininity, non-explicit'],
+ ['丰腴沙漏型','adult woman only, full upper body, soft hourglass curves, clear waistline, healthy voluptuous figure, elegant sensual silhouette, non-explicit'],
+ ['健身曲线型','adult woman only, fit curvy body, toned waist, full natural bustline, athletic legs, powerful dance-ready silhouette, non-explicit'],
+ ['超模长腿型','adult woman only, tall fashion-model proportions, full but balanced bustline, narrow waist, extra long slim legs, elegant runway body, non-explicit']
+ ],
+bustScale:[
+ ['极夸张霸屏','covered bust is the dominant visual center, extremely full supported chest silhouette, strong foreground presence, stable clothing coverage, non-explicit'],
+ ['二次元极致冲击','adult-only stylized fantasy scale, gigantic covered bust occupies a large visual area, strong forward projection and deep covered cleavage, key areas fully covered, non-explicit'],
+ ['华丽丰满','very full covered bustline, ornate support structure, strong bust-waist contrast, luxury glamour styling, non-explicit'],
+ ['自然饱满','naturally full refined bustline, soft realistic curves, clear collarbone and waistline, tasteful and non-explicit'],
+ ['克制丰盈','full but restrained bustline, elegant refined silhouette, clothing detail remains the main focus, non-explicit'],
+ ['平衡时装','balanced fashion-model bust proportion, refined body line, focus on outfit and scene, non-explicit']
+ ],
+people:[
+ ['单人写真','single adult woman only, one subject, stable identity, no extra people'],
+ ['双人28岁中国女性海报','two 28-year-old Chinese women only, both clearly 28-year-old Chinese women, close interaction composition, no minors, no explicit sexual act'],
+ ['双人国风幻想插画','two 28-year-old Chinese women only, refined guofeng fantasy pair, ornate matching outfits, intimate but non-explicit poster composition']
+ ],
+ratios:[['9:16 竖屏','vertical 9:16 composition, full-body video cover framing'],['3:4 人像','vertical 3:4 portrait composition'],['4:5 社媒','portrait 4:5 social media composition'],['16:9 横屏','horizontal 16:9 cinematic frame']],
+styles:[
+ ['女团舞台写真','K-pop idol stage photography, glamorous commercial dance poster, crisp fashion lighting'],
+ ['真实手机抓拍','realistic phone-camera snapshot, candid bystander perspective, imperfect but attractive framing'],
+ ['高级商业写真','high-end commercial fashion portrait, polished skin texture, magazine-level composition'],
+ ['夜店霓虹热舞','nightclub neon dance visual, glossy floor, dramatic colored light, energetic nightlife atmosphere'],
+ ['都市舞台摄影','modern editorial dancer concept photo, futuristic materials, neon edge lights, high-tech stage mood'],
+ ['拉丁热舞海报','Latin dance poster mood, warm spotlight, elegant passionate movement, refined glamour'],
+ ['短视频封面','viral short-video dance cover image, strong first-frame impact, clean subject readability'],
+ ['幻想COS写真','fantasy cosplay convention photography, high-end social media portrait, soft blue-white light, realistic photo texture'],
+ ['古风幻想冰丝','Chinese fantasy ice-silk glamour portrait, translucent chiffon outer layers over opaque lining, gemstone embroidery, ornate chest-support costume'],
+ ['极夸张华丽写真','exaggerated luxury glamour photography, ornate jeweled outfit, covered bust as visual focus, polished cinematic realism'],
+ ['水钻薄纱奢华','rhinestone and sheer-chiffon luxury portrait, sparkling embroidery, crystal heels, glossy high-end social media photo'],
+ ['成品图同款变体','reference-board style variation, same adult subject identity, ornate fitted costume, full-body vertical glamour photo, scene and outfit changing'],
+ ['国风幻想二次元插画','adult guofeng fantasy anime illustration, refined refined beauty face, delicate linework, polished coloring, soft oily skin highlights, ornate Chinese jewelry, dreamy palace atmosphere'],
+ ['真人双人商业海报','realistic cinematic photography, high-end fashion magazine cover, luxury commercial two-character poster, real skin texture, natural eyes, subtle makeup, realistic hair strands, film lighting'],
+ ['深夜公寓电影抓拍','cinematic handheld low-light apartment snapshot, rough independent-film realism, natural imperfect composition']
+ ],
+antiAi:[
+ ['自然真实层','reduce AI-perfect look, natural human asymmetry, visible pores, slight skin oil, tiny makeup unevenness, real hair flyaways, fabric wrinkles and pressure marks, realistic shadows, not over-retouched'],
+ ['强去AI味随手拍','strong anti-AI realism, handheld phone-photo feeling, imperfect but attractive framing, slight perspective distortion, uneven environmental light, real skin pores and small blemishes, natural body weight and fabric compression, no beauty-filter look'],
+ ['街拍路人感','street-style candid realism, bystander camera angle, natural background clutter, believable public-space depth, slight edge crop, real directional daylight, ordinary lens perspective, social-media street snapshot'],
+ ['低光电影截图','low-light cinematic still, uneven practical light, mild motion blur in hair and fabric only, face remains readable, realistic grain, imperfect composition, lived-in room texture, natural color noise'],
+ ['胶片颗粒质感','35mm film snapshot realism, fine film grain, soft highlight roll-off, subtle color cast, imperfect exposure, natural skin texture, non-plastic face, realistic fabric texture'],
+ ['商拍但不塑料','premium fashion photo with restrained retouching, keep pores and skin texture, realistic under-eye detail, natural neck folds, real fabric gravity, no hyper-smooth skin, no synthetic symmetry'],
+ ['动作抓拍真实','candid motion capture, slight body-motion blur at edges, hair strands affected by gravity and wind, clothing tension follows movement, natural pose transition, not a frozen AI mannequin'],
+ ['双人互动去摆拍','two-adult-women candid interaction realism, natural personal distance, imperfect synchronized posture, believable eye contact, real fabric overlap and shadows, not staged plastic poster']
+ ],
+videoUse:[
+ ['可灵动作控制','image-to-video dance control ready, clear body outline, visible limbs, stable outfit structure'],
+ ['Seedance 图生视频','Seedance image-to-video ready, single subject, clean silhouette, full-body motion readability'],
+ ['角色设定底图','consistent character reference image, stable face identity, outfit details readable'],
+ ['华丽写真成片','ornate glamour photo output, vertical portrait, outfit craftsmanship and covered bust structure as visual focus'],
+ ['近景半身胸托图','close half-body portrait, clear face, supported bust garment structure readable, lace and gemstone details sharp'],
+ ['变体写真组图','same adult subject identity, single-image variation set, automatically change outfit, pose and background, no collage'],
+ ['古风幻想COS','fantasy costume portrait, ice-silk chiffon, gemstone embroidery, ornate chest-support bodice, refined non-explicit mood'],
+ ['国风插画胸像','adult guofeng fantasy bust portrait illustration, close half-body framing, refined face and covered bust garment both central, ornate jewelry readable'],
+ ['真人双人角色海报','9:16 vertical realistic fashion two-character poster, two 28-year-old Chinese women by huge window, close non-explicit interaction, cinematic commercial photography'],
+ ['封面首帧','high-impact vertical glamour first frame, expressive pose, strong composition']
+ ],
+sceneGroups:{
+ '室内居家':[
+  ['豪华卧室','luxury bedroom, large bed, soft pillows, warm lamp light, tasteful intimate indoor fashion mood'],
+  ['现代客厅','modern apartment living room, sofa, floor lamp, city view window, clean lifestyle background'],
+  ['落地窗公寓','high-rise apartment with floor-to-ceiling window, night skyline, polished wooden floor'],
+  ['化妆台前','vanity table with mirror lights, cosmetics, soft reflection, backstage preparation mood'],
+  ['衣帽间','walk-in closet, clothing racks, full-length mirror, premium fashion fitting room'],
+  ['浴室镜前','luxury hotel bathroom mirror area, marble texture, soft highlights, no nudity'],
+  ['厨房吧台','modern kitchen island, bar stool, wine glass prop, elegant social lifestyle scene'],
+  ['家庭舞蹈房','private dance practice room, mirror wall, wooden floor, speaker, clean full-body space'],
+  ['深夜出租屋','dim ordinary rental room at midnight, cheap furniture, uneven light, weak city glow through window'],
+  ['旧公寓窗边','old apartment beside a window at night, messy curtains, faint city lights, quiet lonely mood'],
+  ['昏暗单间床边','dark single-room apartment beside an unmade bed, low practical lamp, rough life texture'],
+  ['廉价客厅角落','cheap apartment living-room corner, worn sofa, cluttered table, handheld cinema realism'],
+  ['深夜厨房门口','small rental kitchen doorway at night, fluorescent spill light, imperfect lived-in background'],
+  ['窗台地板','sitting near a window on apartment floor, dim city light, quiet emotional film still'],
+  ['月色水池闺阁','ornate indoor moonlit pool pavilion, carved window screens, blue moon backdrop, crystal decor, fantasy boudoir glamour'],
+  ['粉金花房梳妆台','pink-gold floral vanity room, roses, mirror lights, perfume bottles, jewel boxes, soft romantic glamour'],
+  ['中式屏风茶桌','Chinese carved screen tea-table room, red lacquer table, porcelain cups, pearls and gift boxes, luxurious guofeng interior'],
+  ['珠帘镜前','gold bead curtain vanity corner, antique mirror, makeup lights, crystal decor, glossy marble floor'],
+  ['幻想中式庭院','fantasy Chinese courtyard, pavilion, carved railings, falling petals, soft sunlight, incense mist, dreamy guofeng illustration background'],
+  ['仙宫纱帘殿','fantasy palace hall with silk curtains, jade ornaments, gold carved pillars, soft smoke, warm-pink backlight'],
+  ['青绿亭台楼阁','cyan-green pavilion and waterside tower, lotus pond, drifting petals, misty sunlight, elegant guofeng fantasy mood'],
+  ['花瓣暖光宫殿','flower-petal palace interior, gauze curtains, golden embroidery decor, warm pink atmosphere light, dreamy illustration setting']
+  ,['夕阳巨大落地窗','huge floor-to-ceiling window interior at sunset, black window frames, warm gold and peach-pink backlight, floating petals and dust particles, clean luxury background'],
+  ['窗边黑框海报空间','black-framed window poster space, cinematic sunset rim light, diagonal window shadows, shallow depth of field, high-end fashion magazine mood'],
+  ['落地窗花瓣逆光','floor-to-ceiling window with falling petals, volumetric golden light, peach-pink glow, minimal luxury interior, romantic poster atmosphere'],
+  ['宫殿窗边逆光','fantasy palace window side, tall black window frame, warm sunset, gauze curtains, drifting petals, dreamy guofeng backlight']
+ ],
+ '室内商业':[
+  ['高端办公室','executive office, wooden desk, leather chair, city window, refined business glamour'],
+  ['写字楼大堂','sleek office lobby, polished floor, glass wall, reception desk, business crowd blur'],
+  ['会议室','modern meeting room, long table, presentation screen, glass partitions'],
+  ['酒店电梯厅','hotel elevator lobby, metallic elevator doors, marble floor, cinematic overhead light'],
+  ['商务贵宾厅','business event lounge, blue information screen, seats, people blurred in foreground'],
+  ['展会签到区','brand launch check-in area, sponsor wall, staff and visitors, event badges'],
+  ['车展展台','luxury car show booth, glossy black car, spotlight floor, visitors in background'],
+  ['科技展厅','futuristic technology exhibition hall, LED booths, product screens, crowd depth'],
+  ['商场中庭','shopping mall atrium, escalators, bright storefronts, passerby crowd'],
+  ['精品店试衣区','fashion boutique fitting area, mirrors, velvet chair, clothing rails'],
+  ['漫展现场','anime convention hall, cosplay booths, distant crowd softly blurred, realistic social media portrait'],
+  ['幻想展馆','fantasy exhibition hall, ice-blue decorative lights, themed display booths, soft crowd blur'],
+  ['COS摄影区','cosplay photo zone, blue-white backdrop, light stands, fans and visitors blurred behind'],
+  ['游戏展台','game expo booth, large fantasy character screen, blue LED light, crowd in shallow depth of field'],
+  ['复古化妆间','vintage vanity room, round mirror, cosmetics, leather chair, warm cinematic beauty-room lighting'],
+  ['酒店化妆台双人位','hotel makeup table area, perfume bottles and mirror bulbs, ornate chair, luxury preparation mood'],
+  ['高级试衣镜前','premium fitting mirror corner, velvet curtain, jewelry tray, full-body reflection, fashion editorial mood'],
+  ['金色电梯镜面厅','gold mirrored elevator lobby, reflective metal doors, marble floor, luxury vertical fashion snapshot']
+ ],
+ '舞台夜场':[
+  ['女团舞台','large idol concert stage, LED wall, spotlight beams, smoke haze, dance performance mood'],
+  ['夜店舞池','nightclub dance floor, neon lasers, glossy floor, DJ booth, crowded background blur'],
+  ['Livehouse后台','livehouse backstage, sticker wall, cables, vertical banner, raw event mood'],
+  ['酒吧吧台','stylish cocktail bar counter, amber light, bottles background, elegant nightlife'],
+  ['DJ台前','in front of a DJ booth, colorful LED panels, festival club energy'],
+  ['红毯活动','red carpet event entrance, flash photography, step-and-repeat backdrop'],
+  ['小型摄影棚','dark studio dance set, reflective floor, controlled fashion lights'],
+  ['舞蹈练习室','professional dance studio, mirror wall, LED strip light, wooden floor'],
+  ['剧院舞台','theater stage, velvet curtains, warm spotlight, cinematic performance space'],
+  ['酒吧高脚凳','luxury cocktail bar stool, amber bottles behind, one leg crossed, polished nightlife portrait'],
+  ['林间夜灯步道','garden night walkway, warm lanterns, wet stone path, dark trees, black-gold glamour mood'],
+  ['蓝白聚光舞台','blue-white concert spotlights, glossy stage floor, light beams behind full-body glamour pose'],
+  ['红蓝DJ夜场','DJ club platform, red and blue LEDs, crowd blur, glossy high-slit fashion portrait']
+ ],
+ '城市室外':[
+  ['霓虹雨夜街头','rainy neon city street, wet pavement reflections, blurred pedestrians'],
+  ['地下停车场','underground parking garage, dark car nearby, fluorescent light, deep shadows'],
+  ['天桥夜景','pedestrian bridge overlooking city skyline, wind, traffic light trails'],
+  ['地铁站台','modern subway platform at night, metal columns, neon ads, commuter blur'],
+  ['便利店门口','outside a bright convenience store at night, wet street, urban candid mood'],
+  ['自动售货机旁','glowing vending machines on a rainy side street, cinematic urban style'],
+  ['写字楼门口','office tower entrance, glass facade, evening business crowd, clean pavement'],
+  ['商圈斑马线','busy crosswalk in downtown shopping district, traffic lights, fashion street shot'],
+  [' rooftop 天台','city rooftop at night, skyline, safety rail, wind-blown hair'],
+  ['公园步道','urban park walkway, trees, benches, golden hour light, casual dance cover mood'],
+  ['雨夜玻璃橱窗','rainy glass storefront at night, neon reflections, seated by window, cinematic street glamour'],
+  ['灯笼夜市街','lantern night market street, food stalls, tourist crowd blur, warm practical lights'],
+  ['老城石板夜路','old city stone-paved night street, wet ground, dim shop signs, elegant walking snapshot'],
+  ['酒店门廊雨夜','luxury hotel entrance canopy at rainy night, black car nearby, warm lobby light spilling out'],
+  ['城市玻璃墙边','beside a tall glass wall in downtown, reflected skyline, polished urban fashion portrait']
+ ],
+ '度假户外':[
+  ['海边木栈道','seaside wooden boardwalk at sunset, wind, distant resort lights'],
+  ['泳池边','luxury poolside lounge, blue water reflections, resort night lighting, no swim nudity'],
+  ['游艇甲板','yacht deck, ocean horizon, white railing, glamorous vacation photo'],
+  ['沙滩落日','beach at sunset, warm sky, footprints, soft wind, tasteful summer fashion'],
+  ['热带酒店露台','tropical hotel terrace, palm leaves, warm lanterns, resort atmosphere'],
+  ['山顶观景台','mountain viewpoint platform, open sky, wind, cinematic wide space'],
+  ['湖边栈桥','quiet lakeside dock, soft dawn mist, clean reflective water'],
+  ['花园派对','garden party lawn, string lights, blurred guests, elegant social event'],
+  ['海岛无边泳池','island infinity pool deck, ocean horizon, white loungers, resort sunlight, covered swim fashion'],
+  ['沙滩酒吧','beach bar at golden hour, bamboo counter, tropical drinks, warm social crowd blur'],
+  ['海边篝火','beach bonfire party, warm firelight, dark blue sea, casual dance circle atmosphere'],
+  ['棕榈树小路','palm-lined resort walkway, dappled sunlight, tropical plants, vacation street style'],
+  ['海景阳台','ocean-view hotel balcony, white railing, curtains moving in sea breeze'],
+  ['私人海滩躺椅区','private beach lounge chair area, parasols, soft sand, premium resort fashion'],
+  ['冲浪店门口','surf shop entrance, colorful boards, beach road, relaxed summer travel mood'],
+  ['码头日落','wooden marina pier at sunset, yachts in background, warm reflective water'],
+  ['海边公路','coastal highway lookout, convertible car nearby, wind and sunlight'],
+  ['热带雨林步道','tropical rainforest boardwalk, lush green plants, humid sunlight, adventure resort style'],
+  ['沙漠度假酒店','desert resort terrace, stone walls, warm sunset, open sky, luxury travel mood'],
+  ['雪山温泉外景','snow mountain hot spring exterior, steam in background, winter resort fashion, no nudity'],
+  ['湖畔露营地','lakeside glamping site, canvas tent, string lights, dusk reflections'],
+  ['葡萄园露台','vineyard terrace, long table, warm sunset, countryside vacation elegance'],
+  ['露天音乐节草地','outdoor music festival lawn, stage lights far behind, people blurred around'],
+  ['海边白色楼梯','white seaside staircase, Mediterranean wall, blue sky, editorial summer composition'],
+  ['悬崖观海平台','cliffside ocean viewpoint, dramatic wind, waves below, cinematic wide space'],
+  ['度假村泳池夜景','resort pool at night, underwater blue lights, palm shadows, refined party mood'],
+  ['热带市集街头','tropical night market street, lanterns, small stalls, tourist crowd blur'],
+  ['海边玻璃餐厅','glass-walled seaside restaurant terrace, candle tables, dark ocean background'],
+  ['雪山冰原外景','snow mountain ice-field exterior, bright alpine light, dramatic white landscape, winter fantasy glamour'],
+  ['海边落日木栏','seaside sunset wooden railing, orange sun on water, chiffon moving in wind, resort glamour portrait'],
+  ['蓝海浅滩','clear shallow turquoise sea, white sand, sunlight glitter, jeweled beach fantasy costume'],
+  ['棕榈泳池步道','palm pool walkway, resort villas behind, glossy water reflections, crystal heels and chiffon train'],
+  ['白色度假村门廊','white resort villa porch, columns, bougainvillea, editorial summer fashion mood'],
+  ['雪山岩石平台','rocky snow mountain viewpoint, wind, blue sky, white fur-trim fantasy costume mood'],
+  ['雨林木桥水边','rainforest wooden bridge beside water, lush plants, humid highlights, adventure resort glamour'],
+  ['海岛棕榈夜景','island palm beach at night, lanterns, dark sea, purple-blue resort lighting'],
+  ['沙漠泳池黄昏','desert resort pool at dusk, stone wall, warm sky, quiet luxury travel photo'],
+  ['港口游艇夜景','marina yacht harbor at night, string lights, water reflections, luxury vacation portrait']
+ ],
+ '现代商业空间':[
+  ['赛博巷口','modern editorial back alley, holographic signs, vending machines, wet metal surfaces'],
+  ['未来走廊','futuristic industrial corridor, blue safety lights, metal walls, deep perspective'],
+  ['现代玻璃走廊','data center corridor, server lights, cold mist, high-tech atmosphere'],
+  ['现代白色展厅','clean robotics lab, glass walls, robotic arms, white-blue lighting'],
+  ['太空舱休息区','spacecraft lounge interior, curved window, star-like city lights outside'],
+  ['虚拟偶像舞台','virtual idol hologram stage, floating screens, luminous floor grid'],
+  ['机能训练舱','futuristic dance training pod, mirror panels, glowing floor markers'],
+  ['霓虹机车旁','beside a futuristic motorcycle, neon garage, chrome reflections'],
+  ['白蓝现代白色展厅','white-blue robotics lab, humanoid robot in background, clean glossy floor, modern editorial glamour portrait'],
+  ['冷光机械臂展台','robotic arm exhibition booth, chrome machinery, glass walls, cold blue high-tech light'],
+  ['银色电梯舱','silver futuristic elevator cabin, mirror panels, luminous vertical strips, fashion-tech full-body shot']
+ ],
+ '交通旅拍':[
+  ['机场出发厅','airport departure hall, glass roof, travel crowd prop, travelers blurred behind'],
+  ['高铁站候车区','high-speed rail station waiting area, clean seats, cool overhead lights'],
+  ['酒店走廊','softly lit hotel hallway, strong perspective lines, warm carpet'],
+  ['电梯内镜面','mirror elevator interior, metallic reflections, fashion snapshot mood'],
+  ['出租车旁','beside a black taxi at night, city lights, candid street fashion'],
+  ['敞篷车旁','standing beside a convertible car, coastal road, wind and sunlight']
+ ]
+ },
+outfits:[
+ ['黑色亮面女团舞台套装','black glossy K-pop stage outfit, fitted crop top and mini skirt, chrome details'],
+ ['红色高定胸衣裙','deep red couture corset-inspired fitted dress, structured bustline, elegant trim'],
+ ['银色未来连体衣','silver futuristic bodysuit, body-hugging technical fabric, luminous seam lines'],
+ ['白色改良旗袍','white modern qipao-inspired fitted dress, high slit, refined Chinese elegance'],
+ ['蓝白丝绸旗袍裙','blue-white silk halter qipao dress, floral embroidery, elegant long slit'],
+ ['黑色西装马甲裙','sleeveless black blazer mini dress, sharp shoulders, narrow waist'],
+ ['金色派对短裙','gold metallic party mini dress, tasteful shine, dance-floor energy'],
+ ['粉色女团短套装','pink idol performance set, fitted top, pleated mini skirt, bright stage mood'],
+ ['黑红拉丁舞裙','black and red Latin dance dress, fringe movement, elegant stage sensuality'],
+ ['紫黑赛博夜行装','purple-black modern editorial nightwear-inspired fitted dress, soft lace and glowing details'],
+ ['白银未来婚礼短裙','white-silver futuristic bridal mini dress, clean satin, micro armor edges'],
+ ['透明雨衣黑裙套装','transparent raincoat over fitted black dress, rainy neon reflections'],
+ ['黑色高叉长裙','black fitted high-slit evening dress, elegant leg line, restrained glamour'],
+ ['机能短裤套装','cropped technical top with high-waist shorts, slim long legs emphasized'],
+ ['运动背心紧身裤','fitted athletic tank top with high-waist leggings, clean sporty dance silhouette'],
+ ['黑色镂空结构裙','black architectural cutout dress with tasteful skin exposure, structured seams'],
+ ['米白针织套装','cream fitted knit top and slim skirt, soft relaxed glamour'],
+ ['深蓝液态金属裙','deep blue liquid-metal fitted dress, reflective but elegant'],
+ ['皮革网纱战术裙','soft leather and mesh tactical mini dress, minimal armor accents'],
+ ['碳纤维抹胸短裙','carbon-fiber bandeau mini dress, minimal metal trims, runway silhouette'],
+ ['白衬衫黑短裙','white fitted event blouse with black mini skirt, clean commercial event style'],
+ ['黑吊带缎面裙','black satin slip dress, delicate straps, elegant neckline'],
+ ['红色针织短上衣套装','red fitted knit crop top and high-waist skirt, warm club lighting'],
+ ['银色吊带亮片裙','silver sequin cami mini dress, stage sparkle, tasteful party look'],
+ ['牛仔短外套热裤','cropped denim jacket, fitted top, high-waist shorts, street dance mood'],
+ ['黑色皮衣短裙','black leather cropped jacket with fitted mini skirt, urban nightlife'],
+ ['白色运动短裙套装','white tennis-inspired dance set, fitted top, pleated skirt'],
+ ['玫瑰金礼服裙','rose-gold fitted evening dress, soft shimmer, red carpet glamour'],
+ ['蓝色露肩礼服','blue off-shoulder fitted gown, elegant shoulder line, refined stage look'],
+ ['黑色长袖包臀裙','black long-sleeve bodycon dress, clean refined silhouette'],
+ ['镭射银舞台装','laser-silver stage outfit, reflective panels, futuristic idol look'],
+ ['红黑机甲睡裙','red and black modern editorialnetic slip-dress armor hybrid, silky panels'],
+ ['黑金奢华战姬裙','black and gold luxury modern editorial warrior dress, minimal armor'],
+ ['白色未来护士风裙','white futuristic fitted dress, clean medical-lab inspired lines'],
+ ['淡紫纱质短裙','lavender sheer-layer mini dress, soft romantic stage texture'],
+ ['黑色吊带连体裤','black fitted jumpsuit with delicate straps, clean dance silhouette'],
+ ['金属胸甲极简裙','minimal metallic chest-piece over fitted black dress, couture balance'],
+ ['红色丝绒包臀裙','red velvet fitted dress, warm spotlight, refined glamour'],
+ ['水晶流苏舞台裙','crystal fringe stage dress, moving sparkle, dance performance style'],
+ ['白色衬衫束腰短裙','white shirt with cinched waist mini skirt, clean editorial office glamour'],
+ ['黑色抹胸长裤套装','black strapless top with tailored high-waist pants, sleek stage fashion'],
+ ['绿色热带度假裙','emerald resort mini dress, tropical vacation energy'],
+ ['橙色泳池派对套装','orange poolside party outfit, fitted crop top and skirt, no swim nudity'],
+ ['棕色麂皮流苏裙','brown suede fringe mini dress, festival dance look'],
+ ['灰银实验室连体衣','gray-silver laboratory bodysuit, precise seams, modern editorial fashion'],
+ ['白色羽毛边舞台裙','white feather-trim stage mini dress, soft glamorous performance'],
+ ['黑色蕾丝拼接裙','black lace-panel fitted dress, tasteful refined fashion'],
+ ['蓝色女团夹克短裙','blue idol jacket with fitted mini skirt, bright music-show stage'],
+ ['粉金蝴蝶结套装','pink-gold bow detail performance outfit, cute but adult idol styling'],
+ ['黑色机能旗袍','black futuristic qipao-inspired fitted dress, modern editorial seam lines'],
+ ['银白赛车女郎风套装','silver-white race-event outfit, fitted jacket, mini skirt, commercial event look'],
+ ['红色拉链皮革裙','red zippered leather mini dress, nightclub fashion, polished texture'],
+ ['白色针织开衫短裙','white fitted cardigan and short skirt, soft indoor lifestyle glamour'],
+ ['黑色网纱袖舞台装','black mesh-sleeve stage outfit, fitted bodice, elegant movement'],
+ ['紫色水钻礼服','purple rhinestone fitted gown, glossy night event lighting'],
+ ['红金改良旗袍舞台装','red-gold modern qipao stage dress, fitted silhouette, high slit, ornate Chinese trim'],
+ ['黑金龙纹旗袍','black-gold dragon-pattern qipao dress, body-hugging cut, elegant refined Chinese glamour'],
+ ['青花瓷短旗袍','blue-and-white porcelain inspired short qipao, refined embroidery, modern idol styling'],
+ ['墨绿色丝绸旗袍','emerald silk qipao dress, glossy fabric, narrow waist, elegant high slit'],
+ ['白色盘扣国风短裙','white Chinese knot-button mini dress, fitted waist, clean modern hanfu-inspired design'],
+ ['红色汉元素交领裙','red hanfu-inspired crossover collar dress, slim waist, flowing short skirt'],
+ ['黑色水墨国风套装','black ink-painting Chinese fashion set, fitted top, asymmetrical skirt'],
+ ['粉色新中式吊带裙','pink new-Chinese satin cami dress, floral embroidery, soft feminine curve'],
+ ['银白敦煌舞裙','silver-white Dunhuang dance costume, ribbon details, fitted bodice, flowing skirt'],
+ ['金色敦煌飞天装','gold Dunhuang apsara-inspired stage outfit, flowing scarf ribbons, covered fitted top'],
+ ['红色戏曲改良裙','red opera-inspired modern dress, embroidered collar, fitted waist, dramatic stage mood'],
+ ['黑红国潮舞台套装','black-red guochao performance outfit, cropped structured top, high-waist skirt'],
+ ['蓝色苗银风舞台裙','blue Miao-silver inspired stage dress, ornate silver accessories, fitted waist'],
+ ['白金唐风短裙','white-gold Tang-style modern short dress, round collar, elegant embroidery'],
+ ['紫色国风纱裙','purple Chinese fantasy gauze dress, fitted bodice, translucent outer sleeves over opaque lining'],
+ ['青绿色竹影旗袍','teal bamboo-pattern qipao dress, tasteful high slit, refined Chinese elegance'],
+ ['红色流苏旗袍裙','red fringe qipao mini dress, dance movement, glossy satin, refined glamour'],
+ ['黑色盘扣皮革旗袍','black leather qipao-inspired dress, Chinese knot buttons, sleek body-hugging cut'],
+ ['白色水袖舞台裙','white Chinese water-sleeve stage dress, fitted inner dress, long sleeve ribbons'],
+ ['金红春节舞台装','gold-red festival Chinese stage outfit, fitted top, short skirt, ornate tassels'],
+ ['黑色极简比基尼风舞台套装','black minimal bikini-inspired stage set, covered key areas, high-waist bottom, dramatic skin exposure, non-nude'],
+ ['银色水钻露腰舞台装','silver rhinestone waist-baring stage outfit, fitted covered bust top, high-cut skirt, non-explicit'],
+ ['红色绑带露肤舞裙','red strappy dance costume, large tasteful skin exposure, covered bust and pelvis, Latin stage mood'],
+ ['白色度假露背套装','white resort open-back fitted set, halter top, high-slit skirt, covered front, no nudity'],
+ ['黑色交叉绑带连体衣','black crisscross strap bodysuit, body-hugging silhouette, covered nipples and pelvis, fashion stage styling'],
+ ['金色贴身镂空裙','gold fitted cutout dress, waist and shoulder cutouts, key areas covered, luxury party mood'],
+ ['透明纱罩层比基尼风套装','sheer mesh outer layer over opaque dance set, large skin exposure, non-nude, resort stage mood'],
+ ['紫色低背高叉礼服','purple low-back high-slit gown, dramatic skin exposure, elegant covered front'],
+ ['黑色水钻胸衣热裤','black rhinestone corset top with high-waist hot pants, stage dancer styling, non-explicit'],
+ ['蓝色海岛清凉舞台装','blue island dance outfit, halter covered top, high-waist skirt, large skin exposure, summer resort glamour'],
+ ['冰蓝幻想COS胸托礼服','ice-blue fantasy cosplay gown, deep V structured bust-support bodice, stable coverage and support around the bust, lace edges, gemstone embroidery, translucent ice-silk chiffon shawl, soft watery gloss, lightly revealing but refined, no nipple exposure, no wardrobe malfunction'],
+ ['银白水钻实验室套装','silver-white rhinestone modern editorial glamour set, structured covered bust bodice, short fitted skirt, translucent side chiffon panels, crystal heels, clean robotics-lab mood, no exposure'],
+ ['香槟金水钻高叉裙','champagne-gold rhinestone high-slit fitted gown, stable corset bust support, glossy satin and sheer train, luxury bar portrait, non-explicit'],
+ ['黑金夜花园薄纱礼服','black-gold ornate sheer-overlay gown, covered embroidered bodice, lace floral patterns, long transparent chiffon train over opaque lining, night garden lantern mood'],
+ ['酒红丝绒高脚凳礼服','deep wine-red velvet glamour gown, off-shoulder sleeves, structured covered bust, high slit skirt, bar stool seated composition, refined luxury mood'],
+ ['白羽雪山幻想装','white feather-trim fantasy costume, covered jeweled bust bodice, short skirt with flowing white chiffon, snow mountain exterior, crystal ornaments, non-nude'],
+ ['海岛蓝宝石纱裙','turquoise-blue jeweled beach fantasy outfit, covered halter bust support, flowing translucent blue chiffon skirt over opaque bottom, sea and sunlight mood'],
+ ['白色度假薄纱套装','white resort glamour set, covered sculpted bodice, sheer long robe over opaque fitted bottom, wide sun hat optional, poolside vacation mood, non-explicit'],
+ ['黑色金线开叉长裙','black fitted high-slit gown with gold embroidery, covered halter bodice, narrow waist, elegant hotel corridor glamour'],
+ ['银色雨夜橱窗短裙','silver rhinestone mini dress, structured bust support, feather shawl, seated by rainy glass storefront, neon reflections, covered key areas'],
+ ['珍珠白镜前薄纱睡袍风','pearl-white sheer robe over opaque fitted satin inner dress, vanity mirror lights, elegant covered bustline, soft beauty-room glamour'],
+ ['红色夜店水钻长裙','red rhinestone nightclub gown, open shoulder sleeves, covered corset bodice, dramatic high slit, DJ booth colored light, non-explicit'],
+ ['冰蓝公主水晶短礼服','ice-blue princess crystal mini gown, ornate chest-support bodice, lace sleeves, chiffon train, convention hall glow, no wardrobe malfunction'],
+ ['紫晶幻夜胸托纱裙','amethyst fantasy corset gown, stable bust-support structure, translucent purple chiffon panels over opaque lining, gemstone embroidery, elegant night mood'],
+ ['红金凤尾胸托裙','red-gold phoenix-tail fantasy dress, covered structured bust, embroidered waist, flowing asymmetric chiffon tail, Chinese fantasy glamour'],
+ ['黑金妖姬礼服','black-gold enchantress gown, covered jeweled bodice, sheer lace sleeves, high-slit skirt with opaque coverage, luxurious dark fantasy portrait'],
+ ['水蓝冰丝仙裙','water-blue ice-silk fairy dress, translucent outer veil over opaque fitted bodice, soft watery gloss, stable chest support, refined non-explicit'],
+ ['雪白圣女礼服','snow-white saintess fantasy gown, pearl embroidery, covered chest-support bodice, chiffon sleeves, bright clean fantasy exhibition mood'],
+ ['玫瑰金宫廷胸托裙','rose-gold court fantasy dress, sculpted bust-support top, satin waist, jewel chains, sheer cape, premium portrait mood'],
+ ['碧绿琉璃胸托裙','emerald glass-like fantasy gown, covered bodice with gemstone trim, slim waist, translucent green chiffon train, garden lantern mood'],
+ ['深海蓝薄纱女王裙','deep-sea blue queen gown, ornate covered corset, flowing sheer sleeves over opaque lining, sapphire accessories, dramatic night light'],
+ ['月白珍珠胸托裙','moon-white pearl chest-support gown, delicate lace, crystal waist chain, pale chiffon shawl, soft elegant glamour'],
+ ['奶白珍珠薄纱裙','ivory pearl sheer-layer dress, opaque fitted inner structure, covered bustline, soft robe-like outer layer, vanity-room photo mood'],
+ ['冰绿水晶短礼服','ice-green crystal mini gown, stable covered bust support, short fitted skirt, flowing translucent cape, futuristic resort mood'],
+ ['深紫幻夜女王裙','deep-purple night queen dress, rhinestone corset top, high-slit skirt, transparent black chiffon train, luxury club lighting'],
+ ['浅金云锦胸衣裙','pale-gold brocade corset dress, Chinese cloud embroidery, covered bust support, slim high-slit skirt, refined guofeng glamour'],
+ ['白蓝雪莲COS裙','white-blue snow-lotus cosplay dress, structured covered bodice, layered ice chiffon, crystal crown, convention hall portrait'],
+ ['烟粉花魁幻想裙','smoky-pink oiran fantasy dress, ornate sash, covered bust bodice, sheer sleeves, floral hair ornaments, cinematic beauty-room mood'],
+ ['银湖水光礼服','silver lake-glow gown, watery reflective fabric, stable chest support, translucent shawl, marina night reflections'],
+ ['黑红妖姬薄纱裙','black-red dark fantasy chiffon gown, covered jeweled bodice, dramatic lace overlay, side slit with opaque coverage, bar stage mood'],
+ ['青白云鹤仙裙','cyan-white crane fantasy gown, cloud embroidery, covered bodice, long flowing sleeves, elegant Chinese fantasy portrait'],
+ ['琥珀金宫灯裙','amber-gold lantern gown, sculpted bust-support structure, embroidered chiffon train, night market lantern background, luxury mood'],
+ ['冰紫露肩胸托裙','ice-purple off-shoulder corset gown, covered supported bustline, lace trim, crystal embroidery, soft blue-white convention light'],
+ ['白蓝海盐薄纱裙','white-blue sea-salt chiffon dress, covered halter bust support, translucent beach robe over opaque lining, sunset seaside railing'],
+ ['深蓝龙纹礼服','deep-blue dragon-pattern glamour gown, covered structured bodice, gold embroidery, high slit, Chinese luxury fantasy styling'],
+ ['浅粉樱花胸衣裙','light-pink sakura corset dress, covered bust support, petal embroidery, sheer shoulder wrap, soft romantic portrait'],
+ ['冷金沙漠公主裙','cool-gold desert princess gown, covered jewel bodice, flowing chiffon skirt, desert resort terrace, sunset luxury mood'],
+ ['冰白天鹅羽纱裙','ice-white swan feather chiffon dress, covered chest-support bodice, feather trim, crystal heels, snowfield fashion mood'],
+ ['蓝紫星环祭司裙','blue-purple star-ring priestess gown, ornate covered corset, translucent cape, metallic waist jewelry, fantasy exhibition stage'],
+ ['红金牡丹宫裙','red-gold peony palace dress, covered bust bodice, brocade trim, sheer sleeve ribbons, Chinese fantasy glamour'],
+ ['幽蓝夜水纱裙','deep indigo night-water chiffon gown, glossy covered bodice, long sheer train over opaque lining, rainy street reflection mood'],
+ ['蓝银霜蝶礼裙','blue-silver frost butterfly dress, structured covered bust, wing-like translucent cape, rhinestone details, icy soft light'],
+ ['月白水榭薄纱裙','moon-white pavilion chiffon dress, covered chest-support bodice, pale blue sheer robe over opaque lining, crystal ornaments, moonlit pool interior'],
+ ['粉金花房胸托纱裙','pink-gold floral boudoir dress, covered corset bust support, translucent robe sleeves, rose embroidery, vanity-room luxury mood'],
+ ['赤金屏风薄纱裙','red-gold Chinese screen fantasy dress, covered embroidered bodice, flowing sheer robe over opaque skirt, tea-table palace interior'],
+ ['青白宫灯长袖纱裙','cyan-white palace-lantern chiffon gown, covered bustline, long translucent sleeves, pearl hair ornaments, carved-window moonlight'],
+ ['珠帘镜前珍珠礼服','pearl-beaded mirror-room gown, structured opaque bust support, cream chiffon outer layer, glossy high heels, antique vanity setting'],
+ ['浅粉花神披帛胸托装','light-pink flower-goddess guofeng fantasy outfit, deep V covered chest-support bodice, silk and semi-transparent pibo shawl, gold embroidery, jade pendant, flowing gauze sleeves, no nipple or areola exposure'],
+ ['青绿玉兰胸托仙裙','cyan-green magnolia fairy dress, ornate low-cut covered bust-support structure, silk satin, classical floral patterns, jade necklace, translucent sleeve scarves, dreamy refined guofeng mood'],
+ ['冰蓝仙宫披帛裙','ice-blue palace fairy dress, structured covered bust bodice, translucent pibo ribbons, gemstone embroidery, soft watery gloss, key areas fully covered'],
+ ['白金玉佩宫廷纱裙','white-gold palace chiffon gown, deep V chest-support bodice with opaque coverage, gold trim, jade pendant, flowing silk sleeves, refined fantasy illustration style'],
+ ['暖粉纱帘花魁胸托裙','warm-pink gauze-curtain oiran fantasy dress, gathered covered bust support, flower hair ornaments, tassel earrings, soft satin and transparent robe layers'],
+ ['青玉烟雾庭院披帛装','green-jade courtyard pibo outfit, ornate covered halter bust support, silk fabric tension and natural folds, mist and petals, non-explicit'],
+ ['白蓝莲花低胸胸托裙','white-blue lotus chest-support fantasy dress, low neckline with full coverage, delicate gold embroidery, translucent sleeve veil, refined refined beauty mood'],
+ ['粉金玉簪宫灯纱裙','pink-gold jade-hairpin palace gown, structured covered bust, gold hairpin, tassel earrings, jade necklace, soft pink-green atmosphere light'],
+ ['双人白金披帛窗边装','matching white-gold pibo fantasy outfits for two 28-year-old Chinese women, covered chest-support bodices, translucent chiffon sleeves, jewel chains, high-slit opaque skirts, window sunset poster mood'],
+ ['双人蓝紫窗边国风裙','blue and purple paired guofeng fantasy dresses, covered halter bust support, silk pibo, gold embroidery, jade waist ornaments, refined romantic window-side styling'],
+ ['双人黑白职业窗边装','paired realistic fashion outfits: one white sheer blouse over opaque bra-like inner support with black mini skirt, one black fitted dress with deep covered neckline, real fabric folds, non-explicit'],
+ ['双人黑白水钻展馆装','paired black-and-white rhinestone sheer-overlay gowns, covered jeweled bust support, long transparent chiffon panels over opaque lining, luxury exhibition hall styling'],
+ ['双人夕阳花瓣礼服','paired sunset-petal couture gowns, cream and rose tones, covered chest-support corsets, chiffon trains, jewel hair ornaments, cinematic poster mood'],
+ ['深夜宽松低胸针织上衣','loose low-cut knit top with naturally draped neckline, visible collarbone and natural bust line, soft folds, casual lived-in refined femininity, non-explicit'],
+ ['灰色慵懒针织衫居家装','oversized gray knit sweater slipping naturally at the neckline, soft fabric folds, relaxed homewear mood, natural curves, non-commercial candid style'],
+ ['米白宽松毛衣短裤','cream loose sweater with relaxed shorts, natural collarbone exposure, soft low-light apartment realism, refined casual charm'],
+ ['旧公寓宽领针织套装','wide-neck knit top and simple home shorts, lived-in texture, relaxed side-sitting silhouette, rough handheld film still mood'],
+ ['酒红色松垮针织衫','burgundy loose low-neck knit sweater, soft sagging neckline, warm low-light apartment mood, natural refined curves'],
+ ['黑色宽领薄针织上衣','black wide-neck thin knit top, relaxed drape, visible collarbone, natural bust line, gritty candid realism'],
+ ['奶茶色针织开衫吊带','beige loose knit cardigan over opaque camisole, casually open neckline, soft homewear folds, refined lived-in charm'],
+ ['深蓝旧毛衣居家装','dark navy worn sweater home outfit, loose neckline, soft fabric texture, quiet tired apartment mood'],
+ ['裸粉色宽松针织裙','dusty pink loose knit mini dress, natural body-hugging folds, relaxed refined femininity, non-explicit'],
+ ['白色旧T恤针织外套','old white T-shirt under a loose knit cardigan, casual neckline, rough rental-room realism'],
+ ['灰蓝色低领毛衣长裤','gray-blue low-neck sweater with loose home pants, soft collarbone exposure, natural low-light look'],
+ ['黑灰条纹宽松针织','black-gray striped oversized knit top, slouched neckline, accidental candid apartment style'],
+ ['米色薄针织罩衫','thin beige knit cover-up over opaque inner top, soft translucent texture without key-area exposure, relaxed realism'],
+ ['橄榄绿慵懒毛衣','olive-green relaxed sweater, wide neckline, soft wrinkles, refined quiet film still mood']
+ ],
+tops:[
+ ['亮面抹胸','glossy strapless bandeau top, structured bust support'],
+ ['紧身吊带','fitted camisole top with delicate straps'],
+ ['短款皮夹克','cropped leather jacket over fitted inner top'],
+ ['白色修身衬衫','white tailored fitted blouse'],
+ ['针织短上衣','fitted ribbed knit crop top'],
+ ['赛博连体上身','futuristic bodysuit upper panel with glowing seams'],
+ ['运动背心','fitted athletic tank top'],
+ ['西装马甲','sleeveless tailored blazer vest'],
+ ['蕾丝拼接上衣','tasteful lace-panel fitted top'],
+ ['水钻舞台胸衣','rhinestone stage corset-inspired top, non-explicit'],
+ ['丝绸挂脖上衣','silk halter top with elegant neckline'],
+ ['透明外套内搭','transparent jacket over opaque fitted top'],
+ ['露肩针织上衣','off-shoulder fitted knit top'],
+ ['金属肩甲上衣','minimal metallic shoulder-accent top'],
+ ['女团短夹克','idol-style cropped performance jacket'],
+ ['盘扣修身上衣','fitted Chinese knot-button top'],
+ ['国风交领短上衣','modern hanfu crossover-collar cropped top'],
+ ['水钻胸衣上衣','rhinestone corset-inspired covered bust top'],
+ ['大露背挂脖上衣','open-back halter top, covered front, non-nude'],
+ ['交叉绑带舞台上衣','crisscross strap dance top, key areas covered, stage fashion'],
+ ['丝绸抹胸外搭纱袖','silk bandeau-style covered top with sheer outer sleeves'],
+ ['旗袍立领短上衣','qipao-collar fitted crop top'],
+ ['薄纱罩衫内搭','sheer mesh cover-up over opaque fitted inner top'],
+ ['冰蓝胸托礼服上身','ice-blue structured bust-support bodice, deep V neckline, stable coverage, lace trim, gemstone embroidery, no exposure'],
+ ['华丽胸托礼服上身','ornate structured chest-support bodice, covered bustline, gemstone embroidery, narrow waist shaping, no exposure'],
+ ['冰丝薄纱胸托上身','ice-silk chiffon over structured opaque bust-support top, soft transparency without key-area exposure, watery gloss'],
+ ['水钻宝石胸衣上身','rhinestone gemstone corset-inspired top, stable covered bust support, sharp waistline, luxury stage texture'],
+ ['黑金刺绣胸托上身','black-gold embroidered chest-support top, covered key areas, lace edges, dark fantasy glamour'],
+ ['白羽水晶胸托上身','white feather and crystal chest-support bodice, opaque coverage, snow fantasy fashion mood'],
+ ['红丝绒胸托上身','deep red velvet off-shoulder bust-support top, refined luxury bar portrait mood'],
+ ['国风深V胸托上身','guofeng deep-V chest-support top, opaque key-area coverage, gathered supported bustline, gold embroidery trim, no nipple or areola exposure'],
+ ['丝绸披帛胸托上身','silk pibo over covered chest-support bodice, translucent scarf layers, jade pendant, soft fantasy folds'],
+ ['花神刺绣胸托上身','flower-goddess embroidered chest-support bodice, refined feminine curve, gold thread edges, stable coverage'],
+ ['低胸宽松针织上衣','loose low-cut knit top, naturally falling neckline, visible collarbone and natural bust line, soft fabric wrinkles, non-explicit'],
+ ['宽领灰色毛衣','wide-neck gray oversized sweater, relaxed drape, imperfect lived-in folds'],
+ ['米白慵懒针织衫','cream relaxed knit sweater, soft neckline, casual refined apartment mood']
+ ],
+bottoms:[
+ ['高腰包臀短裙','high-waist fitted mini skirt'],
+ ['百褶短裙','pleated mini skirt with clean movement'],
+ ['黑色热裤','black high-waist shorts'],
+ ['高腰紧身裤','high-waist fitted leggings'],
+ ['开叉长裙','high-slit long skirt with elegant leg line'],
+ ['西装短裙','tailored business mini skirt'],
+ ['流苏舞裙','fringe dance skirt with motion detail'],
+ ['皮革短裙','black leather mini skirt'],
+ ['高腰阔腿裤','tailored high-waist wide-leg pants'],
+ ['牛仔短裤','high-waist denim shorts'],
+ ['缎面半裙','satin fitted skirt'],
+ ['赛博机能短裙','modern editorial technical mini skirt with seam details'],
+ ['白色网球裙','white tennis-inspired pleated skirt'],
+ ['紧身连体下装','sleek bodysuit lower silhouette'],
+ ['红色拉丁舞裙','red Latin dance skirt with tasteful slit'],
+ ['国风流苏短裙','Chinese-inspired fringe mini skirt'],
+ ['高叉旗袍半裙','qipao-inspired high-slit fitted skirt'],
+ ['水袖纱质短裙','flowing sheer-layer dance skirt over opaque lining'],
+ ['高腰热裤','high-waist hot pants, stage dancer styling'],
+ ['绑带高腰短裙','strappy high-waist mini skirt, key areas covered'],
+ ['低腰流苏舞裙','low-rise fringe dance skirt, non-explicit covered styling'],
+ ['金属腰封短裙','metallic waist-cincher mini skirt'],
+ ['沙滩围裹短裙','resort wrap mini skirt over opaque bottom'],
+ ['冰蓝薄纱礼服裙摆','ice-blue chiffon gown skirt, translucent outer veil over opaque lining, soft flowing fabric'],
+ ['薄纱拖尾礼服裙摆','long sheer chiffon train over opaque fitted skirt, flowing fabric, luxury fantasy portrait'],
+ ['宝石刺绣高叉裙摆','gemstone-embroidered high-slit gown skirt, opaque coverage, elegant leg line, non-explicit'],
+ ['水钻流苏短裙摆','rhinestone fringe mini skirt over opaque lining, sparkling movement, stage glamour'],
+ ['黑金蕾丝拖尾裙','black-gold lace train skirt over opaque fitted base, dark fantasy luxury mood'],
+ ['雪白羽纱短裙','white feather-chiffon short skirt, opaque lining, winter fantasy styling'],
+ ['海岛蓝纱长裙摆','turquoise beach chiffon skirt over opaque bottom, flowing in sea wind, jeweled resort mood'],
+ ['酒红丝绒高叉裙','deep wine-red velvet high-slit skirt, elegant seated bar composition, opaque coverage'],
+ ['国风披帛纱裙摆','guofeng pibo chiffon skirt, translucent outer layer over opaque lining, floating sleeve scarves, classical embroidery'],
+ ['宫廷丝绸高叉裙摆','palace silk high-slit skirt with opaque coverage, gold embroidered hem, soft draped folds'],
+ ['花瓣薄纱拖尾裙','petal-like chiffon train skirt over opaque base, dreamy guofeng fantasy movement'],
+ ['居家棉质短裤','simple home cotton shorts, relaxed everyday fit'],
+ ['柔软针织短裤','soft knit shorts, casual indoor texture'],
+ ['宽松居家长裤','loose home pants, lived-in realistic fabric folds']
+ ],
+shoes:[
+ ['黑色细高跟','black pointed stiletto heels'],['银色高跟凉鞋','silver high heel sandals'],['裸色高跟鞋','nude high heels'],['绑带高跟凉鞋','strappy high heel sandals'],['黑色漆皮高跟','black patent high heels'],['白色长靴','white knee-high boots'],['黑色短靴','black ankle boots'],['银色机能靴','silver futuristic boots'],['玛丽珍高跟','Mary Jane heels'],['金色高跟凉鞋','gold high heel sandals'],['白色运动鞋','clean white sneakers'],['舞蹈练习鞋','sleek dance practice shoes'],['红色高跟鞋','red high heels'],['透明水晶跟鞋','transparent crystal heels'],['黑色长靴','black thigh-high fashion boots'],['白色羽毛长靴','white feather-trim knee boots, winter fantasy styling'],['银白水钻凉鞋','silver-white rhinestone high heel sandals, luxury glamour shine'],['黑金细带高跟','black-gold strappy stilettos, ornate nightlife glamour'],['海蓝水晶凉鞋','turquoise crystal heel sandals, beach fantasy mood'],['居家拖鞋','simple home slippers, casual indoor realism'],['无明显鞋子','feet not emphasized, shoes not visible in cropped apartment frame']
+ ],
+jewelry:[
+ ['水钻耳坠','rhinestone dangling earrings'],['珍珠耳环','pearl earrings'],['细项链','delicate thin necklace'],['银色腕表','silver wristwatch'],['细手链','slender bracelet'],['戒指','simple rings'],['展会胸牌','event ID badge around her neck'],['黑色手包','small black clutch bag'],['手机','holding a smartphone'],['金属腰链','subtle metallic waist chain over clothing'],['红色流苏耳饰','red tassel earrings'],['发簪','silver hairpin accessory'],['颈圈','minimal fashion choker'],['麦克风道具','handheld stage microphone prop'],['水晶头冠','delicate crystal crown, fantasy portrait accessory'],['宝石腰链','gemstone waist chain worn over clothing, ornate waist detail'],['羽毛披肩','white feather shawl over shoulders, winter fantasy glamour'],['黑金蕾丝披风','black-gold lace cape, dark luxury fantasy mood'],['海蓝宝石额饰','turquoise gemstone forehead ornament, beach fantasy styling'],['酒杯道具','holding a wine glass at bar counter, refined luxury mood'],['花朵发饰金簪','flower hair ornaments, gold hairpin, tassel earrings, jade necklace, ornate guofeng jewelry'],['玉石项链流苏耳饰','jade necklace with tassel earrings and delicate gold chains, refined fantasy accessory'],['金色发簪披帛','gold hairpin and translucent pibo shawl, flowing classical accessory'],['无明显首饰','no obvious jewelry, clean look'],['冰蓝宝石耳饰','ice-blue gemstone earrings and delicate crystal hair ornament'],['轻纱披肩','translucent ice-silk chiffon shawl draped over shoulders']
+ ],
+poses:[
+ ['副歌定格','full-body dance chorus freeze pose, one hip shifted, arms creating clean diagonal line'],
+ ['回头看镜头','looking back over shoulder, waist slightly turned, confident gaze'],
+ ['单手抬起','one arm lifted above head, other hand near waist, clear dance silhouette'],
+ ['走路被抓拍','walking forward naturally, fabric and hair moving slightly'],
+ ['侧身压胯','side-facing hip-shift pose, elegant waist curve, full-body visible'],
+ ['站立撩发','standing while adjusting hair, confident stage expression'],
+ ['低角度舞台站姿','slightly low-angle powerful stage stance, legs apart tastefully'],
+ ['坐姿长腿构图','seated pose with legs angled elegantly, non-explicit'],
+ ['靠车站立','leaning beside a dark car, relaxed fashion posture'],
+ ['镜前练舞','dancing in front of mirror wall, full-body reflection'],
+ ['拉丁转身瞬间','Latin dance turning moment, skirt motion, elegant arm line'],
+ ['女团手势定格','idol hand gesture pose, face visible, body line clean'],
+ ['伸展手臂','arms extended outward, dance-ready balanced posture'],
+ ['抬头看灯','looking up toward stage light, chest and shoulder line elegant'],
+ ['扶腰站姿','one hand on waist, one hand relaxed, confident refined glamour'],
+ ['轻扶披肩','front-facing slight three-quarter pose, one arm naturally raised to hold the chiffon shawl, eyes toward camera'],
+ ['半身侧转凝视','upper-body slight side turn, parted lips, cool soft gaze toward camera, shoulders elegant'],
+ ['松弛侧坐抓拍','relaxed casual side-sitting pose, shoulders naturally lowered, quiet tired gaze, not intentionally seductive'],
+ ['床边偶然回头','sitting casually near bed edge, slight accidental head turn, messy hair, candid unposed realism'],
+ ['窗边疲惫静坐','quiet sitting by window at night, body slightly turned, tired calm eyes, relaxed natural posture'],
+ ['手扶腰正面站姿','front-facing glamour stance, one hand on waist, shoulders relaxed, covered bust garment clearly visible'],
+ ['高脚凳侧坐','sitting sideways on a bar stool, one leg crossed elegantly, torso slightly turned, refined luxury mood'],
+ ['栏杆前回眸','standing beside a seaside railing, looking back over shoulder, chiffon moving in wind'],
+ ['抬手整理头发','one hand lifting hair near head, other hand relaxed, neckline and jewelry readable, non-explicit'],
+ ['披纱站立','standing with translucent chiffon shawl held lightly, fabric floating, face clear, outfit structure readable'],
+ ['近景半身凝视','close half-body gaze toward camera, calm expression, supported bust bodice as clothing detail focus'],
+ ['身体微侧胸托展示','slight three-quarter body turn, ornate chest-support bodice visible, waistline clear, tasteful posture'],
+ ['坐姿长腿高跟','seated glamour pose with long legs angled and high heels visible, non-explicit, polished portrait'],
+ ['雨夜橱窗侧坐','seated by rainy storefront glass, holding phone, neon reflection on wet pavement, candid glamour'],
+ ['酒杯轻举坐姿','bar stool seated pose, holding a wine glass, shoulders relaxed, luxury nightlife portrait'],
+ ['夜市步行抓拍','walking through lantern night market, one hand holding sheer train, crowd softly blurred'],
+ ['雪地迎风站姿','standing in snow mountain wind, one hand holding feather shawl, chiffon and hair moving'],
+ ['现代白色展厅持板','standing in robotics lab holding a thin tablet, calm futuristic fashion posture'],
+ ['化妆台回身看镜','sitting at vanity table, turning back toward camera, hand near makeup brush, elegant beauty-room mood'],
+ ['海边扶栏抬手','standing by seaside railing at sunset, one hand raised to hair, chiffon train flowing'],
+ ['门框前斜靠','leaning lightly on a hotel doorway, one hand touching doorframe, body line readable'],
+ ['台阶上站立回眸','standing on white seaside stairs, slight over-shoulder gaze, full-body outfit and heels visible'],
+ ['林间灯下行走','walking slowly under garden lanterns, long sheer train trailing behind, cinematic glamour'],
+ ['电梯镜面自拍感','standing in mirrored elevator, phone held low as prop, face and outfit still clearly visible'],
+ ['低头看手链','seated at vanity table, lowering gaze to a bracelet or ring, quiet elegant profile, non-explicit'],
+ ['梳妆台侧坐','side-sitting at an ornate vanity table, one hand near mirror, long legs angled, luxury beauty-room mood'],
+ ['屏风前品茶','sitting near Chinese screen and tea table, one hand holding porcelain cup, calm refined posture'],
+ ['珠帘前回身','standing before a gold bead curtain, turning back toward camera, sheer robe trailing behind'],
+ ['水池边并腿侧坐','sitting at indoor pool edge with legs angled together, chiffon layers draped safely, elegant fantasy mood']
+ ,['近景胸像压迫感','close bust portrait composition, refined face and covered bust garment both central, camera very close, strong visual impact, non-explicit']
+ ,['轻微俯视胸像','slight top-down half-body portrait, face clear, deep covered neckline and jewelry readable, refined refined gaze']
+ ,['低角度胸托半身','slightly low-angle half-body pose, ornate chest-support bodice prominent, shoulders and neck elegant, key areas fully covered']
+ ,['披帛抬手凝视','raising one arm to hold flowing pibo scarf, refined soft gaze, long hair or updo, ornate jewelry visible']
+ ,['双人窗边壁咚','two 28-year-old Chinese women near huge window, one leans forward with hand braced beside window frame, the other leans back against black frame, close non-explicit tension']
+ ,['双人S型贴近','two 28-year-old Chinese women extremely close, diagonal and S-curve interaction composition, faces close, bodies angled, intimate but non-explicit poster pose']
+ ,['双人落地窗对视','two refined women standing by floor-to-ceiling window, close eye contact, one hand on frame, warm sunset rim light']
+ ,['双人国风贴近','two adult guofeng fantasy women in flowing pibo outfits, standing close by palace window, petals floating, elegant non-explicit intimacy']
+ ,['双人展馆并肩','two 28-year-old Chinese women standing very close in luxury exhibition hall, one slightly leaning on the other, ornate outfits and heels visible']
+ ],
+cameras:[
+ ['全身低角度','full-body vertical composition, slightly low angle, dance video cover framing'],
+ ['半身到大腿','medium shot from upper body to thighs, outfit and body line readable'],
+ ['长焦抓拍','long-lens candid shot, blurred foreground, realistic event depth'],
+ ['手机近景','realistic phone-camera framing, slight imperfection, social media snapshot'],
+ ['舞台正面','front-facing stage camera, clear full-body pose, LED background'],
+ ['侧前方三分之四','three-quarter front angle, face and body silhouette both visible'],
+ ['镜面反射','mirror reflection composition, full-body outfit visible'],
+ ['红毯闪光灯','red carpet flash photography, sharp subject, background blur'],
+ ['动态运动模糊','subtle motion blur around fabric and hair, face remains sharp'],
+ ['封面居中','centered vertical cover composition, strong subject readability'],
+ ['4:5近景半身','vertical 4:5 close half-body composition, centered subject, clear face and clear chest garment structure'],
+ ['胸口服装特写','close portrait framing, face sharp, bodice structure and lace gemstone details clearly visible, non-explicit'],
+ ['手持粗糙构图','handheld rough composition, accidental crop, asymmetric frame, slight motion blur, independent film still'],
+ ['低光随手近景','natural low-light handheld close shot, partial soft focus, imperfect framing, candid apartment snapshot'],
+ ['成品图竖版全身','vertical full-body reference-board framing, centered adult subject, heels visible, ornate outfit readable'],
+ ['水钻服装中近景','medium-close glamour shot, face sharp, rhinestone bodice and waist details highly readable'],
+ ['长腿高跟全身','full-body vertical composition, high heels and long legs visible, stable elegant pose'],
+ ['酒吧坐姿人像','bar-stool portrait composition from head to knees, crossed legs, warm bottles background'],
+ ['雨夜街拍近景','rainy-night street portrait, neon reflections, slightly candid but face remains sharp'],
+ ['雪山外景全身','bright outdoor snow-mountain full-body portrait, costume and boots fully visible'],
+ ['海边落日全身','seaside sunset full-body vertical shot, railing and ocean visible, chiffon train readable']
+ ,['近景胸像构图','close bust portrait framing, face and covered bust garment occupy the main frame, ornate jewelry and neckline sharp, non-explicit']
+ ,['轻微俯视近景','slight top-down close portrait, refined face, covered cleavage and chest-support garment readable, dreamy fantasy impact']
+ ,['低角度半身冲击','low-angle half-body composition, chest-support costume appears powerful, face still clear, refined guofeng illustration mood']
+ ,['双人半身到大腿','vertical 9:16 two-person composition from upper body to thighs, low camera slightly looking up, strong diagonal layout, faces and outfits clear']
+ ,['双人低机位海报','low-angle two-character fashion poster framing, huge window behind, bodies close, natural fabric folds and cinematic rim light']
+ ,['双人对角线构图','strong diagonal two-person composition, S-shaped interaction, shallow depth of field, fashion magazine cover mood']
+ ],
+lights:[
+ ['霓虹粉蓝光','pink and cyan neon lighting, glossy highlights'],
+ ['暖色柔光','warm softbox light, gentle skin texture'],
+ ['舞台追光','dramatic stage spotlight, beam haze, high contrast'],
+ ['日落金光','golden hour sunset light, soft rim light'],
+ ['夜店彩光','club colored light, LED glow, energetic atmosphere'],
+ ['冷白商业光','cool white commercial lighting, clean high-detail look'],
+ ['雨夜反光','rainy night reflections, wet pavement glow'],
+ ['酒店暖顶光','hotel warm overhead light, elegant polished mood'],
+ ['冷调商业蓝光','futuristic blue rim light, luminous seams'],
+ ['自然窗光','soft natural window light, realistic photography'],
+ ['柔和蓝白光影','soft blue-white lighting, shallow depth of field, clean fantasy convention glow'],
+ ['冰晶柔光','icy soft glow, watery fabric highlights, delicate blue reflections'],
+ ['深夜城市弱光','uneven low apartment light, weak city glow through window, rough cinematic shadows'],
+ ['廉价室内黄光','cheap warm practical lamp light, uneven shadows, gritty lived-in realism'],
+ ['水钻高光闪耀','sparkling rhinestone highlights, glossy jewel reflections, clean luxury glamour light'],
+ ['酒吧琥珀暖光','amber cocktail-bar practical light, warm bottle glow, polished skin texture'],
+ ['夜市灯笼暖光','warm lantern light mixed with street bokeh, crowded night-market depth'],
+ ['雪山冷日光','bright cold alpine daylight, crisp snow reflection, white-blue fantasy atmosphere'],
+ ['海边落日逆光','orange sunset backlight by the sea, glowing chiffon edges, warm water reflection'],
+ ['实验室蓝白冷光','clean blue-white robotics-lab light, glossy floor reflection, high-tech clarity'],
+ ['雨夜霓虹反射','rainy neon reflections on glass and pavement, cinematic wet highlights']
+ ,['暖粉逆光烟雾','warm pink backlight with soft smoke, dreamy palace atmosphere, delicate shadows']
+ ,['青绿色氛围光','cyan-green atmosphere light, soft fantasy glow, jade reflections and floating petals']
+ ,['柔和油亮高光','soft oily skin highlights, polished illustration shading, gentle glossy fabric reflections']
+ ,['夕阳蜜桃逆光','warm golden sunset and peach-pink backlight, cinematic rim light, floating petals and dust particles, volumetric light']
+ ,['落地窗电影轮廓光','realistic film rim light through huge window, warm highlights on hair strands and fabric folds, shallow depth of field']
+ ],
+quickPresets:[
+ ['女团霓虹舞台','都市舞台脸','舞台夜场','女团舞台','黑色亮面女团舞台套装','副歌定格','舞台正面','舞台追光','女团舞台写真'],
+ ['夜店红色热舞','混血超模脸','舞台夜场','夜店舞池','红色绑带露肤舞裙','侧身压胯','全身低角度','夜店彩光','夜店霓虹热舞'],
+ ['海岛泳池封面','甜美猫眼脸','度假户外','海岛无边泳池','蓝色海岛清凉舞台装','单手抬起','封面居中','日落金光','短视频封面'],
+ ['新中式旗袍舞','古典东方脸','室内居家','落地窗公寓','红金改良旗袍舞台装','回头看镜头','半身到大腿','暖色柔光','高级商业写真'],
+ ['车展黑金御姐','冷艳御姐脸','室内商业','车展展台','黑金奢华战姬裙','靠车站立','长焦抓拍','冷白商业光','高级商业写真'],
+ ['红毯水钻礼服','混血超模脸','舞台夜场','红毯活动','紫色水钻礼服','扶腰站姿','红毯闪光灯','舞台追光','高级商业写真'],
+ ['赛博机车旁','都市舞台脸','现代商业空间','霓虹机车旁','银色未来连体衣','低角度舞台站姿','全身低角度','冷调商业蓝光','都市舞台摄影'],
+ ['酒店电梯偶遇','冷艳御姐脸','室内商业','酒店电梯厅','黑色西装马甲裙','走路被抓拍','手机近景','酒店暖顶光','真实手机抓拍'],
+ ['商场活动抓拍','甜美猫眼脸','室内商业','商场中庭','白衬衫黑短裙','走路被抓拍','长焦抓拍','冷白商业光','真实手机抓拍'],
+ ['雨夜街头黑裙','冷艳御姐脸','城市室外','霓虹雨夜街头','黑色高叉长裙','站立撩发','长焦抓拍','雨夜反光','真实手机抓拍'],
+ ['游艇白色露背','混血超模脸','度假户外','游艇甲板','白色度假露背套装','抬头看灯','封面居中','日落金光','短视频封面'],
+ ['敦煌金色舞者','古典东方脸','舞台夜场','剧院舞台','金色敦煌飞天装','伸展手臂','舞台正面','暖色柔光','高级商业写真'],
+ ['蓝色旗袍古典','古典东方脸','室内居家','豪华卧室','蓝白丝绸旗袍裙','坐姿长腿构图','半身到大腿','暖色柔光','高级商业写真'],
+ ['黑色比基尼风舞台','都市舞台脸','舞台夜场','小型摄影棚','黑色极简比基尼风舞台套装','副歌定格','全身低角度','霓虹粉蓝光','夜店霓虹热舞'],
+ ['海边白楼梯','甜美猫眼脸','度假户外','海边白色楼梯','绿色热带度假裙','站立撩发','封面居中','自然窗光','短视频封面'],
+ ['办公室马甲裙','冷艳御姐脸','室内商业','高端办公室','黑色西装马甲裙','扶腰站姿','侧前方三分之四','冷白商业光','高级商业写真'],
+ ['拉丁红黑舞裙','混血超模脸','舞台夜场','剧院舞台','黑红拉丁舞裙','拉丁转身瞬间','动态运动模糊','舞台追光','拉丁热舞海报'],
+ ['沙滩落日金裙','甜美猫眼脸','度假户外','沙滩落日','金色派对短裙','回头看镜头','全身低角度','日落金光','短视频封面'],
+ ['未来实验室连体衣','都市舞台脸','现代商业空间','现代白色展厅','灰银实验室连体衣','低角度舞台站姿','封面居中','冷白商业光','都市舞台摄影'],
+ ['Livehouse后台','冷艳御姐脸','舞台夜场','Livehouse后台','黑色皮衣短裙','走路被抓拍','手机近景','夜店彩光','真实手机抓拍'],
+ ['国潮黑红套装','古典东方脸','舞台夜场','女团舞台','黑红国潮舞台套装','女团手势定格','舞台正面','舞台追光','女团舞台写真'],
+ ['泳池夜景银装','混血超模脸','度假户外','度假村泳池夜景','银色水钻露腰舞台装','单手抬起','全身低角度','霓虹粉蓝光','夜店霓虹热舞'],
+ ['天台风中长裙','冷艳御姐脸','城市室外',' rooftop 天台','黑色高叉长裙','抬头看灯','全身低角度','夜店彩光','高级商业写真'],
+ ['竹影旗袍','古典东方脸','度假户外','花园派对','青绿色竹影旗袍','回头看镜头','半身到大腿','自然窗光','高级商业写真'],
+ ['机场出发时尚表现力封面','混血超模脸','交通旅拍','机场出发厅','黑色抹胸长裤套装','走路被抓拍','长焦抓拍','冷白商业光','真实手机抓拍'],
+ ['现代玻璃走廊赛博','都市舞台脸','现代商业空间','现代玻璃走廊','镭射银舞台装','副歌定格','封面居中','冷调商业蓝光','都市舞台摄影'],
+ ['粉金女团甜美','甜美猫眼脸','舞台夜场','女团舞台','粉金蝴蝶结套装','女团手势定格','舞台正面','舞台追光','女团舞台写真'],
+ ['黑色镂空派对','冷艳御姐脸','舞台夜场','酒吧吧台','黑色镂空结构裙','侧身压胯','半身到大腿','酒店暖顶光','夜店霓虹热舞'],
+ ['沙漠度假红裙','古典东方脸','度假户外','沙漠度假酒店','红色丝绒包臀裙','扶腰站姿','封面居中','日落金光','高级商业写真'],
+ ['海边玻璃餐厅','甜美猫眼脸','度假户外','海边玻璃餐厅','白色针织开衫短裙','坐姿长腿构图','半身到大腿','酒店暖顶光','高级商业写真'],
+ ['高铁站黑裙','冷艳御姐脸','交通旅拍','高铁站候车区','黑色长袖包臀裙','走路被抓拍','长焦抓拍','冷白商业光','真实手机抓拍'],
+ ['虚拟偶像蓝光','都市舞台脸','现代商业空间','虚拟偶像舞台','蓝色女团夹克短裙','副歌定格','舞台正面','冷调商业蓝光','都市舞台摄影'],
+ ['苗银蓝色舞裙','古典东方脸','舞台夜场','剧院舞台','蓝色苗银风舞台裙','伸展手臂','舞台正面','舞台追光','高级商业写真'],
+ ['海边篝火热舞','甜美猫眼脸','度假户外','海边篝火','棕色麂皮流苏裙','拉丁转身瞬间','动态运动模糊','暖色柔光','拉丁热舞海报'],
+ ['地下停车场皮衣','冷艳御姐脸','城市室外','地下停车场','黑色皮衣短裙','靠车站立','全身低角度','冷白商业光','真实手机抓拍'],
+ ['白色水袖舞台','古典东方脸','舞台夜场','剧院舞台','白色水袖舞台裙','伸展手臂','舞台正面','暖色柔光','高级商业写真'],
+ ['海景阳台白装','甜美猫眼脸','度假户外','海景阳台','白色度假露背套装','站立撩发','封面居中','自然窗光','短视频封面'],
+ ['科技展厅银白','都市舞台脸','室内商业','科技展厅','银白赛车女郎风套装','走路被抓拍','长焦抓拍','冷白商业光','都市舞台摄影'],
+ ['热带市集抓拍','甜美猫眼脸','度假户外','热带市集街头','橙色泳池派对套装','走路被抓拍','手机近景','夜店彩光','真实手机抓拍'],
+ ['酒吧金色短裙','混血超模脸','舞台夜场','酒吧吧台','金色派对短裙','扶腰站姿','半身到大腿','酒店暖顶光','夜店霓虹热舞'],
+ ['公园步道运动','甜美猫眼脸','城市室外','公园步道','运动背心紧身裤','镜前练舞','全身低角度','自然窗光','短视频封面'],
+ ['红色流苏旗袍','古典东方脸','舞台夜场','小型摄影棚','红色流苏旗袍裙','拉丁转身瞬间','动态运动模糊','舞台追光','高级商业写真'],
+ ['敞篷车海岸','混血超模脸','交通旅拍','敞篷车旁','白色改良旗袍','靠车站立','全身低角度','日落金光','短视频封面'],
+ ['雨林步道绿裙','甜美猫眼脸','度假户外','热带雨林步道','绿色热带度假裙','走路被抓拍','长焦抓拍','自然窗光','真实手机抓拍'],
+ ['黑色交叉绑带','冷艳御姐脸','舞台夜场','夜店舞池','黑色交叉绑带连体衣','低角度舞台站姿','全身低角度','夜店彩光','夜店霓虹热舞'],
+ ['春节金红舞台','古典东方脸','舞台夜场','女团舞台','金红春节舞台装','女团手势定格','舞台正面','舞台追光','女团舞台写真'],
+ ['葡萄园玫瑰金','混血超模脸','度假户外','葡萄园露台','玫瑰金礼服裙','扶腰站姿','封面居中','日落金光','高级商业写真'],
+ ['机能训练舱','都市舞台脸','现代商业空间','机能训练舱','机能短裤套装','镜前练舞','镜面反射','冷调商业蓝光','都市舞台摄影'],
+ ['红色拉链皮革','冷艳御姐脸','舞台夜场','DJ台前','红色拉链皮革裙','副歌定格','全身低角度','夜店彩光','夜店霓虹热舞'],
+ ['白金唐风短裙','古典东方脸','室内商业','精品店试衣区','白金唐风短裙','回头看镜头','半身到大腿','暖色柔光','高级商业写真'],
+ ['冰蓝COS 01 漫展正面','冷艳御姐脸','室内商业','漫展现场','冰蓝幻想COS胸托礼服','轻扶披肩','4:5近景半身','柔和蓝白光影','幻想COS写真','28岁中国女性，精致小脸，清冷柔媚眼神，微张唇，长发，柔和妆容，皮肤细腻，气质高级，人物居中。身材丰满匀称，上围饱满，胸部曲线明显但不色情，腰线清晰，肩颈线条优雅。冰蓝色幻想风COS服，深V胸托式礼服结构，胸部有稳定包裹和支撑，服装边缘带蕾丝与宝石刺绣，半透明冰丝薄纱材质，轻纱披肩自然飘逸，布料有柔和透光感和水润光泽，整体轻微裸露但克制高级，不露点，不走光。脸部清晰，胸口服装结构清晰，正面微微侧身，眼神看向镜头，手臂自然抬起轻扶披肩。背景为漫展现场或幻想展馆，远处人群轻微虚化，浅景深，高级COS摄影，真实照片质感，高细节，干净画面，社交媒体写真风。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 02 幻想展馆','古典东方脸','室内商业','幻想展馆','冰蓝幻想COS胸托礼服','半身侧转凝视','4:5近景半身','冰晶柔光','幻想COS写真','28岁中国女性，精致小脸，清冷柔媚眼神，微张唇，长发，柔和妆容，皮肤细腻，气质高级，人物居中。冰蓝幻想COS礼服，深V胸托结构，稳定包裹支撑，蕾丝边缘与蓝宝石刺绣，半透明冰丝薄纱披肩，水润光泽，轻微露肤但高级克制，不露点，不走光。竖版近景半身，脸部清晰，胸口服装结构清楚，正面轻微侧身，背景幻想展馆人群虚化。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 03 摄影区柔光','甜美猫眼脸','室内商业','COS摄影区','冰蓝幻想COS胸托礼服','轻扶披肩','胸口服装特写','柔和蓝白光影','幻想COS写真','28岁中国女性，柔和妆容，精致小脸，长发，皮肤细腻，清冷又柔媚。冰蓝色幻想COS胸托礼服，深V但稳定覆盖，胸部曲线明显但不色情，蕾丝、宝石刺绣、冰丝薄纱披肩清晰，布料透光但关键部位完整覆盖。人物居中，近景半身，手臂轻扶披肩，COS摄影区背景虚化。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 04 游戏展台','都市舞台脸','室内商业','游戏展台','冰蓝幻想COS胸托礼服','半身侧转凝视','4:5近景半身','冷调商业蓝光','幻想COS写真','28岁中国女性，精致小脸，长发，清冷柔媚眼神，气质高级。穿冰蓝幻想风COS礼服，深V胸托式结构，稳定支撑和包裹，半透明冰丝披肩自然飘逸，蕾丝与宝石刺绣，轻微露肤但不露点不走光。游戏展台蓝色LED背景，人群轻微虚化，真实社媒写真。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 05 漫展长发','混血超模脸','室内商业','漫展现场','冰蓝幻想COS胸托礼服','轻扶披肩','半身到大腿','柔和蓝白光影','幻想COS写真','28岁中国女性，长发自然垂落，精致小脸，微张唇，清冷柔媚眼神。丰满匀称身材，上围饱满，腰线清晰，肩颈优雅。冰蓝COS胸托礼服，深V结构但稳定覆盖，冰丝薄纱披肩、水润光泽、宝石刺绣，克制高级，不色情。漫展人群虚化，4:5社媒写真。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 06 展馆侧身','冷艳御姐脸','室内商业','幻想展馆','冰蓝幻想COS胸托礼服','半身侧转凝视','侧前方三分之四','冰晶柔光','幻想COS写真','28岁中国女性，人物居中，正面微侧身，脸部清晰，眼神看向镜头。冰蓝幻想COS服，深V胸托礼服结构，胸部稳定包裹和支撑，胸口服装结构清晰，半透明薄纱披肩飘逸，轻微裸露但高级克制，不露点，不走光。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 07 蓝白浅景深','古典东方脸','室内商业','COS摄影区','冰蓝幻想COS胸托礼服','轻扶披肩','4:5近景半身','柔和蓝白光影','幻想COS写真','28岁中国女性，精致小脸，柔和妆容，长发，皮肤细腻，气质高级。身材丰满匀称，胸部曲线明显但不色情。冰蓝胸托式COS礼服，蕾丝边缘、宝石刺绣、冰丝薄纱披肩、水润光泽，浅景深，干净画面，社交媒体写真风。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 08 近景服装结构','甜美猫眼脸','室内商业','幻想展馆','冰蓝幻想COS胸托礼服','半身侧转凝视','胸口服装特写','冰晶柔光','幻想COS写真','28岁中国女性，脸部清晰，微张唇，长发，柔和妆容。重点展示冰蓝幻想COS礼服的胸托结构、蕾丝边缘、宝石刺绣、稳定包裹支撑、薄纱披肩透光质感，胸部曲线明显但不色情，不露点不走光，真实照片质感。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 09 漫展抓拍','都市舞台脸','室内商业','漫展现场','冰蓝幻想COS胸托礼服','走路被抓拍','长焦抓拍','柔和蓝白光影','幻想COS写真','28岁中国女性，精致小脸，长发，清冷柔媚眼神，社交媒体抓拍感。冰蓝幻想COS胸托礼服，半透明冰丝薄纱披肩随动作飘动，胸部稳定覆盖支撑，轻微露肤但高级克制。漫展现场远处人群虚化，真实照片质感。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 10 正面微侧','冷艳御姐脸','室内商业','COS摄影区','冰蓝幻想COS胸托礼服','轻扶披肩','4:5近景半身','冰晶柔光','幻想COS写真','28岁中国女性，人物居中，正面微微侧身，眼神看向镜头，手臂自然抬起轻扶披肩。冰蓝色幻想COS服，深V胸托式礼服结构，胸口清晰，半透明薄纱有柔和透光感和水润光泽，不露点，不走光。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 11 冷艳展台','混血超模脸','室内商业','游戏展台','冰蓝幻想COS胸托礼服','半身侧转凝视','4:5近景半身','柔和蓝白光影','幻想COS写真','28岁中国女性，冷艳高级气质，精致小脸，微张唇，长发。冰蓝幻想COS胸托礼服，深V但稳定覆盖，蕾丝和宝石刺绣，高级COS摄影，背景游戏展台蓝白光影，人群虚化，胸部曲线明显但不色情。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 12 轻纱飘逸','古典东方脸','室内商业','幻想展馆','冰蓝幻想COS胸托礼服','单手抬起','半身到大腿','冰晶柔光','幻想COS写真','28岁中国女性，长发与轻纱披肩自然飘逸，柔和妆容，皮肤细腻。穿冰蓝幻想风COS胸托礼服，稳定包裹支撑，薄纱半透明但关键部位完整覆盖，整体轻微裸露但克制高级，高细节真实照片。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 13 蓝宝石刺绣','甜美猫眼脸','室内商业','COS摄影区','冰蓝幻想COS胸托礼服','轻扶披肩','胸口服装特写','柔和蓝白光影','幻想COS写真','28岁中国女性，脸部清晰，眼神柔媚，微张唇。冰蓝COS礼服细节特写，深V胸托结构、蓝宝石刺绣、蕾丝边缘、冰丝薄纱披肩、水润光泽，胸部曲线明显但不色情，不露点不走光。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 14 社媒写真','都市舞台脸','室内商业','漫展现场','冰蓝幻想COS胸托礼服','女团手势定格','封面居中','柔和蓝白光影','幻想COS写真','28岁中国女性，精致小脸，长发，柔和妆容，社交媒体写真风。冰蓝幻想COS胸托礼服，深V结构但稳定覆盖，上围饱满、腰线清晰、肩颈优雅，背景漫展现场虚化，干净画面。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 15 幻想大厅','古典东方脸','室内商业','幻想展馆','冰蓝幻想COS胸托礼服','半身侧转凝视','侧前方三分之四','柔和蓝白光影','幻想COS写真','28岁中国女性，清冷柔媚眼神，长发，微张唇，人物居中。冰蓝幻想COS服，深V胸托式礼服结构，蕾丝宝石刺绣，轻纱披肩，水润光泽，轻微裸露但克制高级，不露点不走光。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 16 真实手机感','甜美猫眼脸','室内商业','漫展现场','冰蓝幻想COS胸托礼服','走路被抓拍','手机近景','柔和蓝白光影','真实手机抓拍','28岁中国女性，真实手机摄影质感，脸部清晰，长发，柔和妆容。冰蓝幻想COS胸托礼服，胸部稳定包裹支撑，半透明冰丝薄纱披肩，克制高级不走光。漫展人群虚化，4:5竖版。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 17 冷白展馆','冷艳御姐脸','室内商业','COS摄影区','冰蓝幻想COS胸托礼服','轻扶披肩','4:5近景半身','冷白商业光','幻想COS写真','28岁中国女性，精致小脸，清冷柔媚眼神，微张唇，皮肤细腻。冰蓝色幻想风COS服，深V胸托礼服结构，稳定包裹和支撑，蕾丝宝石刺绣，薄纱披肩，真实高级COS摄影。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 18 冰丝水光','混血超模脸','室内商业','幻想展馆','冰蓝幻想COS胸托礼服','半身侧转凝视','胸口服装特写','冰晶柔光','幻想COS写真','28岁中国女性，长发，微张唇，柔和妆容，人物居中。冰蓝冰丝薄纱材质有柔和透光感和水润光泽，深V胸托结构清晰，胸部曲线明显但不色情，不露点，不走光，高细节干净画面。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 19 展馆浅景深','古典东方脸','室内商业','游戏展台','冰蓝幻想COS胸托礼服','轻扶披肩','长焦抓拍','柔和蓝白光影','幻想COS写真','28岁中国女性，精致小脸，清冷柔媚眼神，长发，皮肤细腻。冰蓝幻想COS胸托礼服，轻纱披肩飘逸，蕾丝宝石刺绣，背景展馆和人群浅景深虚化，社交媒体写真风。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['冰蓝COS 20 标准成片','冷艳御姐脸','室内商业','幻想展馆','冰蓝幻想COS胸托礼服','轻扶披肩','4:5近景半身','柔和蓝白光影','幻想COS写真','28岁中国女性，精致小脸，清冷柔媚眼神，微张唇，长发，柔和妆容，皮肤细腻，气质高级，人物居中。身材丰满匀称，上围饱满，胸部曲线明显但不色情，腰线清晰，肩颈线条优雅。穿冰蓝色幻想风COS服，深V胸托式礼服结构，胸部有稳定包裹和支撑，服装边缘带蕾丝与宝石刺绣，半透明冰丝薄纱材质，轻纱披肩自然飘逸，布料有柔和透光感和水润光泽，整体轻微裸露但克制高级，不露点，不走光。竖版近景半身构图，脸部清晰，胸口服装结构清晰，人物正面微微侧身，眼神看向镜头，手臂自然抬起轻扶披肩。背景为漫展现场或幻想展馆，远处人群轻微虚化，柔和蓝白光影，浅景深，高级COS摄影，真实照片质感，高细节，干净画面，社交媒体写真风。','4:5 社媒','最大时尚表现力丰满曲线'],
+ ['深夜针织 01 出租屋侧坐','冷艳御姐脸','室内居家','深夜出租屋','深夜宽松低胸针织上衣','松弛侧坐抓拍','手持粗糙构图','深夜城市弱光','深夜公寓电影抓拍','一位20多岁的28岁中国女性，拥有自然生活化的女性魅力，身材丰腴匀称，胸部轮廓自然饱满，身体曲线柔和流畅，带有真实生活感而非刻意摆拍的时尚表现力。她穿着低胸宽松针织上衣，领口自然下垂，隐约露出大片锁骨与自然胸线，衣料贴合身体形成柔软褶皱，随意、慵懒、生活化，而不是刻意挑逗。姿态放松随意，像偶然抓拍：身体微微侧坐，肩膀自然下沉，头发略显凌乱，眼神疲惫安静。昏暗普通出租屋，窗外城市灯光微弱透入，粗糙构图、随手取景、意外裁切、不对称画面、局部失焦、轻微运动模糊，手持摄影视角，王家卫电影氛围，独立电影截图，粗粝现实主义摄影，natural low-light photography。','4:5 社媒','丰腴沙漏型'],
+ ['深夜针织 02 旧公寓窗边','古典东方脸','室内居家','旧公寓窗边','灰色慵懒针织衫居家装','窗边疲惫静坐','低光随手近景','深夜城市弱光','深夜公寓电影抓拍','20多岁28岁中国女性，自然生活化，丰腴匀称，自然胸线清晰但不色情。宽领灰色针织衫领口自然下垂，大片锁骨与柔和胸线若隐若现，衣料有真实褶皱。她在旧公寓窗边疲惫静坐，头发微乱，眼神安静，没有刻意摆时尚表现力动作。窗外弱城市光，低光手持，局部失焦，不完美构图，随手胶片摄影和独立电影截图质感。','4:5 社媒','丰腴沙漏型'],
+ ['深夜针织 03 床边米白','甜美猫眼脸','室内居家','昏暗单间床边','米白宽松毛衣短裤','床边偶然回头','手持粗糙构图','廉价室内黄光','深夜公寓电影抓拍','28岁中国女性，高级生活化气质，身材丰腴匀称，胸部轮廓自然饱满，身体曲线柔和。米白宽松毛衣领口自然松垂，柔软褶皱贴合身体，轻微露出锁骨和自然胸线，非刻意时尚表现力。床边偶然回头，肩膀下沉，头发凌乱，眼神疲惫安静，廉价出租屋黄光，不对称随手构图，轻微运动模糊。','4:5 社媒','丰腴沙漏型'],
+ ['深夜针织 04 酒红松垮','冷艳御姐脸','室内居家','廉价客厅角落','酒红色松垮针织衫','松弛侧坐抓拍','低光随手近景','廉价室内黄光','深夜公寓电影抓拍','20多岁28岁中国女性，自然生活化女性魅力，丰腴感和真实人体状态。酒红色松垮针织衫领口自然下垂，胸线自然、克制、非色情，布料形成柔软皱褶。廉价客厅角落，旧沙发和杂物背景，像深夜随手拍摄的电影截图，手持摄影、不完美构图、局部虚焦、粗糙光影。','4:5 社媒','丰腴沙漏型'],
+ ['深夜针织 05 黑色薄针织','混血超模脸','室内居家','深夜厨房门口','黑色宽领薄针织上衣','窗边疲惫静坐','手持粗糙构图','深夜城市弱光','深夜公寓电影抓拍','28岁中国女性，自然生活化，非商业棚拍。黑色宽领薄针织上衣领口自然坠落，锁骨与自然胸线明显但不色情，丰腴匀称，腰线柔和。小出租屋厨房门口，荧光灯溢出，室内光线不均匀，随手抓拍，粗糙构图，轻微运动模糊，情绪化电影感。','4:5 社媒','丰腴沙漏型'],
+ ['深夜针织 06 奶茶开衫','古典东方脸','室内居家','窗台地板','奶茶色针织开衫吊带','松弛侧坐抓拍','低光随手近景','深夜城市弱光','深夜公寓电影抓拍','20多岁28岁中国女性，柔和高级气质，身材丰腴匀称，自然胸线和肩颈线条。奶茶色宽松针织开衫配不透明吊带，领口自然松弛，衣料柔软褶皱，非刻意挑逗。坐在窗台地板附近，城市弱光进入房间，眼神疲惫安静，粗粝现实主义摄影，handheld low-light film still。','4:5 社媒','丰腴沙漏型'],
+ ['深夜针织 07 深蓝旧毛衣','甜美猫眼脸','室内居家','深夜出租屋','深蓝旧毛衣居家装','床边偶然回头','手持粗糙构图','廉价室内黄光','深夜公寓电影抓拍','28岁中国女性，生活化高级氛围，丰腴但自然，胸部轮廓饱满不夸张。深蓝旧毛衣低领自然下垂，锁骨和自然胸线隐约可见，布料有软皱。普通出租屋深夜，廉价家具、弱光、不对称画面、意外裁切、局部失焦，非网红自拍，非商业棚拍。','4:5 社媒','丰腴沙漏型'],
+ ['深夜针织 08 裸粉针织裙','冷艳御姐脸','室内居家','旧公寓窗边','裸粉色宽松针织裙','窗边疲惫静坐','手持粗糙构图','深夜城市弱光','深夜公寓电影抓拍','一位20多岁的28岁中国女性，自然生活化，真实生活感，身体曲线柔和流畅。裸粉色宽松针织裙自然贴出柔和曲线，胸线自然饱满但不色情，肩颈线条优雅。旧公寓窗边，城市灯光微弱透入，王家卫电影氛围，独立电影截图，粗糙低光，随手胶片摄影，不完美构图。','4:5 社媒','丰腴沙漏型'],
+ ['深夜针织 09 白T开衫','混血超模脸','室内居家','昏暗单间床边','白色旧T恤针织外套','松弛侧坐抓拍','低光随手近景','深夜城市弱光','深夜公寓电影抓拍','28岁中国女性，疲惫安静眼神，自然生活化女性魅力，丰腴匀称身材。旧白T恤加松垮针织开衫，领口自然，胸部轮廓自然饱满，衣料贴合形成柔软褶皱，非刻意时尚表现力，避免挑逗。深夜单间，窗外弱光，轻微运动模糊，局部失焦，手持摄影视角。','4:5 社媒','丰腴沙漏型'],
+ ['深夜针织 10 灰蓝毛衣','冷艳御姐脸','室内居家','深夜出租屋','灰蓝色低领毛衣长裤','松弛侧坐抓拍','手持粗糙构图','深夜城市弱光','深夜公寓电影抓拍','一位20多岁的28岁中国女性，拥有自然生活化的女性魅力，身材丰腴匀称，胸部轮廓自然饱满，身体曲线柔和流畅，带有真实生活感而非刻意摆拍的时尚表现力。她穿着灰蓝色低领毛衣和宽松居家长裤，领口自然下垂，隐约露出大片锁骨与自然胸线，衣料贴合身体形成柔软褶皱，整体呈现随意、慵懒、生活化的女性气质，而不是刻意挑逗。人物姿态放松随意，像是被偶然抓拍到的一瞬间：身体微微侧坐，肩膀自然下沉，头发略显凌乱，眼神疲惫安静，没有故意摆出时尚表现力动作。场景是昏暗的普通出租屋或深夜公寓，窗外城市灯光微弱透入，室内光线不均匀，带有廉价生活感与电影感。画面采用粗糙构图、随手取景、意外裁切、不对称画面、局部失焦、轻微运动模糊、手持摄影视角，像深夜随手拍摄的电影截图。','4:5 社媒','丰腴沙漏型'],
+ ['成品图 01 雨夜橱窗银裙','冷艳御姐脸','城市室外','雨夜玻璃橱窗','银色雨夜橱窗短裙','雨夜橱窗侧坐','雨夜街拍近景','雨夜霓虹反射','成品图同款变体','28岁中国女性，人物居中，夸张丰满比例但完整遮挡。银色水钻胸托短裙、羽毛披肩、透明水晶高跟，雨夜玻璃橱窗和湿地霓虹反射，像成品图同款竖版写真。','9:16 竖屏','极限胸托夸张型'],
+ ['成品图 02 电梯香槟金','甜美猫眼脸','室内商业','金色电梯镜面厅','香槟金水钻高叉裙','手扶腰正面站姿','成品图竖版全身','水钻高光闪耀','极夸张华丽写真','香槟金胸托礼服结构清晰，水钻和缎面反光，镜面电梯厅，人物全身站立，长腿高跟可见，胸部视觉中心明显但非露点。','9:16 竖屏','前景霸屏胸部比例'],
+ ['成品图 03 现代白色展厅银白','都市舞台脸','现代商业空间','白蓝现代白色展厅','银白水钻实验室套装','现代白色展厅持板','成品图竖版全身','实验室蓝白冷光','水钻薄纱奢华','银白水钻科幻套装，胸托上身、短裙和侧边薄纱，现代白色展厅背景，冷白蓝光，干净高级，适合做同脸变体。','9:16 竖屏','华丽写真魔改体型'],
+ ['成品图 04 酒吧香槟坐姿','混血超模脸','舞台夜场','酒吧高脚凳','酒红丝绒高脚凳礼服','酒杯轻举坐姿','酒吧坐姿人像','酒吧琥珀暖光','极夸张华丽写真','酒红丝绒高叉礼服，胸托式上身，手持酒杯，高脚凳侧坐，酒吧瓶墙虚化，高级高级夜生活写真。','4:5 社媒','极限胸托夸张型'],
+ ['成品图 05 海边落日白蓝纱','古典东方脸','度假户外','海边落日木栏','白蓝海盐薄纱裙','海边扶栏抬手','海边落日全身','海边落日逆光','成品图同款变体','白蓝海盐薄纱裙，胸托结构稳定，薄纱拖尾被海风吹起，落日木栏和海面反光，竖版全身度假写真。','9:16 竖屏','古风幻想丰满比例细腰'],
+ ['成品图 06 黑金夜花园','冷艳御姐脸','舞台夜场','林间夜灯步道','黑金夜花园薄纱礼服','林间灯下行走','成品图竖版全身','夜市灯笼暖光','极夸张华丽写真','黑金蕾丝薄纱礼服，宝石胸托和长拖尾，夜间花园灯路行走，暗色背景突出金色刺绣和丰满轮廓。','9:16 竖屏','极限胸托夸张型'],
+ ['成品图 07 蓝白舞台聚光','甜美猫眼脸','舞台夜场','蓝白聚光舞台','冰蓝公主水晶短礼服','手扶腰正面站姿','长腿高跟全身','水钻高光闪耀','水钻薄纱奢华','冰蓝水晶短礼服，胸托上身、披纱和高跟，全身站姿，蓝白聚光灯和舞台烟雾，服装华丽清晰。','9:16 竖屏','前景霸屏胸部比例'],
+ ['成品图 08 红蓝夜店回眸','混血超模脸','舞台夜场','红蓝DJ夜场','红色夜店水钻长裙','身体微侧胸托展示','水钻服装中近景','夜店彩光','成品图同款变体','红色水钻高叉长裙，人物微侧回眸，胸托结构和腰线清晰，DJ夜场红蓝灯，高级时尚表现力但不低俗。','4:5 社媒','极限胸托夸张型'],
+ ['成品图 09 化妆间珍珠纱','古典东方脸','室内商业','复古化妆间','珍珠白镜前薄纱睡袍风','化妆台回身看镜','水钻服装中近景','酒店暖顶光','高级商业写真','复古化妆间，珍珠白薄纱外袍覆盖不透明内搭，胸口服装结构清晰，手边化妆刷和镜灯，优雅不露点。','4:5 社媒','自然饱满高级型'],
+ ['成品图 10 漫展冰蓝COS','冷艳御姐脸','室内商业','漫展现场','冰蓝幻想COS胸托礼服','轻扶披肩','4:5近景半身','柔和蓝白光影','幻想COS写真','冰蓝幻想COS胸托礼服，脸部清晰，胸口礼服结构和宝石刺绣清晰，漫展人群虚化，社交媒体写真感。','4:5 社媒','古风幻想丰满比例细腰'],
+ ['成品图 11 灯笼夜市琥珀金','古典东方脸','城市室外','灯笼夜市街','琥珀金宫灯裙','夜市步行抓拍','成品图竖版全身','夜市灯笼暖光','古风幻想冰丝','琥珀金宫灯裙，胸托结构、薄纱拖尾和灯笼暖光，夜市街人群虚化，人物边走边轻提纱裙。','9:16 竖屏','极限胸托夸张型'],
+ ['成品图 12 雪山白羽','甜美猫眼脸','度假户外','雪山冰原外景','白羽雪山幻想装','雪地迎风站姿','雪山外景全身','雪山冷日光','水钻薄纱奢华','白羽水晶胸托装，雪山冰原外景，披肩和薄纱在风中展开，长靴可见，冷日光高细节。','9:16 竖屏','华丽写真魔改体型'],
+ ['成品图 13 海岛蓝宝石','混血超模脸','度假户外','蓝海浅滩','海岛蓝宝石纱裙','抬手整理头发','海边落日全身','日落金光','成品图同款变体','蓝宝石海岛薄纱裙，胸托上身与宝石腰链，浅海和白沙背景，抬手整理头发，度假写真感。','9:16 竖屏','极限胸托夸张型'],
+ ['成品图 14 酒店门框黑金','冷艳御姐脸','室内商业','高级试衣镜前','黑色金线开叉长裙','门框前斜靠','长腿高跟全身','水钻高光闪耀','高级商业写真','黑色金线高叉长裙，胸托结构和腰线清晰，门框斜靠，试衣镜和珠宝托盘背景，奢华成片感。','9:16 竖屏','前景霸屏胸部比例'],
+ ['成品图 15 冰白天鹅雪景','古典东方脸','度假户外','雪山岩石平台','冰白天鹅羽纱裙','雪地迎风站姿','雪山外景全身','雪山冷日光','古风幻想冰丝','冰白天鹅羽纱裙，胸托上身、羽毛边和水晶头冠，雪山岩石平台，白蓝冷光，华丽幻想写真。','9:16 竖屏','古风幻想丰满比例细腰'],
+ ['成品图 16 月色水池闺阁','古典东方脸','室内居家','月色水池闺阁','月白水榭薄纱裙','水池边并腿侧坐','成品图竖版全身','冰晶柔光','古风幻想冰丝','月色水池闺阁，月白薄纱裙覆盖不透明内搭，胸托结构、宝石和水光反射清晰，古风奢华写真。','9:16 竖屏','古风幻想丰满比例细腰'],
+ ['成品图 17 粉金花房梳妆','甜美猫眼脸','室内居家','粉金花房梳妆台','粉金花房胸托纱裙','低头看手链','水钻服装中近景','水钻高光闪耀','水钻薄纱奢华','粉金花房梳妆台，玫瑰、香水瓶和珠宝盒，粉金胸托纱裙，低头看手链，甜美但成年高级。','4:5 社媒','华丽写真魔改体型'],
+ ['成品图 18 中式屏风茶桌','古典东方脸','室内居家','中式屏风茶桌','赤金屏风薄纱裙','屏风前品茶','酒吧坐姿人像','夜市灯笼暖光','古风幻想冰丝','赤金屏风薄纱裙，胸托式刺绣上身，红木屏风和茶桌，珠宝礼盒背景，古风奢华闺阁感。','4:5 社媒','极限胸托夸张型'],
+ ['成品图 19 珠帘镜前珍珠','冷艳御姐脸','室内居家','珠帘镜前','珠帘镜前珍珠礼服','珠帘前回身','长腿高跟全身','酒吧琥珀暖光','高级商业写真','珠帘镜前、古典镜灯和金色装饰，珍珠礼服与薄纱外层，人物回身看镜头，全身高跟构图。','9:16 竖屏','前景霸屏胸部比例'],
+ ['成品图 20 青白宫灯长袖','混血超模脸','室内居家','月色水池闺阁','青白宫灯长袖纱裙','梳妆台侧坐','4:5近景半身','柔和蓝白光影','古风幻想冰丝','青白宫灯长袖纱裙，胸托结构稳定，长袖薄纱和珍珠发饰，月色水池与雕花窗，近景半身华丽写真。','4:5 社媒','古风幻想丰满比例细腰'],
+ ['国风插画 01 浅粉花神','古典东方脸','室内居家','幻想中式庭院','浅粉花神披帛胸托装','近景胸像压迫感','近景胸像构图','暖粉逆光烟雾','国风幻想二次元插画','28岁中国女性角色，精致美人脸，柔媚眼神，微张唇，白皙细腻皮肤，柔和油亮高光，长发或盘发，花朵发饰、金色发簪、流苏耳饰、玉石项链。身材极度丰腴夸张，超丰满丰满比例体型，胸部占据画面很大面积，深V低胸胸托式国风服装向内聚拢并向上承托，关键部位完整遮挡，不露点，不露乳晕。浅粉丝绸与半透明披帛，金色刺绣，花瓣、阳光、烟雾，中式庭院背景，高完成度二次元插画，高级时尚表现力但非色情。','4:5 社媒','国风二次元极丰型'],
+ ['国风插画 02 青绿玉兰','甜美猫眼脸','室内居家','青绿亭台楼阁','青绿玉兰胸托仙裙','轻微俯视胸像','轻微俯视近景','青绿色氛围光','国风幻想二次元插画','成年高级国风幻想女性，青绿色玉兰胸托仙裙，深V但关键部位完整遮挡，胸托结构形成饱满弧度和自然褶皱，玉石项链、流苏耳饰、花朵发饰。近景半身，脸部和胸部服装同为视觉中心，青绿亭台楼阁、莲池、花瓣和薄雾背景，精致二次元插画上色。','4:5 社媒','国风二次元极丰型'],
+ ['国风插画 03 冰蓝仙宫','冷艳御姐脸','室内居家','仙宫纱帘殿','冰蓝仙宫披帛裙','低角度胸托半身','低角度半身冲击','柔和油亮高光','国风幻想二次元插画','28岁中国女性，清冷高级美人脸，冰蓝仙宫披帛裙，胸托上身稳定承托超丰满胸部，深V低胸但无露点无乳晕，半透明披帛与不透明内衬分层清楚。低角度半身近景，纱帘、玉饰、金柱、柔烟背景，华丽梦幻二次元插画。','4:5 社媒','国风二次元极丰型'],
+ ['国风插画 04 白金玉佩','混血超模脸','室内居家','花瓣暖光宫殿','白金玉佩宫廷纱裙','披帛抬手凝视','近景胸像构图','暖粉逆光烟雾','国风幻想二次元插画','成年高级女性角色，白金色宫廷纱裙，深V胸托结构、玉佩和金色刺绣边饰，胸口大面积留白但关键部位完整遮挡。人物抬手轻扶披帛，微张唇，柔媚眼神，背景为花瓣暖光宫殿和纱帘，细腻线条，柔和阴影，华丽视觉效果。','4:5 社媒','国风二次元极丰型'],
+ ['国风插画 05 暖粉花魁','古典东方脸','室内居家','粉金花房梳妆台','暖粉纱帘花魁胸托裙','梳妆台侧坐','近景胸像构图','柔和油亮高光','国风幻想二次元插画','28岁中国女性，盘发、花朵发饰、金色发簪和流苏耳饰，暖粉纱帘花魁胸托裙，胸托服装紧贴胸部曲线形成自然张力，完整遮挡。近景胸像，粉金花房梳妆台、香水瓶、花瓣和暖光背景，高级柔媚但非色情。','4:5 社媒','国风二次元极丰型'],
+ ['国风插画 06 青玉庭院','冷艳御姐脸','室内居家','幻想中式庭院','青玉烟雾庭院披帛装','披帛抬手凝视','低角度半身冲击','青绿色氛围光','国风幻想二次元插画','成年清冷美人脸，青玉色庭院披帛装，超丰满胸部由低胸胸托国风上身稳定包裹和支撑，胸线圆润明显但不色情。中式庭院、亭台、花瓣、烟雾和青绿色氛围光，近景半身构图，高完成度二次元插画。','4:5 社媒','国风二次元极丰型'],
+ ['国风插画 07 白蓝莲花','甜美猫眼脸','室内居家','青绿亭台楼阁','白蓝莲花低胸胸托裙','轻微俯视胸像','轻微俯视近景','柔和蓝白光影','国风幻想二次元插画','28岁中国女性，白蓝莲花低胸胸托裙，上围曲线明显但关键部位完整遮挡，金色刺绣和透明袖纱，玉石项链。镜头轻微俯视近景，脸部清晰，胸口服装结构清晰，亭台楼阁和莲池背景，梦幻国风插画。','4:5 社媒','国风二次元极丰型'],
+ ['国风插画 08 粉金玉簪','古典东方脸','室内居家','仙宫纱帘殿','粉金玉簪宫灯纱裙','近景胸像压迫感','低角度半身冲击','暖粉逆光烟雾','国风幻想二次元插画','成年精致美人脸，粉金玉簪宫灯纱裙，深V胸托上身将胸部向内聚拢并向上承托，服装边缘紧贴曲线，关键部位完整遮挡。近景胸像构图，柔和逆光、宫灯、纱帘和烟雾，精致上色，华丽视觉冲击。','4:5 社媒','国风二次元极丰型'],
+ ['双人窗边 01 真人黑白职业','冷艳御姐脸','室内居家','夕阳巨大落地窗','双人黑白职业窗边装','双人窗边壁咚','双人半身到大腿','夕阳蜜桃逆光','真人双人商业海报','生成一张9:16直式、超高精度真人风时尚双人角色海报。整体为真人商业摄影+电影级角色海报，不是二次元插画或CG动漫风。两位成年东方女性站在巨大落地窗边，近景半身到大腿构图，低机位轻微仰拍，强烈对角线和S型互动构图。左侧女性神情温柔主动，身体前倾，一手微撑在窗框旁形成轻微壁咚感；右侧女性背靠黑色窗框，身体微微后仰，腰臀形成自然S曲线。高级丰腴体态，胸腰臀比例自然明显，曲线优雅克制，不低俗。暖金色与蜜桃粉色逆光，花瓣、灰尘粒子、柔和散景，真实皮肤质感，真实布料褶皱，高级时尚杂志感。','9:16 竖屏','自然饱满高级型','双人28岁中国女性海报'],
+ ['双人窗边 02 国风蓝紫','古典东方脸','室内居家','宫殿窗边逆光','双人蓝紫窗边国风裙','双人国风贴近','双人对角线构图','夕阳蜜桃逆光','国风幻想二次元插画','两位成年国风幻想女性靠近巨大窗边，蓝色与紫色披帛胸托裙，精致美人脸，花朵发饰、金簪、流苏耳饰、玉石项链。两人距离极近但非色情，脸部靠近对视，强烈对角线和S型互动构图，夕阳蜜桃逆光、花瓣、纱帘、柔和烟雾，高完成度国风二次元插画。','9:16 竖屏','国风二次元极丰型','双人国风幻想插画'],
+ ['双人窗边 03 白金披帛','甜美猫眼脸','室内居家','落地窗花瓣逆光','双人白金披帛窗边装','双人S型贴近','双人低机位海报','落地窗电影轮廓光','国风幻想二次元插画','两位28岁中国女性穿白金披帛幻想服装，胸托结构完整遮挡，透明袖纱与珠宝链条，窗边暖光和花瓣飞散。人物极近距离形成暧昧张力但无成人行为、无露点。低机位半身到大腿，脸部和服装同时清晰，华丽国风幻想插画质感。','9:16 竖屏','国风二次元极丰型','双人国风幻想插画'],
+ ['双人窗边 04 黑白水钻展馆','混血超模脸','室内商业','金色电梯镜面厅','双人黑白水钻展馆装','双人展馆并肩','双人半身到大腿','水钻高光闪耀','真人双人商业海报','两位成年东方女性穿黑白水钻薄纱礼服，胸托结构稳定，关键部位完整遮挡。站在奢华展馆或镜面电梯厅，身体距离极近，一人轻靠另一人，低机位半身到大腿构图，真实商业摄影、电影光影、自然皮肤、真实布料重量感和褶皱。','9:16 竖屏','华丽写真魔改体型','双人28岁中国女性海报'],
+ ['双人窗边 05 夕阳花瓣礼服','冷艳御姐脸','室内居家','窗边黑框海报空间','双人夕阳花瓣礼服','双人落地窗对视','双人低机位海报','夕阳蜜桃逆光','真人双人商业海报','真人风时尚双人角色海报，两位28岁中国女性站在黑框巨大落地窗前，奶油白与玫瑰色胸托礼服，花瓣和灰尘粒子在逆光中漂浮，近景半身到大腿，强烈对角线构图，真实脸部比例、自然眼神、细腻皮肤和电影级轮廓光。','9:16 竖屏','自然饱满高级型','双人28岁中国女性海报']
+ ]
+};
+
+(function modernFashionData(){
+const REALISM='28-year-old Chinese woman, refined facial features, realistic pores and natural skin oil, long black hair with gravity, adult woman only, body-hugging modern womenswear, very full covered bust with slim waist, realistic fabric tension, full-body 9:16, no back view, realistic cinematic photography, clear directional light, subtle rim light, identifiable softly blurred background';
+const MATERIAL='cinematic realism, realistic material response, directional lighting, subtle rim light, realistic skin texture, luxury fashion editorial, premium modern fashion photography';
+DATA.faces=[
+ ['中国网红精致脸','28-year-old Chinese influencer beauty, small refined face, realistic facial proportions, natural eyes, subtle makeup, long black hair, refined confident gaze'],
+ ['冷艳都市御姐脸','28-year-old Chinese urban beauty, sharp oval face, cool eyes, glossy black hair, clean luxury makeup, refined high-fashion expression'],
+ ['甜美高级网红脸','28-year-old Chinese social media model, soft refined face, warm eyes, natural glossy lips, polished but realistic makeup'],
+ ['红毯高级美人脸','28-year-old Chinese red-carpet beauty, elegant refined features, defined cheekbones, soft red lips, calm luxurious expression'],
+ ['清冷街拍模特脸','28-year-old Chinese street-fashion model, delicate small face, clean skin texture, long dark hair, quiet camera-aware gaze']
+];
+DATA.body=[
+ ['明显丰满丰满曲线细腰','adult 28-year-old Chinese woman, obviously full large bust, round natural upper bust contour, slim waist and long legs forming strong curve contrast, soft arms and thighs, elegant refined body, non-explicit'],
+ ['自然饱满网红身材','adult 28-year-old Chinese influencer figure, naturally full bustline, slim waist, balanced hips, long legs, realistic healthy curves, non-explicit'],
+ ['红毯丰盈沙漏型','adult 28-year-old Chinese woman, red-carpet hourglass figure, full bust and narrow waist, elegant hip curve, refined luxury silhouette, non-explicit'],
+ ['苗条但上围突出','adult 28-year-old Chinese slim figure, slender body with prominent full bust, soft shoulder and neck line, long legs, fashion-model posture, non-explicit'],
+ ['双人高级丰腴体态','two adult 28-year-old Chinese women, refined voluptuous body types, natural bust-waist-hip curves, soft arms and thighs, elegant restrained tension, non-explicit']
+];
+DATA.bustScale=[
+ ['超深V前景胸部','very large covered bust dominates the foreground, deep V neckline with key areas fully covered, chest occupies a large portion of the frame, strong rounded cleavage shadow, natural weight and fabric tension, no nipples, no areola, no nipple outline, non-explicit'],
+ ['最大贴身挤压感','maximum body-hugging bust emphasis, clingy deep-V fabric tightly frames the full bust, strong bust-waist contrast, covered but highly sensual, realistic skin and fabric tension, non-explicit'],
+ ['极丰满视觉中心','very full covered bust is the main visual center, rounded natural contour, prominent upper body curve, strong but tasteful fashion impact, no nipple outline, non-explicit'],
+ ['明显丰满自然','obviously full natural bustline, rounded and lifted by fabric tension, slim waist contrast, realistic but elegant, non-explicit'],
+ ['高级红毯丰盈','luxury evening-gown full bust silhouette, soft draped fabric support, refined elegant chest line, no visible bra structure, non-explicit'],
+ ['街拍自然饱满','natural full bustline under modern fashion clothing, realistic fabric tension and folds, tasteful street-fashion sensuality'],
+ ['克制时装曲线','restrained fashion curve, full but balanced bustline, outfit and material remain the visual focus, non-explicit']
+];
+DATA.people=[
+ ['单人现代写真','single adult 28-year-old Chinese woman only, one subject, full-body modern fashion photography, no extra people'],
+ ['双人28岁中国女性海报','two adult 28-year-old Chinese women only, realistic fashion poster, close interaction, no minors, no explicit sexual act'],
+ ['单人红毯礼服','single adult 28-year-old Chinese woman, luxury evening gown editorial, full-length red-carpet fashion portrait']
+];
+DATA.styles=[
+ ['白天户外街拍','daytime outdoor street-style photography, realistic commercial fashion snapshot, clean natural environment light'],
+ ['现代网红写真','modern Chinese influencer fashion portrait, premium social media photo, realistic lens and skin texture'],
+ ['红毯晚礼服摄影','red-carpet evening gown photography, cinematic luxury fashion editorial, full-length gown visible'],
+ ['城市商业海报','urban commercial fashion poster, high-end magazine cover mood, clean background and directional light'],
+ ['夜景时尚街拍','night city fashion photography, realistic neon and ambient light, glossy pavement, cinematic realism'],
+ ['酒店高级写真','luxury hotel fashion portrait, marble, glass and warm practical lights, refined refined styling'],
+ ['影棚时装大片','studio fashion editorial, controlled directional light, crisp fabric texture, premium magazine style'],
+ ['现代双人角色海报','realistic cinematic two-character fashion poster, high-end commercial photography, refined restrained tension']
+];
+DATA.videoUse=[
+ ['现代写真成片','modern realistic fashion photo output, full-body 9:16, outfit material and body silhouette readable'],
+ ['全身街拍图生视频','image-to-video ready modern street shot, front or three-quarter view only, full body and limbs clear'],
+ ['红毯礼服首帧','luxury evening gown first frame, full-length dress, heels visible, cinematic fashion editorial'],
+ ['服装材质展示','material-focused fashion prompt, organza, silk, metallic fabric, folds, fabric tension and reflections clear'],
+ ['Image2成图','image2 generation ready, complete outfit prompt, full-body modern realistic fashion image, clean subject, stable clothing material'],
+ ['双人海报构图','two 28-year-old Chinese women fashion poster, close but non-explicit interaction, low-angle half-body to thigh composition']
+];
+DATA.sceneGroups={
+ '白天户外街拍':[
+  ['商业街斑马线','daytime downtown crosswalk, storefronts and pedestrians softly blurred, clean street-fashion atmosphere'],
+  ['咖啡店外摆','outdoor cafe seating, glass facade, small table, natural daylight, lifestyle street photo'],
+  ['购物中心外墙','modern shopping mall exterior, clean stone wall, brand windows, daytime fashion street shot'],
+  ['城市人行道','wide city sidewalk, trees, parked cars, distant crowd blur, realistic daytime street photography'],
+  ['白色建筑台阶','white modern building steps, hard sunlight softened by bounce light, elegant full-body pose'],
+  ['街角花店门口','flower shop street corner, colorful flowers softly blurred, natural daylight and soft rim light'],
+  ['天桥日光','pedestrian bridge in daylight, city skyline behind, wind moving hair and skirt'],
+  ['公园阳光步道','urban park walkway, trees and benches, bright directional sunlight, clean lifestyle background']
+ ],
+ '城市商业空间':[
+  ['写字楼玻璃门口','office tower glass entrance, reflective facade, business district background, sharp commercial style'],
+  ['高级商场中庭','luxury mall atrium, polished floor, storefront bokeh, clean high-end fashion atmosphere'],
+  ['车展镜面展台','luxury auto show booth, glossy floor, black car reflection, visitors softly blurred'],
+  ['品牌发布会墙','brand event sponsor wall, red carpet area, camera flash feel, premium commercial portrait'],
+  ['现代展馆大厅','modern exhibition hall, bright overhead lights, blurred visitors, luxury fashion poster space'],
+  ['电梯镜面厅','mirrored elevator lobby, metal doors, marble floor, warm-cool mixed lighting'],
+  ['精品店试衣镜','boutique fitting mirror area, velvet curtain, jewelry tray, clothing racks'],
+  ['酒店大堂沙发区','luxury hotel lobby sofa area, marble, warm lamp light, clean elegant background']
+ ],
+ '红毯晚宴':[
+  ['红毯入口','red carpet entrance, flash photography, step-and-repeat wall, full-length evening gown framing'],
+  ['晚宴酒会厅','gala cocktail hall, champagne tables, guests softly blurred, cinematic luxury lighting'],
+  ['黑金宴会厅','black-gold banquet hall, chandeliers, polished floor, formal evening-gown atmosphere'],
+  ['剧院门厅','theater foyer, velvet rope, warm lights, elegant evening crowd blur'],
+  ['高级酒吧高脚凳','luxury cocktail bar stool, amber bottles behind, seated fashion portrait'],
+  ['屋顶派对露台','rooftop party terrace, skyline, warm practical lights, fashion event atmosphere'],
+  ['晚宴楼梯','grand staircase at formal dinner venue, handrail, dress draping visible'],
+  ['摄影棚红毯布景','studio red-carpet set, controlled flash, clean luxury commercial look']
+ ],
+ '现代室内':[
+  ['落地窗公寓日光','modern apartment with floor-to-ceiling window, daylight, clean sofa, lifestyle fashion mood'],
+  ['巨大落地窗夕阳','huge floor-to-ceiling window at sunset, black frames, warm gold and peach-pink backlight'],
+  ['白色极简客厅','white minimal living room, soft curtains, natural light, clean modern portrait background'],
+  ['化妆镜灯前','vanity mirror lights, cosmetics, chair, realistic backstage beauty preparation'],
+  ['酒店房间窗边','luxury hotel room by window, curtains, warm bed lamp, premium lifestyle photo'],
+  ['现代厨房岛台','modern kitchen island, bar stool, glassware, clean daylight lifestyle scene'],
+  ['衣帽间全身镜','walk-in closet full-length mirror, clothing rails, premium fitting mood'],
+  ['室内黑框窗边','black-framed indoor window, sunset rim light, diagonal shadows, cinematic poster mood']
+ ],
+ '夜景街拍':[
+  ['雨夜霓虹街头','rainy neon city street, wet pavement reflection, realistic night fashion street shot'],
+  ['便利店夜景','bright convenience store exterior at night, clean signage blur, candid street-fashion atmosphere'],
+  ['酒店门廊夜景','luxury hotel entrance canopy at night, black car nearby, warm lobby spill light'],
+  ['城市玻璃橱窗','city glass storefront at night, reflection layers, softly blurred background'],
+  ['地下停车场','underground parking garage, car headlights, fluorescent directional light, cinematic shadows'],
+  ['夜色天台','city rooftop at night, skyline bokeh, wind moving hair and fabric'],
+  ['酒吧门口','stylish bar entrance, warm sign light, street crowd blur, refined nightlife fashion'],
+  ['霓虹自动售货机','glowing vending machines on side street, realistic neon spill and wet ground']
+ ],
+ '度假现代':[
+  ['海边木栈道日光','seaside wooden boardwalk in daylight, ocean wind, clean resort fashion photo'],
+  ['海边落日栏杆','seaside railing at sunset, ocean reflection, warm rim light, full-body fashion pose'],
+  ['泳池躺椅区','luxury poolside lounge, blue water reflections, resort daylight, covered fashion styling'],
+  ['游艇甲板','yacht deck, ocean horizon, white railing, glamorous vacation photo'],
+  ['热带酒店露台','tropical hotel terrace, palm leaves, warm sunlight, vacation fashion atmosphere'],
+  ['白色度假村台阶','white resort villa steps, bougainvillea, clean summer editorial mood'],
+  ['港口游艇夜景','marina yacht harbor at night, string lights, water reflections, luxury vacation portrait'],
+  ['海景玻璃餐厅','glass-walled seaside restaurant terrace, candle tables, dark ocean background']
+ ],
+ '车边旅拍':[
+  ['敞篷车海岸公路','beside convertible car on coastal road, wind and sunlight, full-body fashion pose'],
+  ['黑色轿车旁','beside a black luxury car, city street reflections, refined street-fashion mood'],
+  ['机场出发厅','airport departure hall, glass roof reflections, travelers softly blurred, modern travel fashion'],
+  ['高铁站候车区','high-speed rail station waiting area, clean seats and cool overhead light'],
+  ['酒店走廊','softly lit hotel hallway, strong perspective lines, warm carpet, elegant full-body shot'],
+  ['电梯内镜面','mirror elevator interior, metallic reflections, phone-like fashion snapshot'],
+  ['出租车旁夜景','beside black taxi at night, city lights, candid street fashion'],
+  ['停车楼坡道','parking structure ramp, concrete lines, directional side light, modern editorial mood']
+ ],
+ '双人现代海报':[
+  ['双人夕阳落地窗','two 28-year-old Chinese women by huge floor-to-ceiling window at sunset, black frame, peach-gold rim light'],
+  ['双人黑框窗边','two 28-year-old Chinese women near black-framed window, diagonal shadows, cinematic close fashion poster'],
+  ['双人红毯并肩','two 28-year-old Chinese women standing close on red carpet, flash lighting, luxury gowns'],
+  ['双人酒店窗边','two 28-year-old Chinese women in luxury hotel by window, warm practical lights and city view'],
+  ['双人展馆玻璃墙','two 28-year-old Chinese women by glass wall in modern exhibition hall, crowd softly blurred'],
+  ['双人酒吧高脚凳','two 28-year-old Chinese women by cocktail bar stool, amber bottle background, close poster composition'],
+  ['双人雨夜橱窗','two 28-year-old Chinese women beside rainy storefront glass, neon reflections, cinematic tension'],
+  ['双人白天街角','two 28-year-old Chinese women at daytime street corner, clean sunlight, modern influencer poster']
+ ]
+};
+DATA.outfits=[
+ ['黑色欧根纱三角巾抹胸套装','black organza triangle scarf bandeau top, matching black organza pleated micro mini skirt, matching black high heels, slim figure, full bust, modern daytime outdoor street style, key areas covered'],
+ ['油光黑色金属晚礼服','glossy oil-black liquid metallic silk evening gown, deep plunging draped neckline with opaque covered lower bust contour, ultra-thin shoulder straps, side waist cutout, high side slit with layered overlap, double inner lining, no bra structure, no molded cups, no nipple outline'],
+ ['白色极简主义超低胸晚礼服','white minimalist ultra-low-cut evening gown, deep V draped neckline, ultra-thin tulle spliced with heavyweight silk, side waist cutouts, high slit tailoring, side gathers showing natural physical fabric tension, wireless natural support structure, key areas fully covered, no nipple outline, paired with sparkling black stiletto heels'],
+ ['亮银液态金属晚礼服','bright silver liquid metallic silk evening gown, soft draped fabric support, extremely low but opaque covered neckline, high side slit, seamless inner lining, silver heels, red-carpet luxury fashion'],
+ ['白色欧根纱抹胸短裙','white organza bandeau top with matching pleated micro mini skirt, translucent outer texture over opaque lining, white high heels, clean daytime fashion'],
+ ['酒红缎面吊带礼服','burgundy satin slip evening gown, deep covered neckline, soft draped silk folds, high slit, matching heels'],
+ ['香槟金垂坠晚礼服','champagne-gold draped evening gown, ultra-thin straps, soft tension fabric, high slit, luxury gala styling'],
+ ['黑色细吊带包臀裙','black fitted spaghetti-strap bodycon mini dress, deep covered neckline, smooth fabric tension, black stilettos'],
+ ['奶油白修身衬衫短裙','cream fitted sheer blouse over opaque inner support, black high-waist mini skirt, modern office-street fashion'],
+ ['银灰欧根纱百褶套装','silver-gray organza bandeau top and pleated micro skirt, matching metallic heels, realistic translucent fabric response'],
+ ['玫瑰粉缎面露肩裙','rose-pink satin off-shoulder fitted mini dress, soft draped neckline, matching heels, modern influencer style'],
+ ['黑色皮革机车短裙套装','black leather cropped jacket over fitted top, high-waist leather mini skirt, ankle boots, urban night fashion'],
+ ['白色西装马甲裙','white sleeveless blazer mini dress, sharp shoulders, narrow waist, nude heels, business fashion editorial'],
+ ['黑色西装马甲裙','black sleeveless blazer mini dress, refined urban luxury styling, pointed heels'],
+ ['红色亮面派对短裙','red glossy party mini dress, fitted covered bust, high heels, nightclub fashion'],
+ ['深蓝液态丝绸礼服','deep blue liquid silk full-length gown, draped covered bust contour, high slit, luxury evening mood'],
+ ['墨绿色缎面高叉裙','emerald satin high-slit gown, thin straps, soft fabric weight, matching heels'],
+ ['紫色金属吊带裙','purple metallic cami mini dress, reflective fabric, fitted silhouette, modern night event look'],
+ ['银色水钻短礼服','silver rhinestone mini dress, covered bust support, sparkling surface, crystal heels'],
+ ['黑色水钻长礼服','black rhinestone full-length gown, deep covered neckline, high slit, premium gala fashion'],
+ ['裸色薄纱罩衫套装','nude-tone sheer organza cover-up over opaque fitted modern set, matching heels, non-explicit'],
+ ['白色挂脖高叉礼服','white halter high-slit evening gown, covered front, open shoulder line, elegant refined styling'],
+ ['黑色挂脖高叉礼服','black halter high-slit evening gown, covered front, slim waist, luxury hotel atmosphere'],
+ ['亮银抹胸鱼尾裙','bright silver strapless mermaid gown, structured but soft fabric support, full-length red carpet dress'],
+ ['油光黑抹胸鱼尾裙','oil-black strapless mermaid gown, glossy fabric, slim waist, full bust silhouette, no nipple outline'],
+ ['米白针织贴身连衣裙','ivory fitted knit dress, soft realistic folds, natural full bustline, daytime lifestyle photo'],
+ ['灰色针织低领套装','gray low-neck knit top with matching fitted skirt, natural fabric stretch, casual modern realism'],
+ ['黑色透明外套内搭短裙','black transparent jacket over opaque fitted top and mini skirt, rainy city fashion, key areas covered'],
+ ['白色透明外套黑裙','white sheer blouse-jacket over black fitted mini dress, realistic fabric folds, modern street style'],
+ ['蓝色牛仔短外套热裤','blue cropped denim jacket, fitted inner top, high-waist shorts, white heels, city street fashion'],
+ ['黑色抹胸长裤套装','black strapless covered top with tailored high-waist pants, sleek commercial fashion'],
+ ['银色挂脖短裙','silver halter mini dress, glossy metallic fabric, matching heels, event photography'],
+ ['金色派对短裙','gold metallic party mini dress, tasteful shine, full-body fashion pose'],
+ ['粉色女团短套装','pink fitted crop top and pleated mini skirt, adult idol street style, no school-uniform feeling'],
+ ['白色赛车夹克短裙','white race-event cropped jacket and mini skirt, commercial model look, heels'],
+ ['银白赛车短套装','silver-white race-event outfit, fitted jacket, mini skirt, commercial event fashion'],
+ ['黑色镂空腰部礼服','black fitted evening gown with side waist cutouts, covered bust and pelvis, high slit'],
+ ['红色高叉丝绒礼服','red velvet high-slit evening dress, refined glamour, soft fabric weight'],
+ ['湖蓝缎面吊带裙','aqua-blue satin cami dress, soft drape, resort fashion mood'],
+ ['棕色麂皮流苏短裙','brown suede fringe mini dress, outdoor festival fashion'],
+ ['白色羽毛边短礼服','white feather-trim mini dress, covered bust, modern party photography'],
+ ['黑色蕾丝拼接礼服','black lace-panel fitted gown over opaque lining, refined elegant modern fashion'],
+ ['紫色水钻晚礼服','purple rhinestone fitted gown, glossy night event lighting, full length'],
+ ['银色实验室连体裙','silver lab-inspired fashion dress, precise seams, modern modern editorial commercial look'],
+ ['白色未来感短礼服','white futuristic mini dress, clean satin and subtle metallic trim'],
+ ['黑金奢华战姬裙','black-gold luxury modern warrior-inspired dress, minimal armor-like accents, fashion editorial'],
+ ['银色流苏舞台裙','silver crystal fringe stage dress, sparkling movement, covered bust, modern performance photo'],
+ ['红色拉链皮革裙','red zippered leather mini dress, nightclub fashion, polished texture'],
+ ['白色露背度假裙','white resort open-back fitted dress, covered front, high slit, no nudity'],
+ ['海蓝挂脖度假裙','ocean-blue halter resort dress, covered front, flowing skirt, seaside sunlight'],
+ ['绿色热带度假裙','emerald resort mini dress, tropical vacation energy, heels'],
+ ['橙色泳池派对套装','orange poolside party outfit, fitted top and skirt, covered swim-fashion styling'],
+ ['黑色一字肩褶皱包臀裙','black off-shoulder ruched bodycon mini dress, full bust silhouette, slim waist, black stilettos, modern influencer night-out fashion'],
+ ['白色极简挂脖短裙','white minimalist halter mini dress, covered front, open shoulder line, smooth stretch fabric, matching white heels, clean summer street style'],
+ ['灰色针织吊带开衫套装','gray ribbed knit camisole and matching cropped cardigan with fitted mini skirt, soft realistic knit stretch, casual city style'],
+ ['黑色湿感吊带长裙','black wet-look spaghetti strap maxi dress, glossy stretch fabric, deep covered neckline, high slit, cinematic night fashion'],
+ ['银色亮片派对短裙','silver sequin party mini dress, covered bust, sparkling surface, matching silver heels, club event photography'],
+ ['粉色蝴蝶结抹胸短裙','pink bow-detail strapless mini dress, structured covered bust, soft satin shine, adult sweet influencer styling'],
+ ['黑色西装短外套热裤套装','black cropped blazer with fitted inner top and tailored hot pants, pointed heels, modern fashion-week street style'],
+ ['白色西装短外套热裤套装','white cropped blazer with fitted inner top and tailored hot pants, nude heels, clean commercial street fashion'],
+ ['牛仔胸衣迷你裙套装','denim corset-style covered top and matching micro mini skirt, realistic denim seams, high heels, city street snap'],
+ ['黑色皮革胸衣长裙','black leather bustier-style covered top with high-slit long skirt, glossy real leather response, luxury night portrait'],
+ ['奶油色吊带鱼尾裙','cream satin camisole mermaid gown, soft draped neckline, slim waist, full-length evening silhouette, black heels'],
+ ['酒红露肩褶皱长裙','burgundy off-shoulder ruched full-length dress, high slit, refined gala styling, matching heels'],
+ ['咖色挂脖开叉长裙','mocha halter high-slit maxi dress, soft jersey drape, resort city evening mood, gold heels'],
+ ['黑色网纱罩层短裙','black mesh-overlay mini dress over opaque fitted lining, covered key areas, modern club editorial'],
+ ['白色透纱衬衫黑色胸衣裙','white sheer shirt layered over opaque black bustier mini dress, realistic fabric folds, street-style contrast'],
+ ['金色链条吊带短裙','gold chain-strap mini dress, metallic satin fabric, covered neckline, luxury party styling'],
+ ['墨绿色缎面围裹长裙','emerald satin wrap maxi dress, deep covered neckline, side slit, refined evening fashion'],
+ ['蓝色丝绸斜肩礼服','royal-blue silk one-shoulder gown, soft draped fabric, waist gather, high slit, red-carpet fashion'],
+ ['白色羽毛袖迷你裙','white feather-sleeve mini dress, opaque fitted body, playful luxury event fashion'],
+ ['黑色羽毛边抹胸裙','black feather-trim strapless mini dress, covered bust, glossy heels, modern party photography'],
+ ['银灰机能短夹克短裙','silver-gray cropped utility jacket with fitted mini skirt, modern techwear influencer styling'],
+ ['卡其工装抹胸短裙套装','khaki cargo bandeau top and micro mini skirt set, utility pockets, matching heels, daytime street style'],
+ ['黑色镂空长袖包臀裙','black long-sleeve cutout bodycon dress, side waist cutouts, covered bust and pelvis, modern night-out look'],
+ ['红色缎面挂脖短裙','red satin halter mini dress, covered front, soft fabric tension, matching red heels'],
+ ['奶白色蕾丝拼接吊带裙','ivory lace-panel slip dress over opaque lining, delicate straps, luxury hotel lifestyle fashion'],
+ ['银色镜面抹胸短裙','mirror-silver strapless mini dress, reflective material, covered key areas, crystal heels'],
+ ['黑色高领无袖包臀裙','black sleeveless high-neck bodycon mini dress, minimal modern silhouette, pointed heels'],
+ ['白色低腰长裙套装','white fitted crop top with low-waist long skirt, covered styling, realistic fabric tension, summer resort fashion'],
+ ['黑色低腰长裙套装','black fitted crop top with low-waist maxi skirt, covered key areas, glossy evening texture'],
+ ['薰衣草缎面吊带裙','lavender satin camisole dress, soft drape, slim waist, elegant influencer portrait'],
+ ['薄荷绿露肩短裙','mint-green off-shoulder mini dress, ruched fitted fabric, daytime street style'],
+ ['浅蓝牛仔抹胸长裙','light-blue denim strapless long dress, structured covered bust, front slit, modern fashion editorial'],
+ ['黑色透明雨衣内搭短裙','transparent raincoat over opaque black mini dress, rainy street reflections, modern urban fashion'],
+ ['银白镂空腰部晚礼服','silver-white evening gown with side waist cutouts, deep covered draped neckline, high slit, premium gala style'],
+ ['油光黑色无肩带晚礼服','oil-black strapless liquid silk evening gown, full-length high slit, glossy fabric weight, black heels'],
+ ['白色极简无肩带鱼尾裙','white minimalist strapless mermaid gown, heavyweight silk, clean red-carpet silhouette, sparkling black heels'],
+ ['红色漆皮包臀短裙','red patent-leather bodycon mini dress, glossy surface, covered bust, nightlife fashion'],
+ ['黑色吊带开衩长裙','black spaghetti-strap high-slit maxi dress, smooth fabric drape, refined minimal evening look'],
+ ['银色流苏吊带短裙','silver fringe camisole mini dress over opaque lining, sparkling movement, party fashion'],
+ ['豹纹缎面吊带裙','leopard-print satin slip dress, modern influencer street style, black heels'],
+ ['黑白双人职业窗边装','paired modern outfits for two 28-year-old Chinese women: one cream blouse with black mini skirt, one black fitted dress, realistic fabric folds'],
+ ['双人亮银黑色晚礼服','paired silver and oil-black liquid metallic evening gowns, deep covered draped necklines, high side slits, cinematic window poster mood'],
+ ['双人黑白水钻礼服','paired black-and-white rhinestone gowns, covered bust support, high slits, luxury commercial poster styling'],
+ ['双人夕阳缎面礼服','paired champagne and rose satin gowns, soft draped covered necklines, warm sunset window light'],
+ ['双人街拍欧根纱套装','paired modern organza mini sets, black and white color contrast, matching heels, daytime influencer poster']
+];
+const tightOutfits=[
+ ['黑色湿感包臀吊带裙','black wet-look body-hugging spaghetti strap mini dress, clingy glossy stretch fabric, deep covered neckline, ruched waist and hip tension, black stilettos, sexy modern night-out fashion'],
+ ['白色贴身针织包臀裙','white fitted ribbed knit bodycon mini dress, soft clingy knit fabric, full bust contour, slim waist, realistic stretch folds, nude heels'],
+ ['裸粉色紧身褶皱连衣裙','nude-pink ruched bodycon dress, ultra-fitted stretch mesh over opaque lining, curve-hugging bust waist and hips, matching heels'],
+ ['油光黑贴身高叉长裙','oil-black clingy high-slit maxi dress, glossy stretch fabric, deep covered neckline, fabric tension around waist and hips, black heels'],
+ ['亮银贴身鱼尾晚礼服','bright silver body-hugging mermaid evening gown, liquid metallic fabric, full bust silhouette, narrow waist, high slit, silver heels'],
+ ['红色贴身缎面包臀裙','red satin bodycon mini dress, fitted bust and waist, soft shine, realistic draped tension, red heels'],
+ ['黑色长袖贴身镂空裙','black long-sleeve body-hugging cutout dress, side waist cutouts, covered bust and pelvis, ruched fabric tension, pointed heels'],
+ ['白色挂脖贴身高叉裙','white halter body-hugging high-slit dress, smooth stretch fabric, covered front, open shoulder line, white heels'],
+ ['灰色贴身针织开衫裙','gray ribbed knit fitted cardigan dress, buttoned front with covered neckline, clingy knit folds, modern street style'],
+ ['黑色皮革贴身胸衣裙','black leather body-hugging corset-style dress, covered bust, glossy leather response, slim waist, black patent heels'],
+ ['深蓝湿感贴身长裙','deep blue wet-look body-hugging maxi dress, side slit, glossy fabric tension, refined night fashion'],
+ ['香槟金贴身缎面吊带裙','champagne-gold fitted satin slip dress, clingy bias-cut fabric, soft bust contour, high slit, gold heels'],
+ ['紫色贴身褶皱短裙','purple ruched bodycon mini dress, stretch fabric gripping waist and hips, covered bust, crystal heels'],
+ ['薄荷绿贴身一字肩裙','mint-green off-shoulder bodycon mini dress, ruched bustline, fitted waist, daytime street style'],
+ ['黑色低胸贴身长裙','black deep covered neckline body-hugging long dress, smooth jersey fabric, high slit, realistic gravity folds'],
+ ['白色低胸贴身长裙','white deep covered neckline body-hugging long dress, heavyweight stretch fabric, no nipple outline, sparkling black heels'],
+ ['银灰紧身机能连衣裙','silver-gray tight techwear mini dress, body-hugging technical fabric, precise seams, modern modern editorial fashion'],
+ ['黑色网纱贴身罩层裙','black mesh-overlay bodycon dress over opaque lining, fitted silhouette, transparent texture without key-area exposure'],
+ ['酒红贴身鱼尾礼服','burgundy body-hugging mermaid gown, soft velvet-satin fabric, high slit, refined gala fashion'],
+ ['咖色贴身挂脖长裙','mocha body-hugging halter maxi dress, slim waist, soft jersey drape, resort evening mood'],
+ ['豹纹贴身吊带短裙','leopard-print fitted spaghetti strap mini dress, clingy satin stretch, black heels, influencer street style'],
+ ['黑色贴身低腰长裙套装','black fitted crop top with body-hugging low-waist maxi skirt, covered styling, glossy evening texture'],
+ ['白色贴身低腰长裙套装','white fitted crop top with body-hugging low-waist maxi skirt, summer resort fashion, realistic fabric tension'],
+ ['银色镜面贴身抹胸裙','mirror-silver strapless body-hugging mini dress, reflective material, covered key areas, crystal heels'],
+ ['黑色高领贴身无袖裙','black sleeveless high-neck bodycon mini dress, minimal curve-hugging silhouette, pointed heels'],
+ ['红色漆皮贴身短裙','red patent-leather bodycon mini dress, glossy tight fabric, covered bust, nightlife fashion'],
+ ['黑色贴身吊带开衩裙','black spaghetti-strap body-hugging high-slit dress, smooth fabric drape, refined minimal evening look'],
+ ['白色蕾丝贴身吊带裙','ivory lace-panel fitted slip dress over opaque lining, delicate straps, luxury hotel lifestyle fashion'],
+ ['金色贴身链条短裙','gold chain-strap bodycon mini dress, metallic satin fabric, covered neckline, party styling'],
+ ['墨绿贴身缎面围裹裙','emerald satin body-hugging wrap dress, deep covered neckline, side slit, refined evening fashion'],
+ ['皇家蓝贴身斜肩礼服','royal-blue silk one-shoulder body-hugging gown, waist gather, high slit, red-carpet fashion'],
+ ['白色贴身羽毛袖短裙','white feather-sleeve bodycon mini dress, opaque fitted body, playful luxury event fashion'],
+ ['黑色贴身羽毛边抹胸裙','black feather-trim strapless bodycon mini dress, covered bust, glossy heels, modern party photography'],
+ ['卡其贴身工装抹胸裙','khaki cargo bandeau bodycon mini dress, utility pockets, fitted waist and hips, daytime street style'],
+ ['牛仔贴身胸衣迷你裙','denim corset-style covered bodycon mini dress, realistic denim seams, high heels, city street snap'],
+ ['黑色贴身透明雨衣裙','transparent raincoat over opaque black bodycon mini dress, rainy street reflections, modern urban fashion']
+];
+const viralTightOutfits=[
+ ['黑色超深V贴身长袖上衣蓝色高腰裤','black ultra-deep-V body-hugging long-sleeve top, key areas fully covered, very large rounded cleavage visible, clingy stretch fabric tightly framing the bust, blue high-waist tailored pants, silver heart necklace, black heels, close crop from neck to thighs, no nipple outline'],
+ ['黑色超深V贴身连体衣高腰裤','black ultra-deep-V fitted bodysuit with long sleeves, covered lower bust support, strong cleavage shadow, blue high-waist trousers, slim waist, modern influencer indoor photo, no exposure'],
+ ['白色超深V贴身长袖上衣黑色高腰裤','white ultra-deep-V body-hugging long-sleeve top, key areas covered, large bust foreground, black high-waist pants, delicate necklace, clean indoor daylight'],
+ ['红色超深V贴身长袖上衣黑色包臀裙','red ultra-deep-V fitted long-sleeve top, very full covered bust framed by fabric, black bodycon mini skirt, high heels, modern night-out photo'],
+ ['黑色超深V贴身包臀连衣裙','black ultra-deep-V bodycon mini dress with long sleeves, very full covered bust, deep cleavage shadow, waist-hugging stretch fabric, black stilettos, indoor influencer portrait'],
+ ['油光黑超深V贴身连衣裙','glossy oil-black ultra-deep-V body-hugging mini dress, wet-look stretch fabric, key areas fully covered, strong bust foreground, black patent heels'],
+ ['灰色超深V贴身针织上衣黑色长裤','gray ultra-deep-V ribbed knit fitted top, full bust contour and covered cleavage, black high-waist trousers, realistic knit tension, soft indoor daylight'],
+ ['奶白超深V贴身针织裙','ivory ultra-deep-V ribbed knit bodycon dress, large covered bust foreground, soft stretch folds, nude heels, clean lifestyle interior'],
+ ['黑色镜面油光贴身短裙','black mirror-gloss bodycon mini dress, ultra-fitted wet-look fabric, covered deep neckline, strong bust-waist-hip curve, black stilettos, viral social media fashion photo'],
+ ['白色水光贴身吊带短裙','white glossy body-hugging cami mini dress, clingy smooth fabric, slim straps, full bust contour, nude heels, daytime influencer street shot'],
+ ['银色金属贴身低胸长裙','silver metallic body-hugging low-cut covered maxi dress, liquid reflective fabric, side slit, no nipple outline, red-carpet image2 fashion prompt'],
+ ['黑色乳胶感贴身长裙','black latex-look body-hugging long dress, glossy stretch material, covered bust and pelvis, high slit, cinematic night street style'],
+ ['酒红湿感贴身吊带裙','burgundy wet-look fitted slip dress, clingy satin shine, deep covered neckline, high slit, refined influencer evening photo'],
+ ['米白贴身针织吊带裙','ivory ribbed knit bodycon cami dress, soft stretch fabric hugging bust waist and hips, realistic knit folds, city cafe street shot'],
+ ['黑色紧身抹胸鱼尾礼服','black strapless body-hugging mermaid gown, covered bust, narrow waist, glossy fabric weight, black heels, luxury event image2'],
+ ['白色紧身抹胸鱼尾礼服','white strapless body-hugging mermaid gown, heavyweight silk, clean bust contour, sparkling black stilettos, minimalist red-carpet fashion'],
+ ['灰蓝贴身褶皱网纱裙','gray-blue ruched mesh bodycon dress over opaque lining, tight bust-waist-hip fit, translucent texture without exposure, soft daylight'],
+ ['粉色贴身镂空腰部裙','pink body-hugging mini dress with side waist cutouts, covered bust and pelvis, ruched stretch fabric, matching heels'],
+ ['黑色贴身斜肩开衩裙','black one-shoulder body-hugging high-slit dress, smooth stretch fabric, diagonal neckline, refined urban glamour'],
+ ['白色贴身斜肩开衩裙','white one-shoulder body-hugging high-slit dress, clean minimalist fashion, fabric tension on waist and hips, black heels'],
+ ['银白贴身水钻短裙','silver-white rhinestone bodycon mini dress, covered bust, dense sparkling surface, crystal heels, luxury party photo'],
+ ['黑色贴身水钻短裙','black rhinestone bodycon mini dress, curve-hugging silhouette, covered neckline, glossy black heels, nightclub poster style'],
+ ['裸色贴身纱罩裙','nude-tone fitted mesh overlay dress over opaque lining, body-hugging silhouette, soft skin-tone fabric response, no key-area exposure'],
+ ['黑色高开衩贴身吊带礼服','black body-hugging spaghetti strap evening gown, high side slit, deep covered neckline, realistic draped tension, hotel lobby fashion'],
+ ['红色高开衩贴身吊带礼服','red body-hugging spaghetti strap evening gown, high slit, full bust contour, satin shine, red heels'],
+ ['白色高开衩贴身吊带礼服','white body-hugging spaghetti strap evening gown, high slit, clean luxury fabric, black heels, cinematic editorial'],
+ ['黑色贴身短袖针织裙','black short-sleeve ribbed bodycon mini dress, realistic knit stretch, casual influencer street photo'],
+ ['白色贴身短袖针织裙','white short-sleeve ribbed bodycon mini dress, soft bust and waist contour, daytime clean street shot'],
+ ['咖色贴身长袖包臀裙','mocha long-sleeve bodycon mini dress, soft stretch fabric, fitted waist and hips, gold heels'],
+ ['灰色贴身长袖包臀裙','gray long-sleeve bodycon mini dress, minimalist street style, natural fabric tension, pointed heels'],
+ ['黑色贴身西装连衣裙','black fitted blazer bodycon mini dress, sharp lapel, narrow waist, covered bust, pointed black heels'],
+ ['白色贴身西装连衣裙','white fitted blazer bodycon mini dress, sculpted waist, covered bust, nude heels, commercial fashion'],
+ ['银色贴身赛车短裙套装','silver fitted race-event mini dress set, body-hugging technical fabric, commercial event model styling'],
+ ['黑色贴身赛车短裙套装','black fitted race-event mini dress set, glossy panels, covered bust, high heels, auto show image2'],
+ ['蓝色贴身牛仔连衣裙','blue body-hugging denim mini dress, structured seams, full bust contour, city street snap'],
+ ['黑色贴身蕾丝罩层裙','black lace-overlay bodycon dress over opaque lining, fitted silhouette, refined elegant hotel photo'],
+ ['白色贴身蕾丝罩层裙','white lace-overlay bodycon dress over opaque lining, slim waist, delicate fabric texture, daylight fashion'],
+ ['金色贴身金属短裙','gold metallic bodycon mini dress, reflective fabric, covered neckline, party heels, clean luxury social photo'],
+ ['玫瑰金贴身金属长裙','rose-gold metallic body-hugging gown, high slit, liquid fabric reflection, red-carpet image2 prompt'],
+ ['深紫贴身丝绒长裙','deep purple velvet body-hugging long dress, high slit, soft pile texture, refined gala fashion'],
+ ['黑色贴身丝绒短裙','black velvet bodycon mini dress, deep covered neckline, soft rich texture, black heels'],
+ ['白色贴身缎面围裹裙','white satin body-hugging wrap dress, side slit, soft folds and tension, red-carpet minimalism'],
+ ['黑色贴身缎面围裹裙','black satin body-hugging wrap dress, side slit, elegant bust contour, hotel evening fashion'],
+ ['海蓝贴身度假挂脖裙','ocean-blue body-hugging halter dress, covered front, high slit, resort sunlight and sea wind'],
+ ['奶油黄贴身度假短裙','butter-yellow bodycon resort mini dress, soft stretch fabric, matching heels, summer influencer style'],
+ ['黑色贴身连帽短裙','black fitted hooded mini dress, modern sporty-glam silhouette, covered bust, streetwear heels'],
+ ['白色贴身连帽短裙','white fitted hooded mini dress, sporty-glam bodycon shape, clean daylight street photo'],
+ ['黑色贴身开衫纽扣裙','black ribbed button-front bodycon cardigan dress, fitted stretch knit, modern casual sensual style'],
+ ['奶茶色贴身开衫纽扣裙','milk-tea ribbed button-front bodycon cardigan dress, soft knit folds, cafe street style'],
+ ['黑色贴身吊脖连体裙','black halter bodycon mini dress, neck strap, covered front, strong waist and hip line, nightclub fashion'],
+ ['白色贴身吊脖连体裙','white halter bodycon mini dress, covered front, slim waist, clean summer city style'],
+ ['银灰贴身未来感短裙','silver-gray futuristic bodycon mini dress, tight technical fabric, precise seams, image2 modern editorial fashion'],
+ ['黑色贴身未来感短裙','black futuristic bodycon mini dress, glossy tech fabric, tight silhouette, neon city fashion'],
+ ['红黑拼色贴身短裙','red-black colorblock bodycon mini dress, sharp modern panels, fitted bust waist and hips, street poster mood'],
+ ['黑白拼色贴身短裙','black-white colorblock bodycon mini dress, graphic modern panels, slim waist, high heels']
+];
+DATA.sceneGroups['网红现代参考']=[
+ ['玻璃幕墙日光街拍','daytime glass-curtain-wall street shot, clean reflections, modern city fashion, soft background separation'],
+ ['商场灯箱广告墙','mall lightbox advertising wall, glossy floor, premium commercial fashion background'],
+ ['地下车库跑车旁','underground garage beside sports car, directional headlight glow, glossy concrete reflections'],
+ ['电梯镜面自拍风','mirror elevator fashion snapshot, metallic reflections, phone-like framing but face clear'],
+ ['酒店落地窗阳光','luxury hotel floor-to-ceiling window, daylight rim light, curtains and city view'],
+ ['夜景便利店灯牌','night convenience-store sign light, clean urban influencer street fashion mood'],
+ ['黑色大理石走廊','black marble corridor, warm strip lights, polished luxury fashion atmosphere'],
+ ['白色极简影棚','white minimal studio, seamless wall, controlled side light, fabric texture readable'],
+ ['城市天台风中','city rooftop wind, skyline bokeh, hair and tight dress edges moving naturally'],
+ ['红毯闪光灯近景','red carpet flash photography, sponsor wall, full-body outfit and heels visible']
+];
+DATA.outfits=[...tightOutfits, ...viralTightOutfits, ...DATA.outfits.filter(x=>!/宽松|阔腿|运动鞋|练习|居家|T恤|羽毛长靴/.test(x[0]))];
+DATA.tops=[
+ ['贴身吊带上身','body-hugging spaghetti strap top, deep covered neckline, clingy stretch fabric, realistic bust tension'],
+ ['贴身抹胸上身','strapless fitted bandeau top, covered bust, stretch fabric tension, no nipple outline'],
+ ['贴身针织上身','ribbed knit fitted top, clingy fabric around bust and waist, realistic stretch folds'],
+ ['贴身挂脖上身','halter fitted top, covered front, open shoulder line, curve-hugging modern design'],
+ ['贴身皮革胸衣上身','leather corset-style fitted top, covered bust, glossy material response, no bra cup outline'],
+ ['黑色欧根纱三角巾抹胸','black organza triangle scarf bandeau top, opaque key-area coverage, realistic translucent organza edges'],
+ ['液态金属垂坠上身','oil-black liquid metallic silk draped top, low but opaque covered lower bust contour, soft tension fabric support, no molded cups'],
+ ['白色极简深V悬垂上身','white minimalist deep-V draped upper gown, ultra-thin tulle and heavyweight silk splicing, opaque key-area coverage, wireless natural fabric support'],
+ ['亮银垂坠吊带上身','bright silver draped silk camisole top, ultra-thin straps, seamless inner lining, realistic metallic reflection'],
+ ['白色修身衬衫','white fitted blouse, realistic fabric tension, modern street fashion'],
+ ['黑色细吊带上衣','black spaghetti strap fitted top, deep covered neckline, realistic stretch fabric'],
+ ['西装马甲上身','sleeveless tailored blazer vest, sharp modern business styling'],
+ ['皮革短夹克','cropped leather jacket over opaque fitted inner top'],
+ ['水钻晚礼胸衣','rhinestone evening top, covered bust support, no bra cup outline'],
+ ['透明罩衫内搭','sheer organza blouse over opaque fitted inner top, key areas covered'],
+ ['挂脖礼服上身','halter evening-gown top, covered front, open shoulder line, elegant modern design']
+];
+DATA.bottoms=[
+ ['贴身包臀短裙','body-hugging mini skirt, fitted waist and hips, realistic stretch tension'],
+ ['贴身高叉长裙','body-hugging high-slit maxi skirt, fabric clinging to hips and legs, realistic gravity folds'],
+ ['贴身鱼尾裙摆','body-hugging mermaid gown skirt, narrow waist and hip contour, full-length luxury silhouette'],
+ ['贴身针织短裙','ribbed knit fitted mini skirt, soft stretch folds, casual modern style'],
+ ['贴身皮革短裙','glossy leather bodycon mini skirt, fitted hips, realistic leather response'],
+ ['欧根纱百褶超短裙','matching organza pleated micro mini skirt over opaque lining, realistic fabric folds'],
+ ['高侧开衩晚礼裙摆','high side slit full-length evening gown skirt, layered fabric overlap, realistic weight and drape'],
+ ['白色重磅丝绸高开衩裙摆','white heavyweight silk high-slit gown skirt, side gathered folds, realistic gravity drape and fabric tension'],
+ ['包臀超短裙','fitted bodycon mini skirt, modern street-fashion silhouette'],
+ ['黑色高腰短裙','black high-waist mini skirt, clean modern cut'],
+ ['高腰西装短裙','tailored high-waist business mini skirt'],
+ ['高腰阔腿裤','tailored high-waist wide-leg pants'],
+ ['皮革短裙','black leather mini skirt, glossy real material response'],
+ ['缎面高叉半裙','satin high-slit skirt, soft draped fabric'],
+ ['水钻流苏短裙','rhinestone fringe mini skirt over opaque lining'],
+ ['度假围裹短裙','resort wrap mini skirt over opaque bottom']
+];
+DATA.shoes=[
+ ['同色高跟鞋','matching color high heels, coordinated with outfit'],
+ ['黑色细高跟','black pointed stiletto heels'],
+ ['闪耀黑色细高跟','sparkling black pointed stiletto heels, red-carpet evening-gown styling'],
+ ['亮银高跟鞋','bright silver high heels'],
+ ['透明水晶高跟','transparent crystal heels'],
+ ['裸色高跟鞋','nude high heels'],
+ ['白色高跟凉鞋','white high heel sandals'],
+ ['黑色漆皮高跟','black patent high heels'],
+ ['银色高跟凉鞋','silver high heel sandals'],
+ ['金色高跟凉鞋','gold high heel sandals'],
+ ['黑色短靴','black ankle boots']
+];
+DATA.jewelry=[
+ ['极简金属耳饰','minimal metallic earrings and delicate bracelet'],
+ ['水钻耳坠','rhinestone dangling earrings'],
+ ['细项链','delicate thin necklace'],
+ ['银色手包','small silver clutch bag'],
+ ['黑色手包','small black clutch bag'],
+ ['手机道具','holding a smartphone as fashion street-shot prop'],
+ ['细手链戒指','slender bracelet and simple rings'],
+ ['红毯珠宝套装','luxury red-carpet earrings, necklace and bracelet'],
+ ['墨镜手拿','holding sunglasses, modern influencer street style'],
+ ['无明显首饰','no obvious jewelry, clean modern look']
+];
+DATA.poses=[
+ ['正面站姿扶腰','front-facing full-body stance, one hand on waist, no back view, chest and outfit readable'],
+ ['三分之四侧身站立','three-quarter front standing pose, shoulders relaxed, waist curve visible, back view forbidden'],
+ ['走路街拍抓拍','walking forward naturally, hair and skirt moving slightly, front or three-quarter view only'],
+ ['抬手整理头发','one hand adjusting hair, soft shoulder and neck line, face toward camera'],
+ ['靠墙轻倚','leaning lightly against wall or window frame, one leg bent, elegant modern posture'],
+ ['楼梯扶手站姿','standing near staircase handrail, full-body dress visible, no back view'],
+ ['高脚凳侧坐','side-sitting on bar stool, legs angled, refined non-explicit fashion pose'],
+ ['窗边轻靠','leaning by huge window, sunset rim light, body slightly turned to camera'],
+ ['红毯回头正侧','red-carpet three-quarter turn, face visible, no rear view'],
+ ['手拿包站姿','standing with clutch bag, front view, dress and heels fully visible'],
+ ['车边斜靠','leaning beside car, front three-quarter angle, legs and heels visible'],
+ ['双人窗边壁咚','two 28-year-old Chinese women near huge window, one leans forward with hand braced beside frame, the other leans back, close non-explicit tension'],
+ ['双人S型贴近','two 28-year-old Chinese women very close, diagonal and S-curve interaction, faces close, refined restrained poster pose'],
+ ['双人并肩红毯','two 28-year-old Chinese women standing close side by side on red carpet, both faces visible'],
+ ['双人街角对视','two 28-year-old Chinese women at street corner, close eye contact, fashion-poster interaction']
+];
+DATA.cameras=[
+ ['胸部前景半身到大腿','close crop from neck and face-lower edge to thighs, bust dominates foreground, outfit neckline and high-waist bottom clear, no nipple exposure'],
+ ['超深V中近景','medium-close shot from shoulders to hips, deep V covered neckline and bust curve as main focus, face may be partially visible, non-explicit'],
+ ['低机位胸腰构图','slightly low-angle crop from chest to thighs, strong bust-waist contrast, realistic fabric tension, no back view'],
+ ['9:16全身照','vertical 9:16 full-body shot, front or three-quarter view, heels visible, no back view'],
+ ['半身到大腿','medium shot from upper body to thighs, low camera slightly looking up, outfit and curves readable'],
+ ['低机位轻微仰拍','low camera slight upward angle, strong fashion poster presence, no distortion'],
+ ['长焦街拍','long-lens street shot, subject sharp, background softly separated'],
+ ['手机街拍近景','realistic phone-camera street framing, clean subject, slight candid feeling'],
+ ['红毯全身构图','full-length red-carpet gown framing, face, dress and heels visible'],
+ ['服装材质中近景','medium-close material-focused shot, fabric folds, tension and reflections clear'],
+ ['双人半身到大腿','vertical two-person composition from upper body to thighs, low camera slight upward angle'],
+ ['强对角线构图','strong diagonal fashion-poster composition, clean background, shallow depth of field'],
+ ['封面居中全身','centered vertical cover composition, full outfit readable']
+];
+DATA.lights=[
+ ['白天明确方向光','daytime clear directional light, natural environment influence, subtle rim light'],
+ ['柔和边缘轮廓光','soft rim light outlining hair and shoulders, realistic foreground-background separation'],
+ ['夕阳蜜桃逆光','warm golden sunset and peach-pink backlight, cinematic rim light, floating dust particles'],
+ ['红毯闪光灯','red-carpet flash with realistic skin highlights and fabric sparkle'],
+ ['酒店暖顶光','luxury hotel warm overhead light, polished refined mood'],
+ ['夜景霓虹环境光','night neon ambient light, realistic reflections, not over-HDR'],
+ ['影棚侧向硬柔结合','studio side directional light, controlled shadow, realistic fabric texture'],
+ ['玻璃窗自然光','natural window light, soft but directional, clean skin texture'],
+ ['商业冷白光','cool white commercial light, clean high-detail modern fashion'],
+ ['雨夜反射光','rainy night reflected light from pavement and glass, cinematic wet highlights']
+];
+const modernCustom=[
+ '28岁中国女性，黑色欧根纱抹胸上衣与同色百褶短裙，同色高跟鞋，白天户外街拍，全身正面或三分之四视角，明确方向光，真实皮肤毛孔、自然油光、发丝重力、欧根纱褶皱和材质反光，背景可辨识但轻微虚化。',
+ '28岁中国女性，油光黑色液态金属丝绸晚礼服，深V悬垂领口但关键部位完整遮挡，侧腰镂空，高侧开衩，同色高跟鞋，9:16全身写实摄影，定向柔光，真实布料重量、张力褶皱和金属反光。',
+ '28岁中国女性，白色极简深V晚礼服，超薄薄纱与重磅丝绸拼接，侧腰镂空，高开衩，黑色细高跟鞋，全身照，禁止背面，电影写实主义摄影，真实皮肤纹理、自然发丝、干净锐利的时尚大片质感。'
+];
+// subtractive cleanup: modern realistic fashion only; remove modern editorial, fantasy, airport passenger crowd and weak duplicates.
+(function subtractiveModernCleanup(){
+ const DROP=/(赛博|modern editorial|modern editorial|robot|展厅装置|现代玻璃走廊|实验室|机甲|未来|虚拟|COS|国风|二次元|幻想|机场|travel crowd|passenger crowd|比基尼)/i;
+ const WEAK=/(宽松|居家|睡袍|毛衣|T恤|羽毛|机能)/i;
+ const uniq=a=>{const seen=new Set();return a.filter(x=>{const k=x[0];if(seen.has(k))return false;seen.add(k);return true})};
+ const clean=a=>uniq(a).filter(x=>!DROP.test(x[0]+' '+x[1]));
+ DATA.faces=clean(DATA.faces).slice(0,4);
+ DATA.body=clean(DATA.body).slice(0,4);
+ DATA.bustScale=clean(DATA.bustScale).slice(0,3);
+ DATA.people=clean(DATA.people).slice(0,2);
+ DATA.styles=clean(DATA.styles).slice(0,5);
+ DATA.videoUse=clean(DATA.videoUse).slice(0,3);
+ Object.keys(DATA.sceneGroups).forEach(k=>{if(DROP.test(k)){delete DATA.sceneGroups[k];return}DATA.sceneGroups[k]=clean(DATA.sceneGroups[k]).filter(x=>!DROP.test(x[0]+' '+x[1])).slice(0,8)});
+ DATA.outfits=clean(DATA.outfits).filter(x=>!WEAK.test(x[0]+' '+x[1])).slice(0,72);
+ DATA.tops=clean(DATA.tops).slice(0,8);
+ DATA.bottoms=clean(DATA.bottoms).slice(0,8);
+ DATA.shoes=clean(DATA.shoes).slice(0,7);
+ DATA.jewelry=clean(DATA.jewelry).slice(0,8);
+ DATA.poses=clean(DATA.poses).slice(0,10);
+ DATA.cameras=clean(DATA.cameras).slice(0,8);
+ DATA.lights=clean(DATA.lights).slice(0,8);
+})();
+DATA.quickPresets=DATA.outfits.map((o,i)=>{
+ const groups=Object.keys(DATA.sceneGroups);
+ const targetGroup= i<18 ? '白天户外街拍' : i<35 ? '红毯晚宴' : i<48 ? '城市商业空间' : i<56 ? '度假现代' : i<60 ? '双人现代海报' : groups[i%groups.length];
+ const group=DATA.sceneGroups[targetGroup] ? targetGroup : groups[i%groups.length];
+ const scene=DATA.sceneGroups[group][i%DATA.sceneGroups[group].length][0];
+ const pose=DATA.poses[i%DATA.poses.length][0];
+ const cam=DATA.cameras[i%DATA.cameras.length][0];
+ const light=DATA.lights[i%DATA.lights.length][0];
+ const style=i>=51 ? '现代双人角色海报' : (i<18?'白天户外街拍':i<35?'红毯晚礼服摄影':'现代网红写真');
+ const body=i<8?'明显丰满丰满曲线细腰':i>=51?'双人高级丰腴体态':(i%3===0?'苗条但上围突出':i%3===1?'明显丰满丰满曲线细腰':'自然饱满网红身材');
+ const people=i>=51?'双人28岁中国女性海报':(/晚礼服|礼服|红毯|鱼尾/.test(o[0])?'单人红毯礼服':'单人现代写真');
+ const custom= i===0 ? modernCustom[0] : i===1 ? modernCustom[1] : i===2 ? modernCustom[2] : REALISM+', '+MATERIAL+', modern clothing, random matching background, random action and pose, full-body photo, back view forbidden.';
+ return ['现代 '+String(i+1).padStart(2,'0')+' '+o[0], DATA.faces[i%DATA.faces.length][0], group, scene, o[0], pose, cam, light, style, custom, '9:16 竖屏', body, people];
+});
+})();
+const NEG=[
+ 'child, teenager, underage, young-looking minor, school uniform, childish face, lolita',
+ 'nude, explicit nudity, exposed nipples, exposed areola, exposed genitals, nipple outline, pornographic, sexual act, vulgar pose, fetish, wardrobe malfunction, transparent clothing exposing key areas',
+ 'plastic skin, waxy face, overly smooth skin, heavy beauty filter, airbrushed face, blurry subject, muddy unreadable background, flat lighting, harsh artificial HDR, unnatural shadows',
+ 'floating hair, painted-on clothes, unnatural fabric folds, over-sharpened, low detail, filthy distracting background, cheap render texture',
+ 'anime, manga, cel shading, illustration, 2D, cartoon, oversized eyes, doll face, AI anime style, CGI anime girl, fantasy anime rendering, game character style',
+ 'underwire marks, bra cup lines, molded bra shape, push-up structure, lingerie structure, visible bra support, corset cups, hard bra outline',
+ 'small breasts, flat chest, medium breasts, average bust, bust reduction, chest flattened by clothing, distant shot diluting body scale, normal fashion model proportions',
+ 'bad anatomy, deformed body, deformed breasts, unrealistic plastic breasts, impossible waist, distorted hips, extra limbs, missing limbs',
+ 'bad hands, extra fingers, missing fingers, fused fingers, broken wrists, bad feet, twisted knees',
+ 'blurry face, asymmetrical eyes, crossed eyes, unwanted extra person, duplicated face artifact, face swap artifact, low resolution, watermark, logo, unreadable text',
+ 'anime unless requested, cartoon, plastic skin, 3d doll, over-smoothed skin, lifeless mannequin pose, cropped face, missing feet when full-body is required'
+];
+const app={
+ outfitMode:'linked',
+ $(id){return document.getElementById(id)},
+ val(id){const el=this.$(id);return el.options ? el.options[el.selectedIndex]?.dataset?.text || el.value : el.value},
+ label(id){const el=this.$(id);return el.options ? el.options[el.selectedIndex]?.textContent || '' : ''},
+ setNum(id,v){this.$(id).textContent=v},
+ fillSelect(id,arr){const el=this.$(id);el.innerHTML='';arr.forEach((x,i)=>{const o=document.createElement('option');o.textContent=x[0];o.value=String(i);o.dataset.text=x[1];el.appendChild(o)})},
+ setSelectByLabel(id,label){const el=this.$(id);const idx=[...el.options].findIndex(o=>o.textContent===label);if(idx>=0)el.selectedIndex=idx},
+ init(){
+  this.fillSelect('face',DATA.faces);this.fillSelect('body',DATA.body);this.fillSelect('bustScale',DATA.bustScale);this.fillSelect('people',DATA.people);this.fillSelect('ratio',DATA.ratios);this.fillSelect('style',DATA.styles);this.fillSelect('videoUse',DATA.videoUse);this.fillSelect('antiAi',DATA.antiAi);
+  this.fillSelect('outfit',DATA.outfits);this.fillSelect('topwear',DATA.tops);this.fillSelect('bottom',DATA.bottoms);this.fillSelect('shoes',DATA.shoes);this.fillSelect('jewelry',DATA.jewelry);
+  this.fillSelect('pose',DATA.poses);this.fillSelect('camera',DATA.cameras);this.fillSelect('light',DATA.lights);this.fillSelect('quickPreset',DATA.quickPresets.map(x=>[x[0],x[0]]));
+  const sg=this.$('sceneGroup');Object.keys(DATA.sceneGroups).forEach(k=>{const o=document.createElement('option');o.textContent=k;o.value=k;sg.appendChild(o)});this.refreshScene();this.applyOutfitLink();this.setPartLock();this.generate();this.renderLibrary('scenes');
+ },
+ refreshScene(){this.fillSelect('scene',DATA.sceneGroups[this.$('sceneGroup').value])},
+ setPartLock(){const locked=this.$('wholeOutfitOnly')?.checked;['topwear','bottom','shoes','jewelry'].forEach(id=>{const el=this.$(id);if(el)el.disabled=!!locked});this.outfitMode=locked?'linked':this.outfitMode;this.$('outfitModeNote').textContent=locked?'当前：整套服装模式。提示词只使用整套服装，不输出上身/下身/鞋子单品，适合 Image2 直接成图。':'当前：单品替换已开启。可分别调整上身、下身、鞋子和首饰，但可能与整套服装产生冲突。'},
+ markCustomParts(){if(this.$('wholeOutfitOnly')?.checked){this.setPartLock();return}this.outfitMode='custom';this.$('outfitModeNote').textContent='当前：自定义单品组合模式。提示词会优先使用上身、下身、鞋子和首饰，避免与整套服装冲突。'},
+ linkedPartsForOutfit(label){
+  const cn=label;
+  if(/贴身|包臀|bodycon|湿感|褶皱|ruched|低腰|无袖|高领/.test(cn))return ['贴身吊带上身','贴身包臀短裙','黑色细高跟','极简金属耳饰'];
+  if(/针织/.test(cn))return ['贴身针织上身','贴身针织短裙','裸色高跟鞋','细项链'];
+  if(/皮革|漆皮/.test(cn))return ['贴身皮革胸衣上身','贴身皮革短裙','黑色漆皮高跟','黑色手包'];
+  if(/鱼尾|长裙|高叉|开衩/.test(cn))return ['贴身挂脖上身','贴身高叉长裙','闪耀黑色细高跟','红毯珠宝套装'];
+  if(/白色极简主义|超低胸|重磅丝绸/.test(cn))return ['白色极简深V悬垂上身','白色重磅丝绸高开衩裙摆','闪耀黑色细高跟','红毯珠宝套装'];
+  if(/欧根纱|三角巾|百褶/.test(cn))return ['黑色欧根纱三角巾抹胸','欧根纱百褶超短裙','同色高跟鞋','极简金属耳饰'];
+  if(/油光黑|液态金属|亮银|金属|晚礼服|礼服|红毯|缎面|丝绸|高叉|鱼尾/.test(cn))return ['液态金属垂坠上身','高侧开衩晚礼裙摆','亮银高跟鞋','红毯珠宝套装'];
+  if(/西装|职业|衬衫|商务|办公室/.test(cn))return ['白色修身衬衫','高腰西装短裙','黑色细高跟','细项链'];
+  if(/皮革|机车|拉链/.test(cn))return ['皮革短夹克','皮革短裙','黑色短靴','黑色手包'];
+  if(/水钻|派对|流苏|夜店/.test(cn))return ['水钻晚礼胸衣','水钻流苏短裙','透明水晶高跟','水钻耳坠'];
+  if(/度假|海|泳池|热带|露背/.test(cn))return ['挂脖礼服上身','度假围裹短裙','白色高跟凉鞋','墨镜手拿'];
+  if(/双人/.test(cn))return ['亮银垂坠吊带上身','高侧开衩晚礼裙摆','同色高跟鞋','极简金属耳饰'];
+  return ['黑色细吊带上衣','包臀超短裙','黑色细高跟','细项链'];
+ },
+ applyOutfitLink(){
+  this.outfitMode='linked';
+  const [top,bottom,shoes,jewelry]=this.linkedPartsForOutfit(this.label('outfit'));
+  this.setSelectByLabel('topwear',top);this.setSelectByLabel('bottom',bottom);this.setSelectByLabel('shoes',shoes);this.setSelectByLabel('jewelry',jewelry);
+  this.setPartLock();
+ },
+ applyPreset(){
+  const p=DATA.quickPresets[this.$('quickPreset').selectedIndex];if(!p)return;
+  this.setSelectByLabel('face',p[1]);this.$('sceneGroup').value=p[2];this.refreshScene();this.setSelectByLabel('scene',p[3]);this.setSelectByLabel('outfit',p[4]);
+  this.setSelectByLabel('pose',p[5]);this.setSelectByLabel('camera',p[6]);this.setSelectByLabel('light',p[7]);this.setSelectByLabel('style',p[8]);
+  this.$('custom').value=p[9]||'';if(p[10])this.setSelectByLabel('ratio',p[10]);if(p[11])this.setSelectByLabel('body',p[11]);this.setSelectByLabel('people',p[12]||DATA.people[0][0]);
+  this.applyOutfitLink();this.generate();
+ },
+ glamourText(){const v=Number(this.$('glamour').value);if(v>=9)return 'very large covered bust, ultra-deep V but fully covered, strong bust-waist contrast, realistic clingy fabric tension, no nipple outline';if(v>=6)return 'full covered bustline, clear fabric support, slim waist, non-explicit';return 'refined body line, clothing-forward glamour, non-explicit'},
+ clean(s){return String(s||'').replace(/[<>]/g,'').trim()},
+ generate(){
+  const wholeOnly=this.$('wholeOutfitOnly')?.checked;
+  const clothing=wholeOnly
+   ? ['complete coordinated outfit only, do not mix separate tops bottoms or shoes: '+this.val('outfit'), 'outfit is treated as one complete modern fashion look, stable matching color, shoes and accessories included when described by outfit']
+   : this.outfitMode==='custom'
+   ? ['custom separate clothing combination, ignore conflicting full outfit', 'top: '+this.val('topwear'), 'bottom: '+this.val('bottom'), 'shoes: '+this.val('shoes'), 'accessory: '+this.val('jewelry')]
+   : ['coordinated full outfit: '+this.val('outfit'), 'matched top detail: '+this.val('topwear'), 'matched bottom detail: '+this.val('bottom'), 'matched shoes: '+this.val('shoes'), 'matched accessory: '+this.val('jewelry')];
+  const parts=[
+   this.val('people'),this.val('face'),this.clean(this.$('subjectExtra').value),this.val('body'),this.val('bustScale'),this.glamourText(),this.val('style'),this.val('videoUse'),this.val('antiAi'),
+   'scene: '+this.val('scene'),...clothing,'pose: '+this.val('pose'),'camera: '+this.val('camera'),'lighting: '+this.val('light'),this.val('ratio'),
+   'real skin texture, stable identity, realistic fabric tension, fashion editorial quality, no text, no watermark'
+  ];
+  const isDouble=this.label('people').includes('双人');
+  if(this.$('i2v').checked)parts.push(isDouble?'image2 generation ready, two-adult-women poster ready, both faces clear, clean two-person silhouette, stable modern outfit edges, no extra people':'image2 generation ready, modern realistic fashion image, single adult woman, clean silhouette, stable complete outfit, face clear, limbs readable when full body is selected');
+  if(this.$('safe').checked)parts.push(isDouble?'two 28-year-old Chinese women only, tasteful close interaction, non-explicit, no nudity, no sexual act, no minors':'adult subject only, tasteful, non-explicit, no nudity, no sexual act, polished fashion styling');
+  const custom=this.clean(this.$('custom').value);if(custom)parts.push(custom);
+  this.$('prompt').textContent=parts.filter(Boolean).join(', ')+'.';
+  this.$('negative').textContent=NEG.join(', ');
+  this.renderChips();return this.$('prompt').textContent;
+ },
+ renderChips(){const items=['人物:'+this.label('people'),'脸:'+this.label('face'),'去AI味:'+this.label('antiAi'),'场景:'+this.$('sceneGroup').value+'/'+this.label('scene'),'整套服装:'+this.label('outfit')];if(!this.$('wholeOutfitOnly')?.checked)items.push('上身:'+this.label('topwear'),'下身:'+this.label('bottom'),'鞋:'+this.label('shoes'),'首饰:'+this.label('jewelry'));this.$('chips').innerHTML=items.map(x=>`<span class="chip">${x}</span>`).join('')},
+ randomIndex(id){const el=this.$(id);el.selectedIndex=Math.floor(Math.random()*el.options.length)},
+ randomByLabel(id,pattern){const el=this.$(id);const hits=[...el.options].map((o,i)=>[o,i]).filter(([o])=>pattern.test(o.textContent));if(hits.length)el.selectedIndex=hits[Math.floor(Math.random()*hits.length)][1];else this.randomIndex(id)},
+ randomMatching(id,wantDouble){const el=this.$(id);const hits=[...el.options].map((o,i)=>[o,i]).filter(([o])=>wantDouble ? /双人|two 28-year-old Chinese women/i.test(o.textContent+' '+(o.dataset.text||'')) : !/双人|two 28-year-old Chinese women/i.test(o.textContent+' '+(o.dataset.text||'')));if(hits.length)el.selectedIndex=hits[Math.floor(Math.random()*hits.length)][1];else this.randomIndex(id)},
+ randomSceneGroup(wantDouble){const groups=Object.keys(DATA.sceneGroups).filter(g=>wantDouble ? /双人/.test(g) : !/双人/.test(g));this.$('sceneGroup').value=groups[Math.floor(Math.random()*groups.length)]||Object.keys(DATA.sceneGroups)[0];this.refreshScene();this.randomIndex('scene')},
+ randomAll(){const isDouble=this.label('people').includes('双人');this.randomIndex('face');this.randomMatching('body',isDouble);this.randomIndex('bustScale');this.randomMatching('style',isDouble);this.randomMatching('videoUse',isDouble);this.randomMatching('outfit',isDouble);this.randomMatching('pose',isDouble);this.randomMatching('camera',isDouble);this.randomIndex('light');this.randomIndex('ratio');this.randomSceneGroup(isDouble);this.applyOutfitLink();this.generate()},
+ randomWardrobeScene(){const isDouble=this.label('people').includes('双人');if(isDouble){this.randomMatching('outfit',true);this.randomMatching('pose',true);this.randomMatching('camera',true);this.randomByLabel('light',/夕阳|落地窗|蜜桃|轮廓|水钻|暖光/);this.randomSceneGroup(true)}else{this.randomMatching('outfit',false);this.randomMatching('pose',false);this.randomMatching('camera',false);this.randomIndex('light');this.randomSceneGroup(false)}this.applyOutfitLink();this.generate()},
+ batch(n=10){const rows=[];for(let i=1;i<=n;i++){this.randomWardrobeScene();rows.push(`【变体 ${String(i).padStart(2,'0')}】\n${this.$('prompt').textContent}\n\n反向提示词：\n${this.$('negative').textContent}`)}this.$('batchOut').textContent=rows.join('\n\n------------------------------\n\n');this.showTab('batchTab',[...document.querySelectorAll('.card:last-child > .tabs .tab')][2])},
+ showTab(id,btn){['output','negativeTab','batchTab','libraryTab'].forEach(x=>this.$(x).style.display=x===id?'block':'none');if(btn){btn.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active')}},
+ renderLibrary(kind,btn){
+  if(btn){btn.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active')}
+  const map={scenes:Object.entries(DATA.sceneGroups).flatMap(([g,arr])=>arr.map(x=>[g+' / '+x[0],x[1]])),outfits:DATA.outfits,tops:DATA.tops,bottoms:DATA.bottoms,shoes:DATA.shoes,jewelry:DATA.jewelry};
+  this.$('library').innerHTML=map[kind].map(x=>`<div class="item"><b>${x[0]}</b><p>${x[1]}</p></div>`).join('');
+ },
+ async copy(id){const text=this.$(id).textContent||'';try{await navigator.clipboard.writeText(text)}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}this.toast('已复制')},
+ copyAll(){this.copyText(`正向提示词：\n${this.$('prompt').textContent}\n\n反向提示词：\n${this.$('negative').textContent}`)},
+ async copyText(text){try{await navigator.clipboard.writeText(text)}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}this.toast('已复制')},
+ toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1500)}
+};
+window.addEventListener('DOMContentLoaded',()=>app.init());
+</script>
+</body>
+</html>
+
+
+
+
+
+
+

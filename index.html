@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI Portrait Prompt Lab</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0f1115;--panel:#171a21;--line:#2a2f3a;--text:#eef1f6;--muted:#a7afbf;--accent:#7cc7ff}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    main{max-width:980px;margin:0 auto;padding:48px 22px}
+    h1{font-size:38px;line-height:1.1;margin:0 0 12px}p{color:var(--muted);line-height:1.7}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:28px}
+    a.card{display:block;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px;min-height:160px}
+    a.card:hover{border-color:var(--accent)}
+    .tag{display:inline-block;color:#07111b;background:var(--accent);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;margin-bottom:14px}
+    h2{font-size:20px;margin:0 0 10px}.card p{margin:0;font-size:14px}
+    footer{margin-top:36px;color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+<main>
+  <h1>AI Portrait Prompt Lab</h1>
+  <p>Standalone prompt generators for fashion portraits, travel photography, guofeng fantasy character references, and image-to-video first frames.</p>
+  <section class="grid">
+    <a class="card" href="apps/guofeng-fantasy-prompt-lab.html">
+      <span class="tag">Guofeng</span>
+      <h2>Guofeng Fantasy Prompt Lab</h2>
+      <p>Structured prompts for Chinese fantasy costume design, fabric layers, jewelry, lighting, and stable character composition.</p>
+    </a>
+    <a class="card" href="apps/fashion-portrait-prompt-lab.html">
+      <span class="tag">Fashion</span>
+      <h2>Fashion Portrait Prompt Lab</h2>
+      <p>Modern editorial and street-style portrait prompts with coordinated outfit, camera, lighting, and realism modules.</p>
+    </a>
+    <a class="card" href="apps/travel-portrait-prompt-lab.html">
+      <span class="tag">Travel</span>
+      <h2>Travel Portrait Prompt Lab</h2>
+      <p>Travel portrait prompts with scene-to-outfit matching for old towns, mountains, beaches, city walks, and landmarks.</p>
+    </a>
+  </section>
+  <footer>Open source prompt workflow tools. Public version avoids explicit content and focuses on visual production workflows.</footer>
+</main>
+</body>
+</html>
+

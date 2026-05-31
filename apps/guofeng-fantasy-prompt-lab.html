@@ -1,0 +1,654 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>古风幻想冰丝质感提示词生成器｜写真质感极夸张版</title>
+<style>
+:root{
+  --bg:#0b0f17;--panel:#121824;--panel2:#0d1320;--line:#263247;--line2:#3e4f6b;
+  --text:#edf4ff;--muted:#9fb0c7;--dim:#69778c;--hot:#7db7ff;--ice:#bfe7ff;
+  --gold:#e8c36a;--green:#38c98b;--red:#ff758d;--radius:15px;
+  --shadow:0 18px 55px rgba(0,0,0,.36);
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font-family:"Segoe UI","Microsoft YaHei",sans-serif;background:
+  radial-gradient(circle at 20% 0%,rgba(125,183,255,.18),transparent 34%),
+  radial-gradient(circle at 80% 8%,rgba(191,231,255,.15),transparent 32%),
+  linear-gradient(135deg,rgba(232,195,106,.08),transparent 32%),
+  #0b0f17}
+.wrap{max-width:1740px;margin:0 auto;padding:20px}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}
+.brand h1{margin:0 0 6px;font-size:25px;letter-spacing:.2px}
+.brand p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}
+.pill{border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:999px;padding:8px 13px;color:var(--muted);font-size:12px;white-space:nowrap}
+.layout{display:grid;grid-template-columns:365px minmax(0,1fr) 440px;gap:14px}
+.card{background:rgba(18,24,36,.94);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:15px}
+.title{font-weight:900;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.small{font-size:12px;color:var(--muted);font-weight:500}
+.warn{border-left:4px solid var(--gold);background:rgba(232,195,106,.08);border-radius:11px;padding:10px 12px;color:#f4dfb4;font-size:12px;line-height:1.6;margin-bottom:12px}
+.form{display:grid;gap:10px}
+label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
+select,input,textarea{width:100%;border:1px solid var(--line);background:#080d15;color:var(--text);border-radius:11px;padding:9px 10px;outline:none;font-size:13px;font-family:inherit}
+textarea{min-height:80px;resize:vertical;line-height:1.55}
+select:focus,input:focus,textarea:focus{border-color:var(--hot);box-shadow:0 0 0 3px rgba(125,183,255,.13)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:9px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.rangeRow{display:grid;grid-template-columns:1fr 42px;gap:8px;align-items:center}.num{color:var(--ice);font-weight:900;text-align:right;font-size:13px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line2);background:#172234;color:var(--text);border-radius:11px;padding:9px 12px;font-weight:800;font-size:13px;cursor:pointer}
+.btn:hover{border-color:var(--hot);background:#1d2b42}.primary{background:var(--hot);border-color:var(--hot);color:#07101c}.green{background:#168753;border-color:#168753;color:#fff}.ghost{background:#080d15}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#080d15;border:1px solid var(--line);border-radius:12px;padding:9px 10px;color:#cbd8ea;font-size:12px}.switch input{width:auto}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tab{border:1px solid var(--line);background:#080d15;color:var(--muted);border-radius:10px;padding:8px 10px;font-weight:900;font-size:12px;cursor:pointer}
+.tab.active{background:var(--hot);border-color:var(--hot);color:#07101c}
+.out{white-space:pre-wrap;word-break:break-word;background:#060a11;border:1px solid var(--line);border-radius:13px;padding:13px;min-height:175px;max-height:420px;overflow:auto;color:#e4efff;font-size:13px;line-height:1.75}
+.chipbox{display:flex;gap:7px;flex-wrap:wrap}.chip{font-size:12px;color:#d8e5f6;border:1px solid var(--line);background:#080d15;border-radius:999px;padding:5px 9px}
+.library{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:530px;overflow:auto;padding-right:3px}
+.item{background:#080d15;border:1px solid var(--line);border-radius:12px;padding:9px;cursor:pointer}.item:hover{border-color:var(--hot)}.item b{font-size:13px}.item p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--green);color:white;border-radius:12px;padding:11px 15px;font-weight:900;box-shadow:0 12px 30px rgba(0,0,0,.35);z-index:10}
+@media(max-width:1220px){.layout{grid-template-columns:1fr}.top{flex-direction:column}.pill{white-space:normal}.library{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <h1>古风幻想冰丝质感提示词生成器｜写真质感极夸张版</h1>
+      <p>用于二次元 / 古风幻想 / 冰丝薄纱 / 胸托礼服 / 近景半身图。强调材质、结构、构图和稳定出图；默认成人角色，主打写真质感、仙侠COS、冰丝薄纱、胸部绝对视觉中心、若隐若现但不露点。</p>
+    </div>
+    <div class="pill">精简衣着 · 核心标准 · 稳定变体</div>
+  </div>
+
+  <div class="layout">
+    <section class="card">
+      <div class="title">① 锁定人物 <span class="small">成人幻想角色</span></div>
+      <div class="warn">强化锚点：这版把“胸部视觉占比、胸腰反差、胸托结构、近景半身”权重加大，避免模型把人物整体变胖。核心逻辑是：只放丰满曲线部，不放大腰、肩、手臂和脸。</div>
+      <div class="form">
+        <div><label>人脸模板</label><select id="face"></select></div>
+        <div><label>主体补充</label><textarea id="subjectExtra" placeholder="可补充：同一张脸、发型、妆容、眼神、发饰、珠宝、角色气质等"></textarea></div>
+        <div class="two">
+          <div><label>体型锚点</label><select id="body"></select></div>
+          <div><label>画幅</label><select id="ratio"></select></div>
+        </div>
+        <div>
+          <label>胸部视觉强度</label>
+          <div class="rangeRow"><input id="bustLevel" type="range" min="1" max="30" value="26" oninput="app.setNum('bustN',this.value);app.generate()"><div class="num" id="bustN">26</div></div>
+        </div>
+        <div>
+          <label>冰丝 / 薄纱质感</label>
+          <div class="rangeRow"><input id="fabricLevel" type="range" min="1" max="10" value="10" oninput="app.setNum('fabricN',this.value);app.generate()"><div class="num" id="fabricN">10</div></div>
+        </div>
+        <div><label>服装标准</label><select id="outfitStandard" onchange="app.generate()"></select></div>
+        <div class="two">
+          <div><label>画风</label><select id="style"></select></div>
+          <div><label>用途</label><select id="usage"></select></div>
+        </div>
+        <div><label>快速模板</label><select id="quickPreset" onchange="app.applyPreset()"></select></div>
+        <div class="switch"><span>加入安全反向词</span><input id="safe" type="checkbox" checked onchange="app.generate()"></div>
+        <div class="switch"><span>稳定生成：脸胸清晰、单人、无遮挡</span><input id="stable" type="checkbox" checked onchange="app.generate()"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="title">② 替换模块 <span class="small">服装 / 环境 / 姿势 / 镜头</span></div>
+      <div class="form">
+        <div class="two">
+          <div><label>环境大类</label><select id="sceneGroup" onchange="app.refreshScene();app.generate()"></select></div>
+          <div><label>具体环境 30</label><select id="scene" onchange="app.generate()"></select></div>
+        </div>
+        <div class="two">
+          <div><label>整套衣着 50</label><select id="outfit" onchange="app.applyOutfitLink();app.generate()"></select></div>
+          <div><label>上身结构</label><select id="topwear" onchange="app.markCustomParts();app.generate()"></select></div>
+        </div>
+        <div class="three">
+          <div><label>下身结构</label><select id="bottom" onchange="app.markCustomParts();app.generate()"></select></div>
+          <div><label>披帛 / 外层</label><select id="shawl" onchange="app.markCustomParts();app.generate()"></select></div>
+          <div><label>首饰 / 发饰</label><select id="jewelry" onchange="app.markCustomParts();app.generate()"></select></div>
+        </div>
+        <div class="three">
+          <div><label>姿势</label><select id="pose" onchange="app.generate()"></select></div>
+          <div><label>镜头</label><select id="camera" onchange="app.generate()"></select></div>
+          <div><label>光线</label><select id="light" onchange="app.generate()"></select></div>
+        </div>
+        <div><label>自定义补充</label><textarea id="custom" oninput="app.generate()" placeholder="例：真实幻想COS写真质感，胸部再大一圈，胸托被明显撑起，冰丝外纱若隐若现，深自然乳沟，保持小脸细腰窄肩细手臂，身体不要变胖"></textarea></div>
+        <div class="warn" id="outfitModeNote">当前：整套衣着联动模式。选择整套衣着会自动同步上身、下身、披帛和首饰。</div>
+        <div class="btns">
+          <button class="btn primary" onclick="app.generate()">生成提示词</button>
+          <button class="btn" onclick="app.randomAll()">随机组合</button>
+          <button class="btn green" onclick="app.batch(10)">生成10条变体</button>
+          <button class="btn ghost" onclick="app.copyAll()">复制正向+反向</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="tabs">
+        <button class="tab active" onclick="app.showTab('output',this)">输出</button>
+        <button class="tab" onclick="app.showTab('negativeTab',this)">反向</button>
+        <button class="tab" onclick="app.showTab('batchTab',this)">批量</button>
+        <button class="tab" onclick="app.showTab('libraryTab',this)">素材库</button>
+      </div>
+      <div id="output">
+        <div class="btns" style="margin-bottom:10px"><button class="btn primary" onclick="app.copyAll()">复制正向+反向</button></div>
+        <div id="prompt" class="out"></div>
+        <div style="height:12px"></div>
+        <div class="chipbox" id="chips"></div>
+      </div>
+      <div id="negativeTab" style="display:none">
+        <div class="btns" style="margin-bottom:10px"><button class="btn primary" onclick="app.copy('negative')">复制反向词</button></div>
+        <div id="negative" class="out"></div>
+      </div>
+      <div id="batchTab" style="display:none">
+        <div class="btns" style="margin-bottom:10px"><button class="btn primary" onclick="app.copy('batchOut')">复制批量</button><button class="btn" onclick="app.batch(20)">生成20条</button></div>
+        <div id="batchOut" class="out">点击“生成10条变体”。</div>
+      </div>
+      <div id="libraryTab" style="display:none">
+        <div class="tabs">
+          <button class="tab active" onclick="app.renderLibrary('scenes',this)">环境</button>
+          <button class="tab" onclick="app.renderLibrary('outfits',this)">衣着</button>
+          <button class="tab" onclick="app.renderLibrary('tops',this)">上身</button>
+          <button class="tab" onclick="app.renderLibrary('bottoms',this)">下身</button>
+          <button class="tab" onclick="app.renderLibrary('shawls',this)">披帛</button>
+          <button class="tab" onclick="app.renderLibrary('jewelry',this)">首饰</button>
+        </div>
+        <div id="library" class="library"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+'use strict';
+const DATA={
+faces:[
+ ['清冷东方小脸','28岁中国女性，二次元东方幻想美人，精致小脸，长黑发，清冷柔和眼神，淡雅妆容，微张嘴唇，华丽发饰，珠宝首饰'],
+ ['古典温柔美人','28岁中国女性，二次元中国古典幻想美人，柔和鹅蛋小脸，长发，温柔眼神，珍珠感皮肤，古典气质'],
+ ['冷艳仙门御姐','28岁中国女性，二次元东方幻想御姐，冷艳小脸，修长眼型，长发，高级平静眼神，精致唇妆'],
+ ['甜美猫眼仙子','28岁中国女性，二次元亚洲幻想美人，柔和小圆脸，猫系眼睛，长卷发，淡淡腮红，甜美但高级'],
+ ['异域幻宫美人','28岁中国女性，二次元异域幻想美人，高鼻深目，长棕发，额饰珠宝，神秘高贵气质']
+],
+body:[
+ ['瘦身丰满比例体型','28岁中国女性，二次元夸张瘦身丰满比例比例，超丰满上围，极端巨大的胸部尺寸，胸部远大于正常比例，上围曲线成为视觉重点，胸部是画面绝对视觉中心，细腰，平坦腹部，细手臂，窄肩，修长脖颈，小脸，除胸部外身体保持非常苗条'],
+ ['极端二次元夸张比例','28岁中国女性，极端二次元丰满比例细腰反差，超丰满上围由胸托结构支撑，胸部尺寸远超正常比例，细腰，纤细躯干，窄肩，细手臂，修长脖颈，身体不变胖'],
+ ['丰盈但纤细','28岁中国女性，上身胸部极其丰满，丰满上围配细腰，窄肩，细手臂，柔和女性曲线，幻想插画比例，身体不胖'],
+ ['仙气高挑型','28岁中国女性，高挑纤细幻想美人，丰满上围轮廓由胸托礼服支撑，细腰，长腿，姿态优雅，身体保持苗条']
+],
+ratios:[
+ ['4:5 近景社媒','竖版4:5近景人像构图，脸部和胸托服装结构都清晰'],
+ ['3:4 人设插画','竖版3:4角色设定插画构图'],
+ ['9:16 竖屏底图','竖版9:16手机壁纸构图'],
+ ['1:1 头像封面','方形1:1居中头像封面构图']
+],
+styles:[
+ ['高质量二次元插画','高质量二次元插画，精致幻想角色设计，细腻皮肤光泽，线条干净，布料质感精细'],
+ ['国风幻想厚涂','国风幻想半厚涂插画，柔和笔触，华丽细节，电影感氛围'],
+ ['手游立绘质感','高级手游角色立绘质感，轮廓清晰，服装细节奢华，视觉中心明确'],
+ ['轻小说封面风','轻小说封面插画风，优雅幻想氛围，画面干净，柔和发光'],
+ ['古风收藏级插画','收藏级东方幻想插画，精致珠宝，层叠丝绸，低饱和高级配色']
+],
+usage:[
+ ['稳定出图','稳定出图，单个28岁中国女性主体，脸部清晰，上半身服装结构清晰，头部完整，不多肢体'],
+ ['角色设定','角色设定参考，同一张脸，服装细节可读，背景与人物分离清楚'],
+ ['封面首图','高冲击力社媒封面，主体居中，第一眼视觉焦点强，轮廓清晰'],
+ ['图生视频底图','适合图生视频，身体轮廓清楚，布料层次稳定，手臂可见，袖纱不缠绕']
+],
+sceneGroups:{
+ '古风室内':[
+  ['月下寝殿','月下古风寝殿，雕花木屏风，丝绸纱帘，柔和蓝色夜光'],
+  ['仙宫梳妆台','仙宫梳妆台，铜镜，珍珠首饰，烛光，室内纵深感'],
+  ['檀木书房','古风檀木书房，卷轴，砚台，木窗棂，安静暖光'],
+  ['珠帘内室','珠帘内室，半透明丝绸帷幔，灯笼虚化光点'],
+  ['温泉外廊','温泉外廊，背景薄雾，木地板，灯笼暖光，不是沐浴场景'],
+  ['金殿侧厅','金色宫殿侧厅，华丽柱子，低调暖光，高贵氛围']
+ ],
+ '古风庭院':[
+  ['雪夜庭院','雪夜古风庭院，梅花，石灯，柔和冷光'],
+  ['桃花水榭','桃花水榭，花瓣飘落，薄雾池塘，春日幻想氛围'],
+  ['竹林小院','竹林小院，石板路，绿色竹影，清晨柔光'],
+  ['荷塘廊桥','荷塘廊桥，水面倒影，轻雾，微风'],
+  ['红墙宫巷','红墙宫巷，旧砖墙，深长透视，柔和阳光'],
+  ['雨后青石路','雨后青石路，地面水洼，灯笼倒影']
+ ],
+ '仙侠幻想':[
+  ['云海仙台','云海之上的悬浮仙台，发光符文，远处仙山'],
+  ['冰晶神殿','冰晶神殿，蓝白色冷光，透明水晶柱，雪粒飘浮'],
+  ['星河祭坛','星河祭坛，银河夜空，漂浮花瓣，圆形魔法阵'],
+  ['灵泉洞府','灵泉洞府，蓝色发光泉水，水晶，柔和薄雾'],
+  ['白玉仙桥','云中白玉仙桥，缥缈雾气，金色边缘光'],
+  ['月轮神树','月下巨大神树，银色树叶，柔和魔法光尘']
+ ],
+ '展会COS':[
+  ['幻想展馆','幻想主题展馆，蓝白装饰灯，背景人群轻微虚化，主题展台'],
+  ['漫展摄影区','漫展摄影区，柔光灯，背景游客虚化，干净拍摄背景'],
+  ['游戏展台','游戏展台，幻想角色大屏，蓝色LED灯，浅景深'],
+  ['COS休息区','COS休息区，折叠椅和道具箱虚化，抓拍氛围'],
+  ['蓝白灯走廊','展馆蓝白灯走廊，远处人群，空间纵深干净'],
+  ['签售背景墙','签售活动背景墙，柔和摄影灯，社媒人像氛围']
+ ],
+ '梦幻自然':[
+  ['月光湖畔','月光湖畔，银色水面倒影，芦苇，安静幻想氛围'],
+  ['樱花坡道','樱花坡道，花瓣飘落，柔和粉色光'],
+  ['萤火花海','萤火虫花海，梦幻夜光，浅景深'],
+  ['雪山神社','雪山神社，红色鸟居，冷空气，远处雪峰'],
+  ['海边白纱亭','海边白纱亭，海风，浅蓝天空，丝绸帘幕'],
+  ['黄昏花园','黄昏花园，玫瑰，金色边缘光，梦幻虚化']
+ ]
+},
+outfits:[
+ ['冰蓝深V冰丝胸托仙裙','冰蓝色仙侠幻想服装，深V支撑型胸托，胸部由优雅布料完整包覆，半透明冰丝薄纱外披，胸口贴肤褶皱和水润高光明显，宝石刺绣，腰链'],
+ ['月白若隐若现鲛纱礼裙','月白色鲛纱礼裙，不透明胸托内层，外层半透明雪纺覆盖，若隐若现透出上身曲线，珍珠边饰，长袖纱'],
+ ['霜蓝胸托COS礼服','霜蓝色高端仙侠COS礼服，强支撑胸托结构，深自然乳沟，外层冰丝薄纱，金属胸饰，宝石腰封'],
+ ['银白水光薄纱宫裙','银白色水光薄纱宫裙，缎面胸托完整遮挡，透明披帛叠在胸口外层，柔软贴肤褶皱，银色刺绣'],
+ ['青玉深领胸衣襦裙','青玉色深领襦裙，包裹式胸衣，胸托结构明显，外罩半透明冰丝短披，金色盘扣，腰链'],
+ ['蓝白露肩胸托长裙','蓝白色露肩幻想长裙，支撑型胸托，胸口布料被丰满上围撑起，透明雪纺袖纱，水晶项链'],
+ ['浅紫仙宫薄纱裙','浅紫色仙宫薄纱裙，不透明缎面胸托，外层薄纱轻透，宝石刺绣，层叠飘带'],
+ ['粉雪珠光胸托裙','粉雪色珠光胸托裙，深V但完整覆盖，胸口贴肤反光，透明袖纱，珍珠发饰'],
+ ['墨蓝星纹胸衣裙','墨蓝色星纹胸衣裙，支撑胸托，星砂薄纱外层，深色水光布料，银链装饰'],
+ ['黑金夜蝶礼服','黑金夜蝶幻想礼服，甜心领胸托，半透明黑纱覆盖肩胸外层，金色花纹，蝶翼袖'],
+ ['红莲深V宫廷裙','红莲色深V宫廷礼裙，束身胸托结构，胸口完整遮挡，金色刺绣，薄纱披帛'],
+ ['白金唐风胸衣裙','白金唐风短裙，贴身胸衣上身，胸托撑起明显，半透明披肩，流苏腰饰'],
+ ['冰晶女神战裙','冰晶女神战裙，透明水晶饰片覆盖在不透明胸托外，冰丝披风，银色金属腰封'],
+ ['蓝金祭司胸托袍','蓝金祭司礼袍，胸口结构化面板，深领口但遮挡稳定，外层轻透纱衣，宝石链条'],
+ ['水蓝贝壳鲛人裙','水蓝贝壳鲛人裙，胸托外有贝壳状宝石装饰，半透明海纱披帛，珍珠链'],
+ ['白狐雪绒胸托裙','白狐雪绒披风裙，贴身胸托内裙，雪绒短披风，胸口丝绸反光，冷白色调'],
+ ['玄色薄雾纱裙','玄色薄雾纱裙，黑色不透明胸托，透明黑纱覆盖上身，若隐若现轮廓，暗金饰件'],
+ ['湖绿冰丝腰链裙','湖绿色冰丝幻想裙，包裹式胸托，胸口褶皱清晰，玉石腰链，半透明袖纱'],
+ ['玫瑰金缎面胸托裙','玫瑰金缎面晚礼裙，深自然乳沟，胸托支撑明显，胸口高光，透明肩纱'],
+ ['蓝白莲纹仙裙','蓝白莲纹仙裙，覆盖式胸托上衣，薄纱外披，莲花刺绣，细腰束带'],
+ ['银粉月华纱裙','银粉月华纱裙，珍珠胸托，透明披帛，肩颈肌肤轻透感，柔光珠宝'],
+ ['橘金夕霞宫裙','橘金色夕霞宫裙，缎面胸托，半透明纱袖，暖色高光，金色腰链'],
+ ['雾灰珍珠冰丝裙','雾灰珍珠长裙，结构化胸托，外层冰丝轻纱，珍珠链，柔雾丝绸'],
+ ['白茶慵懒冰丝裙','白茶色冰丝幻想家居裙，柔软垂坠领口，内层胸托完整遮挡，慵懒贴肤褶皱'],
+ ['青蓝鲛纱披帛裙','青蓝鲛纱披帛裙，胸托完整包覆，外层流动海纱，胸口高光，珍珠装饰'],
+ ['雪青水晶胸托礼服','雪青色水晶礼服，宝石蕾丝胸托，半透明冰丝披风，冷光高贵质感'],
+ ['黑曜石宫廷胸衣裙','黑曜石宫廷裙，金边胸托上身，透明袖纱，暗黑幻想珠宝'],
+ ['绯色花嫁短礼服','绯色幻想花嫁短礼服，胸托结构，丝绸蝴蝶结，透明肩纱，花瓣刺绣'],
+ ['月银桂花冰丝裙','月银色桂花裙，金色桂花刺绣，支撑型胸托，半透明披帛，细腰'],
+ ['白玉纱袖旗袍','白玉色旗袍风长裙，亮面胸托，蕾丝纱袖，胸腰曲线清晰，完整遮挡'],
+ ['浅蓝丝缎开衫裙','浅蓝色丝缎开衫裙，不透明贴身胸托内搭，半透明冰丝外袍，柔软水光'],
+ ['紫蓝星砂胸衣裙','紫蓝星砂短礼服，支撑胸托上身，闪光透明袖纱，梦幻夜色'],
+ ['金白凤凰胸托裙','金白凤凰宫廷礼裙，华丽胸口刺绣，窄腰，长飘带，金属饰件'],
+ ['冰粉花神纱裙','冰粉色花神纱裙，花瓣薄纱层，不透明胸托上身，柔光首饰'],
+ ['月蓝锁骨冰丝裙','月蓝色锁骨线冰丝裙，胸托深领，胸部完整包覆，透明外纱若隐若现，银链'],
+ ['冷白珍珠吊带礼裙','冷白珍珠吊带礼裙，支撑型吊带胸托，胸口布料紧致高光，外层雪纺披肩'],
+ ['黛青交领胸衣裙','黛青色交领胸衣裙，交叠布料托起胸部，外层透明纱袖，古风腰封'],
+ ['雾蓝睡莲薄纱裙','雾蓝睡莲薄纱裙，睡莲刺绣胸托，半透明纱衣外层，水润仙气'],
+ ['银黑月影礼裙','银黑月影礼裙，黑色缎面胸托，银色透明披帛，月纹金属饰件'],
+ ['冰蓝高开衫胸托裙','冰蓝高开衫仙裙，内层胸托完整覆盖，外层开衫薄纱半透明，胸口轮廓强'],
+ ['桃粉透明袖襦裙','桃粉色襦裙，深领胸托上身，透明袖纱，柔粉色花瓣刺绣'],
+ ['孔雀蓝宝石胸衣裙','孔雀蓝宝石胸衣裙，硬挺胸托结构，外罩冰丝薄纱，金色链条'],
+ ['白银祭月长裙','白银祭月长裙，胸口覆盖式胸托，透明披帛从肩部垂落，月光高光'],
+ ['紫藤花胸托纱裙','紫藤花胸托纱裙，花藤刺绣，半透明紫色袖纱，胸腰反差明显'],
+ ['赤金舞姬冰丝裙','赤金舞姬冰丝裙，缎面胸托，薄纱飘带，腰链和臂环，华丽不裸露'],
+ ['蓝灰烟雨旗袍裙','蓝灰烟雨旗袍裙，胸托式改良领口，透明薄纱披肩，水墨纹理'],
+ ['奶白珍珠薄纱裙','奶白珍珠薄纱裙，贴身胸托，珍珠链覆盖胸口外层，轻透外纱'],
+ ['冰绿水晶短礼服','冰绿色水晶短礼服，支撑胸托，外层冰丝披帛，宝石腰饰'],
+ ['深紫幻夜女王裙','深紫幻夜女王裙，深V胸托，透明黑紫纱衣覆盖，星光珠宝'],
+ ['浅金云锦胸衣裙','浅金云锦胸衣裙，胸托被胸部撑起明显，云纹刺绣，金色薄纱袖'],
+ ['白蓝雪莲COS裙','白蓝雪莲COS裙，硬挺胸托结构，胸口高光褶皱，雪莲刺绣，透明披肩'],
+ ['烟粉花魁幻想裙','烟粉花魁幻想裙，包裹式胸托，丝绸腰封，半透明外纱，花簪'],
+ ['银湖水光礼服','银湖色水光礼服，缎面胸托，胸口贴肤反射，透明披帛，湖面光泽'],
+ ['黑红妖姬薄纱裙','黑红妖姬薄纱裙，黑色胸托完整遮挡，红色透明外纱，金属链饰'],
+ ['青白云鹤仙裙','青白云鹤仙裙，云鹤刺绣胸托，层叠半透明袖纱，清冷仙气'],
+ ['琥珀金宫灯裙','琥珀金宫灯裙，暖色缎面胸托，外层金纹薄纱，流苏腰饰'],
+ ['冰紫露肩胸托裙','冰紫露肩胸托裙，肩颈露出，胸口完整覆盖，透明纱袖，水晶项圈'],
+ ['白蓝海盐薄纱裙','白蓝海盐薄纱裙，水润胸托，外层轻透雪纺，珍珠腰链'],
+ ['深蓝龙纹礼服','深蓝龙纹礼服，龙纹刺绣胸托，胸部轮廓强，银色薄纱披风'],
+ ['浅粉樱花胸衣裙','浅粉樱花胸衣裙，樱花刺绣，透明袖纱，胸托结构清晰'],
+ ['冷金沙漠公主裙','冷金沙漠公主裙，宝石胸托，半透明金纱外披，腰链，异域幻想'],
+ ['冰白天鹅羽纱裙','冰白天鹅羽纱裙，羽毛边胸托，外层冰丝透明披帛，柔白高光'],
+ ['蓝紫星环祭司裙','蓝紫星环祭司裙，星环金属胸饰覆盖胸托，薄纱外层，魔法感'],
+ ['银红朱砂礼裙','银红朱砂礼裙，红色刺绣胸托，银色透明纱袖，冷艳华丽'],
+ ['淡青玻璃纱裙','淡青玻璃纱裙，透明感外纱覆盖不透明胸托，玻璃水光，细腰'],
+ ['墨绿孔雀羽裙','墨绿色孔雀羽裙，宝石胸托，透明孔雀羽纹披帛，华丽奢感'],
+ ['月白开襟外袍裙','月白开襟外袍裙，内层胸托完整遮挡，外袍半透明，胸口若隐若现轮廓'],
+ ['冰蓝短款战姬裙','冰蓝短款战姬裙，金属饰片压在胸托外，透明披风，强支撑结构'],
+ ['粉金蝴蝶薄纱裙','粉金蝴蝶薄纱裙，蝴蝶刺绣胸托，半透明翅状袖纱，柔粉光'],
+ ['白银圣女胸托袍','白银圣女胸托袍，正面结构化覆盖，外层轻透圣纱，水晶十字饰件'],
+ ['青灰竹影纱裙','青灰竹影纱裙，竹叶刺绣胸托，透明水袖，冷静东方感'],
+ ['红金牡丹宫裙','红金牡丹宫裙，牡丹刺绣胸托，华丽披帛，金色腰封'],
+ ['幽蓝夜水纱裙','幽蓝夜水纱裙，夜色缎面胸托，轻透水光纱，银链和水晶'],
+ ['浅米丝绸胸托裙','浅米色丝绸胸托裙，柔软贴肤高光，透明冰丝外袍，慵懒幻想感'],
+ ['蓝银霜蝶礼裙','蓝银霜蝶礼裙，霜蝶刺绣胸托，透明蓝纱披肩，冰晶饰件'],
+ ['紫金幻宫胸衣裙','紫金幻宫胸衣裙，宝石硬挺胸托，透明紫纱，金色宫廷纹饰'],
+ ['白粉绒光仙裙','白粉绒光仙裙，柔软胸托，外层雾面薄纱，珍珠头饰'],
+ ['青金凤尾礼裙','青金凤尾礼裙，凤尾刺绣胸托，长飘带，半透明袖纱'],
+ ['黑银冷月胸托裙','黑银冷月胸托裙，冷月银饰，透明黑纱外披，强烈胸腰反差'],
+ ['冰蓝水母纱裙','冰蓝水母纱裙，半透明外纱层叠，内部胸托完整遮挡，水光质感'],
+ ['白金神女仪式裙','白金神女仪式裙，仪式感胸托面板，透明披帛，金色宝石腰链']
+],
+tops:[
+ ['深V支撑型胸托','深V支撑型胸托上身，胸部完整包覆，胸口布料被丰满上围撑起，深自然乳沟清晰，不露点'],
+ ['冰丝外纱胸衣','不透明胸托内层，外罩半透明冰丝胸衣外纱，若隐若现透出轮廓，关键部位遮挡'],
+ ['交领包裹胸托','交领包裹式胸托，布料交叠托起胸部，腰线收紧，胸腰反差强'],
+ ['宝石刺绣胸衣','宝石刺绣类束身胸衣，硬挺支撑，胸部轮廓强烈，华丽幻想感'],
+ ['缎面抹胸内衬','缎面抹胸式内衬，完整覆盖，胸口有贴肤高光和褶皱张力'],
+ ['挂脖胸托上身','挂脖式胸托上身，领口深但稳定，肩颈清晰，细腰明显'],
+ ['唐风短上衣胸托','唐风短上衣，内部胸托支撑，刺绣边缘，胸部视觉占比强'],
+ ['旗袍立领胸托','旗袍立领贴身上身，胸口结构支撑，亮面丝绸，高级冷艳'],
+ ['薄纱罩衫内搭','半透明薄纱罩衫覆盖不透明胸托，轻透但不走光，外层若隐若现'],
+ ['金属饰片胸托','金属饰片覆盖在胸托外层，支撑结构清楚，幻想战姬风']
+],
+bottoms:[
+ ['长款流纱裙摆','长款流纱裙摆，半透明外纱覆在不透明内衬上'],
+ ['高腰收腰短裙','高腰收腰幻想短裙，不透明内衬，精致飘带边缘'],
+ ['宫廷拖尾长裙','宫廷拖尾长裙，丝绸褶皱，落地优雅轮廓'],
+ ['旗袍高叉裙摆','旗袍风高开叉裙摆，腿部线条克制展示，整体完整遮挡'],
+ ['敦煌飘带裙摆','敦煌飘带裙摆，丝带飘动，舞蹈感线条'],
+ ['水波纹纱裙','水波纹雪纺裙，透明外层覆在内衬上'],
+ ['百褶短纱裙','百褶短纱裙，不透明底裙，干净二次元轮廓'],
+ ['丝缎包臀长裙','丝缎包臀长裙，细腰轮廓，优雅曲线'],
+ ['云纹宽摆裙','云纹宽摆裙，层叠丝绸，漂浮幻想感'],
+ ['花瓣层叠裙','花瓣层叠裙，柔和渐变色，精致幻想设计']
+],
+shawls:[
+ ['冰丝薄纱披帛','半透明冰丝雪纺披帛，水润高光，柔软外层轻透质感'],
+ ['长款水袖披帛','长款水袖披帛，布料飘动，优雅动态线条'],
+ ['月白轻纱外袍','月白色轻纱外袍，覆盖在不透明内搭外，柔和透明质感'],
+ ['蓝白鲛纱披肩','蓝白色鲛纱披肩，光泽细腻，梦幻水光'],
+ ['黑纱薄雾披肩','黑色薄雾纱披肩，外层透明，神秘冷艳'],
+ ['金纹半透明披帛','金纹半透明披帛，边缘华丽，宫廷奢华'],
+ ['羽毛边外披','羽毛边外披，柔软幻想质感'],
+ ['无披帛','无披帛，重点展示胸托结构和珠宝']
+],
+jewelry:[
+ ['蓝宝石发饰','冰蓝宝石发饰，水晶耳坠，精致额链'],
+ ['金色步摇','金色步摇发簪，流苏垂饰，珍珠耳环'],
+ ['珍珠项链','珍珠颈链，小巧耳环，柔和光泽'],
+ ['银色发簪','银色发簪，细链耳饰，干净幻想感'],
+ ['水晶耳坠','水晶长耳坠，宝石额饰，细微闪光'],
+ ['玉佩腰饰','玉佩腰饰，细腰链装饰在衣服外层'],
+ ['花神发冠','花神发冠，细小珍珠链，优雅幻想气质'],
+ ['无明显首饰','无明显首饰，画面重点放在角色和服装结构']
+],
+poses:[
+ ['近景微前倾','近景半身姿势，身体微微前倾，慵懒优雅，脸部和胸托上身都清晰'],
+ ['侧身凝视','上半身三分之四侧身，柔和看向镜头，肩线优雅'],
+ ['轻扶披帛','一只手轻扶肩侧披帛，动作放松优雅'],
+ ['抬手整理发饰','一只手整理发饰，眼神平静，手指清楚'],
+ ['倚靠屏风','轻轻倚靠古风屏风，腰线自然，姿态高贵'],
+ ['半坐榻边','坐在宫廷软榻边缘，上半身转向镜头，优雅不暴露'],
+ ['回眸低头','回眸并微微低头，长发垂落，柔和浪漫'],
+ ['双手交叠腰前','双手轻轻交叠在腰前，正面优雅人像'],
+ ['风中披帛飘起','披帛被风吹起，手臂自然展开，轮廓干净'],
+ ['胸托服装展示','近景展示胸托礼服工艺和冰丝材质，时尚表现力但不露点']
+],
+cameras:[
+ ['4:5近景半身','竖版4:5近景半身构图，主体居中，脸部清晰，胸托服装结构清晰'],
+ ['胸衣结构特写','近景人像构图，脸部清晰，胸衣蕾丝和宝石细节清楚'],
+ ['半身到大腿','半身到大腿构图，腰线和服装结构可读'],
+ ['侧前三分之四','侧前三分之四角度，脸部和身体轮廓都可见'],
+ ['轻俯视近景','轻微俯视近景，小脸清晰，上身服装结构清楚'],
+ ['低角度华丽感','轻微低角度幻想人像，布料和珠宝更华丽，脸部仍清晰'],
+ ['长焦浅景深','长焦浅景深，背景柔和虚化，主体分离清楚'],
+ ['封面居中构图','封面式居中构图，第一眼视觉焦点强，表情清楚']
+],
+lights:[
+ ['冰晶蓝白柔光','冰晶蓝白柔光，冰丝布料有水润高光，反射细腻'],
+ ['月光银边光','月光银色边缘光，皮肤柔光，安静夜色氛围'],
+ ['宫灯暖光','宫灯暖光，金色高光柔和，阴影细腻'],
+ ['晨雾柔光','晨雾柔光，低对比，仙气缥缈'],
+ ['花瓣粉白光','花瓣粉白柔光，梦幻虚化，浪漫色调'],
+ ['星河冷光','星河冷光，少量魔法粒子，画面对比干净'],
+ ['雪夜冷柔光','雪夜冷柔光，蓝色阴影柔和，安静优雅'],
+ ['展馆蓝白灯','展馆蓝白灯，写实清晰人像光，浅景深']
+],
+quickPresets:[
+ ['冰蓝胸托漫展','清冷东方小脸','瘦身丰满比例体型','展会COS','幻想展馆','冰蓝胸托礼服','近景微前倾','4:5近景半身','冰晶蓝白柔光','高质量二次元插画'],
+ ['月下寝殿薄纱','古典温柔美人','极端二次元夸张比例','古风室内','月下寝殿','月白冰丝襦裙','半坐榻边','4:5近景半身','月光银边光','国风幻想厚涂'],
+ ['冰晶神殿女神','冷艳仙门御姐','瘦身丰满比例体型','仙侠幻想','冰晶神殿','霜花水钻宫裙','轻扶披帛','胸衣结构特写','冰晶蓝白柔光','手游立绘质感'],
+ ['桃花水榭仙子','甜美猫眼仙子','丰盈但纤细','古风庭院','桃花水榭','粉雪珠光纱裙','回眸低头','半身到大腿','花瓣粉白光','轻小说封面风'],
+ ['黑金玄鸟宫裙','冷艳仙门御姐','极端二次元夸张比例','古风室内','金殿侧厅','黑金玄鸟礼裙','侧身凝视','侧前三分之四','宫灯暖光','古风收藏级插画'],
+ ['星河祭司礼服','异域幻宫美人','瘦身丰满比例体型','仙侠幻想','星河祭坛','蓝金祭司礼服','双手交叠腰前','封面居中构图','星河冷光','手游立绘质感'],
+ ['雪夜白狐披风','清冷东方小脸','丰盈但纤细','古风庭院','雪夜庭院','白狐雪绒披风裙','倚靠屏风','长焦浅景深','雪夜冷柔光','国风幻想厚涂'],
+ ['鲛纱海边白亭','甜美猫眼仙子','瘦身丰满比例体型','梦幻自然','海边白纱亭','青蓝鲛人披帛裙','风中披帛飘起','半身到大腿','晨雾柔光','高质量二次元插画'],
+ ['紫晶女巫洞府','异域幻宫美人','极端二次元夸张比例','仙侠幻想','灵泉洞府','紫晶女巫礼裙','抬手整理发饰','4:5近景半身','星河冷光','古风收藏级插画'],
+ ['白玉仙桥月银','古典温柔美人','瘦身丰满比例体型','仙侠幻想','白玉仙桥','月银桂花裙','胸托服装展示','胸衣结构特写','月光银边光','手游立绘质感']
+]
+};
+
+(()=>{
+const EXTRA_STANDARDS=[
+ ['丰满夸张胸托标准','服装必须围绕丰满夸张胸部设计，深V或交领胸托稳定承托，胸口布料被丰满上围撑起，形成真实张力褶皱和深自然乳沟，胸腰反差极强，关键部位完整遮挡，不露点，不露乳晕，不透明裸露'],
+ ['冰丝薄纱高级标准','不透明胸托内层完整覆盖关键部位，外层半透明冰丝、鲛纱或雪纺只制造轮廓透感，边缘带刺绣宝石和珍珠链，布料有水润光泽、真实厚薄变化和贴肤褶皱'],
+ ['近景胸像冲击标准','脸部和胸托服装同时作为视觉中心，胸部占据下半画面较大面积，镜头靠近但头部完整，胸口结构、宝石、蕾丝、披帛层次清楚，高级时尚表现力但非色情'],
+ ['仙侠COS稳定标准','适合图生图和图生视频，胸托边缘清晰，袖纱不缠绕手臂，披帛和飘带方向明确，腰封不穿模，手指清楚，服装层次稳定可读'],
+ ['古风奢华礼服标准','金线刺绣、玉佩、流苏、宝石胸饰、宽腰封与半透明外纱组合，整体像高端古风幻想礼服，不是普通汉服，重点突出胸托结构和华丽材质'],
+ ['轻度裸露克制标准','肩颈、锁骨、上胸留白明显，深领口和侧腰镂空可以存在，但胸部关键区域由不透明胸托和刺绣面板完整遮挡，时尚表现力靠剪裁和材质表达'],
+ ['油亮皮肤插画标准','皮肤有柔和油亮高光和细腻色差，肩颈线条清楚，胸口受布料挤压处有自然阴影，不要塑料皮肤，不要平面贴图感'],
+ ['水润宝石质感标准','胸托、腰链、耳饰和发冠使用水晶、玉石、珍珠、金属边框，光点细碎但不脏，冰丝与宝石反光互相呼应，画面华丽干净'],
+ ['敦煌舞姬标准','短上衣胸托、飘带、臂环、腰链、轻纱裙摆组合，舞蹈姿态清楚，胸托稳定承托丰满胸部，飘带有方向感，整体华丽但不走光'],
+ ['宫廷神女标准','白金、月银、冰蓝、青绿等高级配色，长裙拖尾、宽腰封、透明披帛、神女发冠，丰满上围由礼服结构承托，气质端庄妩媚'],
+ ['暗黑妖姬标准','黑金、黑红、深紫、墨蓝配色，透明黑纱覆盖不透明胸托，金属链条和暗色宝石强化胸腰线条，冷艳高级，不低俗'],
+ ['写实COS摄影标准','即使是二次元古风，也保留真人COS写真逻辑：真实布料重力、胸托支撑、皮肤柔光、浅景深、背景轻微虚化、服装工艺清晰']
+];
+const EXTRA_OUTFITS=[
+ ['冰蓝极深V宝石胸托仙裙','冰蓝色极深V宝石胸托仙裙，不透明胸托完整包覆丰满上围，胸口布料被撑起形成强烈张力，外层半透明冰丝披帛，银蓝宝石刺绣，细腰宽腰封，不露点不走光'],
+ ['月白超低领鲛纱神女裙','月白色超低领鲛纱神女裙，胸托式不透明内层，外罩珍珠光半透明鲛纱，锁骨和肩颈留白明显，胸部轮廓巨大但遮挡稳定，月银流苏腰链'],
+ ['黑金深领妖姬薄纱裙','黑金深领妖姬薄纱裙，硬挺黑色胸托承托极丰满胸部，透明黑纱外罩，金色链条沿胸腰走线，暗金刺绣，高级冷艳，关键部位完整遮挡'],
+ ['红莲挤压感胸托宫裙','红莲色挤压感胸托宫裙，交叠丝绸向内聚拢并向上承托丰满胸部，深自然乳沟明显，金线牡丹刺绣，透明红纱水袖，细腰宫廷腰封'],
+ ['白金圣女低胸礼服','白金圣女低胸礼服，雕花胸托面板完整覆盖关键区域，外层轻透圣纱从肩部垂落，珍珠链覆盖胸口外缘，丰满上围与极细腰形成强视觉反差'],
+ ['青玉交领丰满比例襦裙','青玉色交领丰满比例襦裙，交领布料紧密包裹并托起丰满上围，胸口褶皱清楚，半透明青纱短披，玉佩腰链，古典但更时尚表现力'],
+ ['紫晶幻宫胸衣长裙','紫晶幻宫胸衣长裙，紫色宝石胸衣硬挺支撑，胸部被胸托撑起饱满突出，透明紫纱袖，金色宫廷纹饰，深紫高贵氛围'],
+ ['银蓝水母冰丝礼裙','银蓝水母冰丝礼裙，层叠半透明水母纱覆盖不透明胸托，胸口水润高光明显，流动飘带像水波，腰线极细，仙气梦幻'],
+ ['粉金蝴蝶胸托短裙','粉金蝴蝶胸托短裙，蝴蝶刺绣包覆式胸托，外层翅状薄纱袖，胸部撑起胸衣边缘形成自然阴影，短裙不透明内衬，轻盈社媒封面感'],
+ ['墨蓝星砂女王礼裙','墨蓝星砂女王礼裙，星砂黑蓝胸托，透明夜色纱衣覆盖肩胸外层，银链和水晶垂饰强调胸腰曲线，冷艳高级'],
+ ['冰白狐裘胸托宫裙','冰白狐裘胸托宫裙，白色丝缎胸托完整遮挡，雪绒短披风围绕肩颈，胸部轮廓巨大，银白水晶腰封，雪夜神女气质'],
+ ['金红敦煌舞姬胸托裙','金红敦煌舞姬胸托裙，宝石短上衣稳定承托丰满胸部，赤金飘带、臂环、腰链、半透明纱裙层叠，舞蹈姿态清楚，不走光'],
+ ['冷银月影开衫仙裙','冷银月影开衫仙裙，内层低领胸托完整覆盖，外层半透明开衫沿胸腰垂落，月纹银饰，胸口布料贴肤褶皱和水光明显'],
+ ['孔雀蓝羽纹胸衣裙','孔雀蓝羽纹胸衣裙，孔雀羽宝石胸托，透明蓝绿纱披帛，金链沿胸下和腰线装饰，丰满胸部作为画面中心，华丽奢感'],
+ ['桃粉花魁薄纱胸托裙','桃粉花魁薄纱胸托裙，包裹式粉色胸托，花瓣刺绣边缘，半透明袖纱与长飘带，胸部巨大但衣料稳定，高级柔媚'],
+ ['白茶慵懒开襟冰丝裙','白茶色慵懒开襟冰丝裙，低垂领口配不透明胸托内层，外袍半透明贴肤，胸口柔软褶皱和自然重量感明显，生活化古风幻想'],
+ ['苍青竹影低领胸托裙','苍青竹影低领胸托裙，竹叶刺绣胸托，青灰透明水袖，胸腰反差明显，冷静东方美人气质，轻薄但关键部位遮挡'],
+ ['赤黑玄鸟高叉礼裙','赤黑玄鸟高叉礼裙，玄鸟金属胸饰覆盖胸托，深领口、细腰、高叉长裙摆，黑红薄纱披帛，冷艳战姬感'],
+ ['蓝白雪莲水钻COS裙','蓝白雪莲水钻COS裙，硬挺水钻胸托被丰满胸部撑起，雪莲刺绣、透明蓝纱披肩、冰晶发饰，漫展成片风'],
+ ['浅金云锦胸托胸衣裙','浅金云锦胸托胸衣裙，云锦硬挺胸衣托住超丰满胸部，金色薄纱袖，宽腰封强收腰，胸口高光褶皱和宝石边缘清晰'],
+ ['幽紫藤花胸托纱裙','幽紫藤花胸托纱裙，藤花刺绣沿胸托边缘展开，紫色半透明袖纱，珍珠流苏发饰，胸部巨大但画面优雅'],
+ ['青绿玉兔月宫礼裙','青绿色玉兔月宫礼裙，玉石胸托面板完整遮挡，月白半透明披帛，银色腰链，细腰长裙，月宫幻想气质'],
+ ['胭脂红珠帘宫装裙','胭脂红珠帘宫装裙，红色深V胸托配珠帘胸饰，金色刺绣腰封，半透明披帛从手臂垂落，丰满胸部强视觉中心'],
+ ['冰黑夜雪胸托长裙','冰黑夜雪胸托长裙，黑色缎面胸托和冰蓝透明雪纱叠层，冷光水晶链条，极细腰，暗色高级幻想感']
+];
+const EXTRA_TOPS=[
+ ['超深V宝石胸托','超深V宝石胸托上身，不透明内层完整遮挡，胸部被向内聚拢并向上承托，深自然乳沟清晰，宝石边缘压住布料张力'],
+ ['交叠挤压胸托','交叠挤压胸托上身，丝绸从两侧包裹丰满上围，形成自然挤压阴影和褶皱，细腰收紧，时尚表现力但不露点'],
+ ['珠帘覆盖胸托','珠帘覆盖式胸托，胸托稳定遮挡关键区域，外层珍珠链和水晶链垂落在胸口边缘，华丽高级'],
+ ['开襟低领内胸托','开襟低领外袍配不透明内胸托，肩颈和锁骨留白明显，胸口轮廓清楚但不透明裸露'],
+ ['敦煌短上衣胸托','敦煌舞姬短上衣胸托，宝石刺绣边缘，臂环与飘带配套，胸部支撑稳定，舞蹈动作不走光'],
+ ['水钻硬挺胸衣','水钻硬挺胸衣，上身结构像幻想COS礼服，胸托边缘清晰，水钻反光和蕾丝细节可读']
+];
+const EXTRA_BOTTOMS=[
+ ['高叉拖尾纱裙','高叉拖尾纱裙，不透明内衬，外层半透明流纱，腿部线条克制展示，拖尾方向清楚'],
+ ['敦煌飘带短裙','敦煌飘带短裙，不透明底裙，金色腰链和长飘带，适合舞蹈动作，轮廓稳定'],
+ ['月宫垂坠长裙','月宫垂坠长裙，重磅丝绸内层，外罩薄纱，细腰到裙摆线条流畅'],
+ ['包臀鱼尾宫裙','包臀鱼尾宫裙，古风纹样丝缎，腰臀曲线清楚，裙摆带半透明拖尾'],
+ ['珠链高腰短裙','珠链高腰短裙，不透明内衬，珍珠链沿腰线垂落，适合近景半身到大腿构图']
+];
+const EXTRA_SHAWLS=[
+ ['极薄冰丝开襟外袍','极薄冰丝开襟外袍，外层半透明但只负责氛围，内层胸托完整遮挡，边缘有金线刺绣'],
+ ['珠光鲛纱披肩','珠光鲛纱披肩，带水面反光和细碎珍珠点，垂在肩臂两侧，胸口结构仍清楚'],
+ ['敦煌长飘带披帛','敦煌长飘带披帛，赤金渐变薄纱，沿手臂和腰侧飘动，方向明确不遮脸'],
+ ['黑金薄雾外纱','黑金薄雾外纱，透明黑纱覆盖肩臂，金色刺绣边，暗黑妖姬质感']
+];
+const EXTRA_JEWELRY=[
+ ['水钻胸链发冠','水钻胸链、冰晶发冠、长耳坠，链条沿胸托边缘垂落但不遮挡结构'],
+ ['玉石腰链步摇','玉石腰链、金色步摇、流苏耳坠，突出细腰和古风华丽感'],
+ ['黑金妖姬饰件','黑金发簪、暗色宝石耳坠、金属胸链，冷艳高级幻想气质'],
+ ['珍珠花神套装','珍珠花冠、花瓣耳坠、细珍珠颈链，柔粉梦幻但服装结构清楚']
+];
+const EXTRA_POSES=[
+ ['双手轻托披帛','双手轻托披帛边缘，肩颈打开，胸托结构完整可见，表情高级柔媚'],
+ ['侧身扶腰近景','侧身扶腰近景，细腰和丰满胸部反差明显，脸看向镜头，姿态端庄'],
+ ['抬臂露肩凝视','一只手抬起整理发簪，肩颈和锁骨清楚，胸托边缘和宝石细节可读'],
+ ['舞姬转身定格','敦煌舞姬转身定格，飘带形成弧线，脸和胸托仍清楚，动作不走光'],
+ ['倚窗低头抚链','倚靠古风窗棂，低头轻抚胸前珠链，近景半身，胸托结构清楚'],
+ ['正面压迫感胸像','正面近景胸像，脸部清晰，胸部占据画面下半区域，强视觉冲击但完整遮挡']
+];
+const EXTRA_CAMERAS=[
+ ['近景胸像压迫构图','近景胸像压迫构图，脸部和巨丰满曲线托同时居中，镜头很近，胸口服装结构占据下半画面，非色情'],
+ ['半身到腰封特写','半身到腰封特写，胸托、腰封、珠链和披帛层次全部清楚，背景浅景深'],
+ ['低角度神女半身','轻微低角度神女半身，胸托和披帛显得华丽有重量，脸部仍完整清晰'],
+ ['漫展COS近拍','漫展COS近拍，真实摄影区浅景深，胸托工艺、发饰、宝石和薄纱材质可读']
+];
+const EXTRA_PRESETS=[
+ ['极深V冰蓝神女','清冷东方小脸','瘦身丰满比例体型','展会COS','幻想展馆','冰蓝极深V宝石胸托仙裙','正面压迫感胸像','近景胸像压迫构图','冰晶蓝白柔光','手游立绘质感'],
+ ['黑金妖姬窗边','冷艳仙门御姐','极端二次元夸张比例','古风室内','珠帘内室','黑金深领妖姬薄纱裙','侧身扶腰近景','半身到腰封特写','宫灯暖光','古风收藏级插画'],
+ ['红莲宫裙胸托','古典温柔美人','瘦身丰满比例体型','古风庭院','红墙宫巷','红莲挤压感胸托宫裙','倚窗低头抚链','近景胸像压迫构图','花瓣粉白光','国风幻想厚涂'],
+ ['白金圣女月光','清冷东方小脸','丰盈但纤细','仙侠幻想','白玉仙桥','白金圣女低胸礼服','双手轻托披帛','低角度神女半身','月光银边光','手游立绘质感'],
+ ['敦煌舞姬赤金','异域幻宫美人','极端二次元夸张比例','梦幻自然','黄昏花园','金红敦煌舞姬胸托裙','舞姬转身定格','半身到腰封特写','宫灯暖光','国风幻想厚涂'],
+ ['紫晶幻宫女王','异域幻宫美人','瘦身丰满比例体型','仙侠幻想','灵泉洞府','紫晶幻宫胸衣长裙','抬臂露肩凝视','4:5近景半身','星河冷光','古风收藏级插画'],
+ ['白茶慵懒冰丝','古典温柔美人','丰盈但纤细','古风室内','月下寝殿','白茶慵懒开襟冰丝裙','近景微前倾','4:5近景半身','月光银边光','高质量二次元插画'],
+ ['孔雀蓝宝石胸衣','冷艳仙门御姐','瘦身丰满比例体型','古风庭院','荷塘廊桥','孔雀蓝羽纹胸衣裙','轻扶披帛','半身到腰封特写','晨雾柔光','手游立绘质感'],
+ ['蓝白雪莲漫展','甜美猫眼仙子','极端二次元夸张比例','展会COS','漫展摄影区','蓝白雪莲水钻COS裙','胸托服装展示','漫展COS近拍','展馆蓝白灯','高质量二次元插画'],
+ ['浅金云锦宫装','古典温柔美人','瘦身丰满比例体型','古风室内','金殿侧厅','浅金云锦胸托胸衣裙','双手交叠腰前','近景胸像压迫构图','宫灯暖光','古风收藏级插画']
+];
+DATA.outfitStandards=EXTRA_STANDARDS;
+DATA.outfits=[...EXTRA_OUTFITS,...DATA.outfits];
+DATA.tops=[...EXTRA_TOPS,...DATA.tops];
+DATA.bottoms=[...EXTRA_BOTTOMS,...DATA.bottoms];
+DATA.shawls=[...EXTRA_SHAWLS,...DATA.shawls];
+DATA.jewelry=[...EXTRA_JEWELRY,...DATA.jewelry];
+DATA.poses=[...EXTRA_POSES,...DATA.poses];
+DATA.cameras=[...EXTRA_CAMERAS,...DATA.cameras];
+DATA.quickPresets=[...EXTRA_PRESETS,...DATA.quickPresets];
+})();
+
+// subtractive cleanup: keep the strongest, least-conflicting guofeng modules.
+(function subtractiveGuofengCleanup(){
+ const uniq=a=>{const seen=new Set();return a.filter(x=>{const k=x[0];if(seen.has(k))return false;seen.add(k);return true})};
+ DATA.outfitStandards=uniq(DATA.outfitStandards).slice(0,7);
+ DATA.outfits=uniq(DATA.outfits).filter(x=>/(胸托|冰|纱|旗袍|敦煌|云锦|凤纹|花魁|妖姬|女王|花神|玉佩|雪莲|月银|宫装|鲛纱)/.test(x[0]+x[1])).slice(0,72);
+ DATA.tops=uniq(DATA.tops).slice(0,8);
+ DATA.bottoms=uniq(DATA.bottoms).slice(0,8);
+ DATA.shawls=uniq(DATA.shawls).slice(0,7);
+ DATA.jewelry=uniq(DATA.jewelry).filter(x=>!/(无明显)/.test(x[0])).slice(0,8);
+ DATA.poses=uniq(DATA.poses).slice(0,8);
+ DATA.cameras=uniq(DATA.cameras).slice(0,7);
+ DATA.quickPresets=uniq(DATA.quickPresets).slice(0,16);
+})();
+const app={
+ customParts:false,
+ init(){
+  this.fill('face',DATA.faces);this.fill('body',DATA.body);this.fill('ratio',DATA.ratios);
+  this.fill('style',DATA.styles);this.fill('usage',DATA.usage);this.fill('outfitStandard',DATA.outfitStandards);this.fill('outfit',DATA.outfits);
+  this.fill('topwear',DATA.tops);this.fill('bottom',DATA.bottoms);this.fill('shawl',DATA.shawls);this.fill('jewelry',DATA.jewelry);
+  this.fill('pose',DATA.poses);this.fill('camera',DATA.cameras);this.fill('light',DATA.lights);
+  this.fill('quickPreset',DATA.quickPresets.map(x=>[x[0],x[0]]));
+  const sg=document.getElementById('sceneGroup');Object.keys(DATA.sceneGroups).forEach(k=>sg.add(new Option(k,k)));
+  this.refreshScene();this.applyOutfitLink();this.generate();this.renderLibrary('scenes');
+ },
+ fill(id,arr){const el=document.getElementById(id);el.innerHTML='';arr.forEach(x=>el.add(new Option(x[0],x[1])));},
+ val(id){return document.getElementById(id).value},
+ text(id){const e=document.getElementById(id);return e.options[e.selectedIndex]?.text||''},
+ setByText(id,name){const e=document.getElementById(id);for(let i=0;i<e.options.length;i++){if(e.options[i].text===name){e.selectedIndex=i;return true}}return false},
+ setNum(id,v){document.getElementById(id).textContent=v},
+ refreshScene(){this.fill('scene',DATA.sceneGroups[this.val('sceneGroup')]);},
+ markCustomParts(){this.customParts=true;document.getElementById('outfitModeNote').textContent='当前：部件自定义模式。你手动改过上身/下身/披帛/首饰，整套衣着不再强制覆盖部件。';},
+ applyOutfitLink(){
+ if(this.customParts)return;
+ const outfit=this.text('outfit');
+  if(outfit.includes('敦煌')||outfit.includes('舞姬')){this.setByText('topwear','敦煌短上衣胸托');this.setByText('bottom','敦煌飘带短裙');this.setByText('shawl','敦煌长飘带披帛');this.setByText('jewelry','玉石腰链步摇');}
+  else if(/黑金|妖姬|黑红|玄鸟|夜雪|黑曜|银黑|玄色|暗黑/.test(outfit)){this.setByText('topwear','水钻硬挺胸衣');this.setByText('bottom','高叉拖尾纱裙');this.setByText('shawl','黑金薄雾外纱');this.setByText('jewelry','黑金妖姬饰件');}
+  else if(/白金|圣女|神女|月宫|祭月|月银|玉兔/.test(outfit)){this.setByText('topwear','珠帘覆盖胸托');this.setByText('bottom','月宫垂坠长裙');this.setByText('shawl','珠光鲛纱披肩');this.setByText('jewelry','珍珠花神套装');}
+  else if(/交领|青玉|黛青|襦裙/.test(outfit)){this.setByText('topwear','交叠挤压胸托');this.setByText('bottom','高腰收腰短裙');this.setByText('shawl','极薄冰丝开襟外袍');this.setByText('jewelry','玉石腰链步摇');}
+  else if(/宝石|水钻|紫晶|孔雀|胸衣|胸托/.test(outfit)){this.setByText('topwear','超深V宝石胸托');this.setByText('bottom','高叉拖尾纱裙');this.setByText('shawl','珠光鲛纱披肩');this.setByText('jewelry','水钻胸链发冠');}
+  else if(/开襟|白茶|慵懒|外袍/.test(outfit)){this.setByText('topwear','开襟低领内胸托');this.setByText('bottom','包臀鱼尾宫裙');this.setByText('shawl','极薄冰丝开襟外袍');this.setByText('jewelry','珍珠项链');}
+  else if(outfit.includes('冰')||outfit.includes('霜')||outfit.includes('雪')){this.setByText('topwear','深V胸托结构');this.setByText('bottom','长款流纱裙摆');this.setByText('shawl','冰丝薄纱披帛');this.setByText('jewelry','蓝宝石发饰');}
+  else if(outfit.includes('旗袍')){this.setByText('topwear','旗袍立领胸托');this.setByText('bottom','旗袍高叉裙摆');this.setByText('shawl','月白轻纱外袍');this.setByText('jewelry','玉佩腰饰');}
+ },
+ strengthBust(){
+  const n=+this.val('bustLevel');
+  if(n>=26)return '(超丰满上围:2.7), (胸部第一视觉中心:2.45), (深自然乳沟:2.1), (支撑型胸托张力:2.15), (极细腰:2.2), (身体不胖:2.15), (小脸:1.75)';
+  if(n>=22)return '(超丰满上围:2.45), (胸托结构撑起胸部:2.05), (强胸腰反差:2.0), (细腰:1.9), (身体不胖:1.85)';
+  if(n>=18)return '(丰满上围:2.05), (胸部视觉占比大:1.9), (细腰:1.75), (胸腰反差明显:1.8)';
+  if(n>=14)return '(丰满丰满曲线:1.7), (细腰:1.5), (胸托轮廓清楚:1.55)';
+  return '(胸部饱满:1.35), (腰线清晰:1.25)';
+ },
+ strengthFabric(){
+  const n=+this.val('fabricLevel');
+  if(n>=10)return '(冰丝薄纱外层:1.8), (不透明胸托内层:1.75), (柔软贴肤褶皱:1.65), (水润高光:1.55)';
+  if(n>=8)return '(半透明冰丝外层:1.55), (不透明内层遮挡:1.5), (柔软褶皱:1.4)';
+  if(n>=6)return '(冰丝雪纺质感:1.35), (轻透外纱:1.25)';
+  return '(柔软丝绸质感:1.15)';
+ },
+ generate(){
+  const parts=[
+   this.val('style'),
+   this.val('face'),
+   this.val('body'),
+   this.strengthBust(),
+   this.val('outfitStandard'),
+   this.val('outfit'),
+   this.val('topwear'),
+   this.val('bottom'),
+   this.val('shawl'),
+   this.val('jewelry'),
+   this.strengthFabric(),
+   this.val('pose'),
+   this.val('scene'),
+   this.val('camera'),
+   this.val('light'),
+   this.val('usage'),
+   this.val('ratio'),
+   '28岁中国女性，精致小脸，柔和妆容，长黑发，中式发饰与珠宝，古风幻想COS写真质感。夸张丰满胸部与细腰形成强烈反差，身体不胖；完整整套古风礼服，深V胸托但关键部位完整遮挡，冰丝薄纱只做外层氛围，不露点不走光；胸托结构、布料张力、刺绣宝石和披帛层次清晰',
+   this.val('subjectExtra'),
+   this.val('custom')
+  ].filter(Boolean);
+  if(document.getElementById('stable').checked){
+   parts.push('单个28岁中国女性角色，脸部清晰，眼睛清晰，手部清楚，人体结构干净，没有多余手臂，没有多余手指，脸部和胸托服装结构都可读，背景轻微虚化');
+  }
+  document.getElementById('prompt').textContent=parts.join(', ');
+  const neg=[
+    '未成年，儿童，青少年，幼态，裸体，明确裸露，露点，乳晕，生殖器暴露，关键部位透视，走光，低俗姿势，不雅姿势，成人行为，哺乳，低俗成人内容，透明衣服露出关键部位',
+    '小胸，平胸，普通胸部，胸部不够大，胸部不明显，胸部视觉占比低，胸部被厚衣服完全遮住，没有乳沟，没有胸托结构，胸托太平，服装没有支撑感，身体变胖，肥胖，粗腰，腹部赘肉，粗手臂，宽肩，厚肩，脸变大，男性化身体，显老，丑脸，胸部畸形，胸部不对称',
+    '人体结构错误，多余肢体，多余手指，缺少手指，手部崩坏，脖子扭曲，脸部变形，斗鸡眼，低清晰度，模糊，水印，文字，logo，背景杂乱'
+  ];
+  if(!document.getElementById('safe').checked)neg.shift();
+  document.getElementById('negative').textContent=neg.join(', ');
+  document.getElementById('chips').innerHTML=[
+   this.text('face'),this.text('body'),this.text('outfitStandard'),this.text('outfit'),this.text('scene'),this.text('camera'),this.text('light')
+  ].map(x=>'<span class="chip">'+x+'</span>').join('');
+ },
+ applyPreset(){
+  const name=this.text('quickPreset');const p=DATA.quickPresets.find(x=>x[0]===name);if(!p)return;
+  this.setByText('face',p[1]);this.setByText('body',p[2]);this.setByText('sceneGroup',p[3]);this.refreshScene();this.setByText('scene',p[4]);this.setByText('outfit',p[5]);
+  this.setByText('pose',p[6]);this.setByText('camera',p[7]);this.setByText('light',p[8]);this.setByText('style',p[9]);
+  this.customParts=false;this.applyOutfitLink();this.generate();
+ },
+ randomSelect(id){const e=document.getElementById(id);e.selectedIndex=Math.floor(Math.random()*e.options.length)},
+ randomAll(){
+  ['face','body','ratio','style','usage','outfitStandard','sceneGroup','outfit','pose','camera','light'].forEach(id=>this.randomSelect(id));
+  this.refreshScene();this.randomSelect('scene');this.customParts=false;this.applyOutfitLink();this.generate();
+ },
+ batch(n=10){
+  const arr=[];
+  for(let i=1;i<=n;i++){this.randomAll();arr.push(`【变体 ${i}】\n正向：${document.getElementById('prompt').textContent}\n反向：${document.getElementById('negative').textContent}`)}
+  document.getElementById('batchOut').textContent=arr.join('\n\n');
+ },
+ showTab(id,btn){
+  ['output','negativeTab','batchTab','libraryTab'].forEach(x=>document.getElementById(x).style.display=x===id?'block':'none');
+  btn.parentElement.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+ },
+ renderLibrary(type,btn){
+  if(btn){btn.parentElement.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+  let arr=[];
+  if(type==='scenes')arr=Object.entries(DATA.sceneGroups).flatMap(([g,items])=>items.map(x=>[x[0],g+'｜'+x[1]]));
+  if(type==='outfits')arr=DATA.outfits;if(type==='tops')arr=DATA.tops;if(type==='bottoms')arr=DATA.bottoms;if(type==='shawls')arr=DATA.shawls;if(type==='jewelry')arr=DATA.jewelry;
+  document.getElementById('library').innerHTML=arr.map(x=>`<div class="item"><b>${x[0]}</b><p>${x[1]}</p></div>`).join('');
+ },
+ copy(id){
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>this.toast('已复制'));
+ },
+ copyAll(){
+  const txt='正向提示词：\n'+document.getElementById('prompt').textContent+'\n\n反向提示词：\n'+document.getElementById('negative').textContent;
+  navigator.clipboard.writeText(txt).then(()=>this.toast('已复制正向+反向'));
+ },
+ toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1600)}
+};
+window.addEventListener('DOMContentLoaded',()=>app.init());
+</script>
+</body>
+</html>
+
+
+
+
