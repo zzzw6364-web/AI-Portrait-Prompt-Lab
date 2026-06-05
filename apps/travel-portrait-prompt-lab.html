@@ -16,12 +16,12 @@
       <h1>中国旅拍身材写真提示词生成器</h1>
       <p>完全避开赛博和未来感，主打中国旅拍：江南古镇、岭南骑楼、北京胡同、西安城墙、云南古城、川西藏寨、徽派村落、福建土楼、茶园梯田和海边渔港。衣物以贴身旅拍裙装、改良旗袍、针织、吊带长裙、牛仔、皮衣和运动休闲为主，体现身材但保持成人、安全、完整遮挡。</p>
     </div>
-    <div class="pill">96 中外旅拍场景 · 98 套热门女装 · 50 快速设定</div>
+    <div class="pill">128 中外旅拍景点 · 44 套热门女装 · 不重复随机</div>
   </div>
   <div class="layout">
     <section class="card">
       <div class="title">① 人物锚点 <span class="small">成人主体</span></div>
-      <div class="warn">时尚表现力来自丰满曲线、贴身旅拍衣料、真实褶皱、中国建筑环境和旅行抓拍光线；不做赛博、不做未来、不做棚拍红毯。</div>
+      <div class="warn">性感来自丰满曲线、贴身旅拍衣料、真实褶皱、中国建筑环境和旅行抓拍光线；不做赛博、不做未来、不做棚拍红毯。</div>
       <div class="form">
         <div><label>人脸模板</label><select id="face"></select></div>
         <div><label>主体补充</label><textarea id="subjectExtra" placeholder="可补充：同一张脸、发型、疲惫眼神、生活感、胶片感等"></textarea></div>
@@ -40,9 +40,9 @@
         <div class="two"><div><label>场景大类</label><select id="sceneGroup" onchange="app.refreshScene();app.syncOutfitToScene(true);app.generate()"></select></div><div><label>具体场景</label><select id="scene" onchange="app.syncOutfitToScene(true);app.generate()"></select></div></div>
         <div class="two"><div><label>衣物标准</label><select id="outfitStandard" onchange="app.generate()"></select></div><div><label>完整衣物</label><select id="outfit" onchange="app.generate()"></select></div></div>
         <div class="three"><div><label>道具/配饰</label><select id="gear" onchange="app.generate()"></select></div><div><label>姿势</label><select id="pose" onchange="app.generate()"></select></div><div><label>镜头</label><select id="camera" onchange="app.generate()"></select></div></div>
-        <div class="two"><div><label>光线</label><select id="light" onchange="app.generate()"></select></div><div><label>用途</label><select id="usage" onchange="app.generate()"></select></div></div>
+        <div class="three"><div><label>光线</label><select id="light" onchange="app.generate()"></select></div><div><label>用途</label><select id="usage" onchange="app.generate()"></select></div><div><label>输出格式</label><select id="format" onchange="app.generate()"></select></div></div>
         <div><label>自定义补充</label><textarea id="custom" oninput="app.generate()" placeholder="例：更像随手拍、不要精修、衣料贴身压痕、自然胸线、禁止背面、普通生活环境"></textarea></div>
-        <div class="btns"><button class="btn primary" onclick="app.generate()">生成提示词</button><button class="btn" onclick="app.randomAll()">随机组合</button><button class="btn green" onclick="app.batch(10)">生成10条变体</button><button class="btn ghost" onclick="app.copyAll()">复制正向+反向</button></div>
+        <div class="btns"><button class="btn primary" onclick="app.generate()">生成提示词</button><button class="btn" onclick="app.randomAll()">随机组合</button><button class="btn green" onclick="app.batch(10)">生成10条变体</button><button class="btn ghost" onclick="app.copyAll()">复制正向+反向</button><button class="btn ghost" onclick="app.copyDynamicTemplate()">复制动态模板</button></div>
       </div>
     </section>
     <section class="card">
@@ -63,7 +63,7 @@ body:[['最大丰满细腰日常型','28岁中国女性，丰满且比例协调�
 ratios:[['9:16 竖屏','vertical 9:16 realistic photo framing'],['4:5 社媒','portrait 4:5 social media photography'],['3:4 人像','vertical 3:4 cinematic portrait'],['16:9 横屏','horizontal cinematic still']],
 styles:[['独立电影截图','independent film still, natural low-light photography, emotional realism'],['粗粝随手胶片','handheld film snapshot, rough composition, real life texture'],['市井街拍写真','realistic street snapshot, public-space depth, ordinary background'],['复古杂志生活照','retro lifestyle magazine photography, natural skin texture, restrained styling'],['非商业棚拍抓拍','non-studio candid photo, imperfect framing, natural environment']],
 realism:[['自然真实层','visible pores, slight skin oil, natural asymmetry, flyaway hair, fabric wrinkles and pressure marks'],['强去AI味','handheld candid realism, imperfect framing, uneven practical light, no beauty-filter look'],['低光电影颗粒','low-light cinematic grain, soft highlight roll-off, realistic color noise, face still readable'],['生活杂乱真实','ordinary background clutter, believable room objects, asymmetric composition, not over-designed']],
-outfitStandards:[['贴身日常标准','完整现代日常服装，贴身但不露点，胸部由衣料自然承托，胸线和布料张力清楚，关键部位完整遮挡'],['低胸克制标准','领口可以低，锁骨和自然胸线明显，但不露点不透关键部位，时尚表现力靠剪裁和生活姿态表达'],['针织柔软标准','柔软针织或棉质衣料贴合身体，形成自然褶皱、压痕和重量感，避免塑料平滑'],['复古胶片标准','服装、场景和光线带复古现实感，不像网红棚拍，轻微颗粒和不完美构图'],['运动贴身标准','运动背心、瑜伽裤、紧身训练服完整遮挡，强调健康曲线和真实布料压力'],['工装街头标准','工装、牛仔、皮衣、靴子和生活道具组合，高级时尚表现力但像真实街拍'],['双人生活标准','两位28岁中国女性衣物不同但风格协调，距离近，表情自然，非色情互动，身体轮廓不混乱']],
+outfitStandards:[['贴身日常标准','完整现代日常服装，贴身但不露点，胸部由衣料自然承托，胸线和布料张力清楚，关键部位完整遮挡'],['低胸克制标准','领口可以低，锁骨和自然胸线明显，但不露点不透关键部位，性感靠剪裁和生活姿态表达'],['针织柔软标准','柔软针织或棉质衣料贴合身体，形成自然褶皱、压痕和重量感，避免塑料平滑'],['复古胶片标准','服装、场景和光线带复古现实感，不像网红棚拍，轻微颗粒和不完美构图'],['运动贴身标准','运动背心、瑜伽裤、紧身训练服完整遮挡，强调健康曲线和真实布料压力'],['城市街拍标准','短夹克、牛仔、皮衣、针织、长裙或高腰裤组合，身材线条清楚但像真实旅拍'],['双人生活标准','两位28岁中国女性衣物不同但风格协调，距离近，表情自然，非色情互动，身体轮廓不混乱']],
 sceneGroups:{
 '旧公寓与出租屋':[['深夜出租屋床边','dim ordinary rental room at midnight, unmade bed, cheap furniture, weak city glow'],['旧公寓窗边','old apartment window, messy curtain, city lights outside, quiet film mood'],['小厨房门口','small kitchen doorway, fluorescent spill light, lived-in background'],['窄走廊镜子前','narrow hallway mirror, shoes and boxes in background, low practical light'],['阳台晾衣区','apartment balcony laundry area, hanging clothes, city dusk'],['老式客厅沙发','old living room sofa, floor fan, cluttered coffee table, warm lamp'],['浴室门外镜前','outside bathroom mirror, steam on glass, no nudity, practical light'],['出租屋书桌旁','rental room desk corner, laptop glow, papers and cup, late-night mood']],
 '市井街头':[['便利店门口','convenience store entrance at night, fluorescent light, street reflection'],['夜宵摊旁','late-night street food stall, plastic chairs, steam, warm bulbs'],['菜市场通道','wet market aisle, signs and crates, morning practical light'],['老街公交站','old street bus stop, posters, passing cars blurred'],['地下通道出口','underpass exit, tiled wall, uneven light'],['彩票店门口','small lottery shop entrance, red signs, ordinary sidewalk'],['修车铺旁','small repair shop, tools and shutters, dusty street'],['旧电影院门口','old cinema entrance, faded posters, warm marquee light']],
@@ -74,7 +74,7 @@ sceneGroups:{
 '双人电影空间':[['双人洗衣房','two 28-year-old Chinese women in laundromat, close but non-explicit, fluorescent light'],['双人旧公寓窗边','two 28-year-old Chinese women by old apartment window, city glow, quiet tension'],['双人夜宵摊旁','two 28-year-old Chinese women beside late-night food stall, steam and warm bulbs'],['双人旅馆走廊','two 28-year-old Chinese women in budget hotel hallway, warm overhead light'],['双人火车站','two 28-year-old Chinese women in train station waiting area, plastic seats and crowd blur'],['双人河堤夜风','two 28-year-old Chinese women by riverside railing at night, wind and city lights'],['双人仓库货架间','two 28-year-old Chinese women in warehouse aisle, practical lights, grounded poster mood'],['双人台球厅边','two 28-year-old Chinese women beside billiard table light, retro hall atmosphere']]
 },
 outfits:[
-['黑色超深V贴身长袖上衣高腰牛仔裤','black ultra-deep V fitted long-sleeve top, key areas covered, high-waist blue jeans, small pendant necklace, confident everyday sensual look'],['白色低领贴身针织衫黑色包臀裙','white low-neck fitted knit top, black bodycon skirt, natural fabric folds, black heels'],['灰色宽领针织上衣高腰长裤','gray wide-neck soft knit top, naturally dropped neckline, high-waist trousers, relaxed feminine mood'],['黑色吊带贴身长裙皮衣外套','black fitted slip dress with opaque lining, cropped leather jacket, ankle boots'],['深蓝牛仔衬衫系腰包臀裙','deep blue denim shirt tied at waist, fitted dark skirt, boots'],['米色罗纹针织连衣裙','beige ribbed knit bodycon dress, soft fabric tension, covered bust curve, nude heels'],['酒红贴身开衫黑色长裤','burgundy fitted cardigan with low neckline, black high-waist pants, pendant necklace'],['白衬衫黑色高腰短裙','white fitted blouse, black high-waist short skirt, everyday office-off-duty mood'],['黑色运动背心高腰瑜伽裤','black high-support sports tank, high-waist yoga leggings, running shoes'],['灰蓝运动拉链上衣紧身裤','gray-blue zip athletic top, opaque fitted leggings, trainers'],['棕色皮夹克白色背心牛仔裤','brown leather jacket, white fitted tank top, high-waist jeans, boots'],['黑色低领包臀连衣裙','black low-neck bodycon dress, opaque stretch fabric, covered bust, simple heels'],['奶白贴身短袖针织裙','cream fitted short-sleeve knit dress, natural chest line, soft folds'],['黑色挂脖上衣阔腿牛仔裤','black halter fitted top with full coverage, wide-leg jeans, street snapshot'],['红色贴身针织上衣黑色半裙','red fitted knit top, black midi skirt, refined retro mood'],['白色背心牛仔短外套长裤','white fitted tank, cropped denim jacket, straight jeans, sneakers'],['黑色长袖连体衣卡其工装裤','black fitted long-sleeve bodysuit, khaki cargo pants, boots'],['橄榄绿工装连体裤','olive fitted utility jumpsuit, cinched waist, front zipper fully safe, work boots'],['浅粉贴身针织开衫短裙','soft pink fitted knit cardigan, matching skirt, natural folds'],['黑色缎面吊带裙针织外套','black satin slip dress, loose knit cardigan, subtle shine'],['白色低领T恤高腰皮裙','white fitted low-neck T-shirt, high-waist leather skirt, ankle boots'],['灰色运动连体训练服','gray opaque athletic bodysuit, high-support covered bust, trainers'],['墨绿色贴身长裙','dark green fitted long dress, soft waist curve, low but safe neckline'],['黑白条纹针织上衣牛仔裤','black-white striped fitted knit top, blue jeans, ordinary street mood'],['米白衬衫背心叠穿包臀裙','cream blouse layered over fitted tank, bodycon skirt'],['棕色复古紧身毛衣半裙','brown retro fitted sweater, matching midi skirt, leather belt'],['黑色露肩针织衫长裤','black off-shoulder knit top, high-waist trousers, key areas covered'],['蓝色贴身牛仔连衣裙','blue fitted denim dress, front seams, natural fabric tension'],['酒红包裹式针织裙','burgundy wrap-style knit dress, covered bust support, soft folds'],['黑色健身拉链背心短裤','black athletic zip tank, high-waist bike shorts, trainers'],['白色短款针织上衣高腰牛仔裤','white cropped fitted knit top, high-waist jeans, no midriff overexposure'],['灰黑皮衣紧身裙套装','charcoal leather jacket, black fitted skirt, boots'],['红色复古连衣裙','red retro fitted dress, opaque fabric, refined film mood'],['咖色吊带内搭针织外套牛仔裤','coffee-color fitted camisole under knit cardigan, jeans'],['深灰长袖贴身裙','dark gray fitted long-sleeve dress, simple pendant necklace'],['蓝白运动夹克紧身裤','blue-white athletic jacket, opaque fitted leggings, running shoes'],['黑色马甲白色贴身上衣长裤','black vest, white fitted top, high-waist trousers'],['卡其短外套黑色连衣裙','khaki short jacket over black bodycon dress, boots'],['白色罗纹背心高腰西裤','white ribbed tank top, high-waist trousers, simple heels'],['黑色双人针织牛仔套装','two 28-year-old Chinese women, coordinated black knit tops and jeans, different silhouettes'],['白黑双人旧公寓套装','two 28-year-old Chinese women, one in white fitted blouse and black skirt, one in black bodycon dress'],['复古双人皮衣裙装','two 28-year-old Chinese women, leather jacket styling, fitted dresses, boots'],['运动双人训练套装','two 28-year-old Chinese women, opaque athletic tops and leggings, confident sports mood'],['灰色背心格纹衬衫牛仔裤','gray fitted tank top, loose plaid shirt worn open, high-waist jeans, sneakers, ordinary street snapshot'],['黑色低领针织衫咖色半裙','black low-neck fitted knit top, brown midi skirt, soft fabric pressure, refined retro mood'],['白色短袖贴身上衣工装长裤','white fitted short-sleeve top, khaki cargo pants, canvas belt, workwear daily photo'],['深蓝罗纹开衫牛仔长裙','deep blue ribbed cardigan, fitted denim long skirt, natural chest line, understated life texture'],['红棕皮裙黑色针织上衣','black fitted knit top, reddish-brown leather skirt, ankle boots, old street film mood'],['米灰瑜伽外套运动背心长裤','greige yoga jacket half-zipped over opaque sports tank, fitted training pants, running shoes'],['白色宽领针织衫浅蓝牛仔裤','white wide-neck knit top, light blue high-waist jeans, soft wrinkles, relaxed adult apartment mood']],
+['黑色超深V贴身长袖上衣高腰牛仔裤','black ultra-deep V fitted long-sleeve top, key areas covered, high-waist blue jeans, small pendant necklace, confident everyday sensual look'],['白色低领贴身针织衫黑色包臀裙','white low-neck fitted knit top, black bodycon skirt, natural fabric folds, black heels'],['灰色宽领针织上衣高腰长裤','gray wide-neck soft knit top, naturally dropped neckline, high-waist trousers, relaxed feminine mood'],['黑色吊带贴身长裙皮衣外套','black fitted slip dress with opaque lining, cropped leather jacket, ankle boots'],['深蓝牛仔衬衫系腰包臀裙','deep blue denim shirt tied at waist, fitted dark skirt, boots'],['米色罗纹针织连衣裙','beige ribbed knit bodycon dress, soft fabric tension, covered bust curve, nude heels'],['酒红贴身开衫黑色长裤','burgundy fitted cardigan with low neckline, black high-waist pants, pendant necklace'],['白衬衫黑色高腰短裙','white fitted blouse, black high-waist short skirt, everyday office-off-duty mood'],['黑色运动背心高腰瑜伽裤','black high-support sports tank, high-waist yoga leggings, running shoes'],['灰蓝运动拉链上衣紧身裤','gray-blue zip athletic top, opaque fitted leggings, trainers'],['棕色皮夹克白色背心牛仔裤','brown leather jacket, white fitted tank top, high-waist jeans, boots'],['黑色低领包臀连衣裙','black low-neck bodycon dress, opaque stretch fabric, covered bust, simple heels'],['奶白贴身短袖针织裙','cream fitted short-sleeve knit dress, natural chest line, soft folds'],['黑色挂脖上衣阔腿牛仔裤','black halter fitted top with full coverage, wide-leg jeans, street snapshot'],['红色贴身针织上衣黑色半裙','red fitted knit top, black midi skirt, refined retro mood'],['白色背心牛仔短外套长裤','white fitted tank, cropped denim jacket, straight jeans, sneakers'],['黑色长袖贴身上衣卡其直筒裤','black fitted long-sleeve top, khaki high-waist straight trousers, slim belt, loafers, clean city travel look'],['橄榄绿防晒短外套运动短裙','olive fitted sun-protection cropped jacket, high-waist athletic skirt, clean trainers, light outdoor travel look'],['浅粉贴身针织开衫短裙','soft pink fitted knit cardigan, matching skirt, natural folds'],['黑色缎面吊带裙针织外套','black satin slip dress, loose knit cardigan, subtle shine'],['白色低领T恤高腰皮裙','white fitted low-neck T-shirt, high-waist leather skirt, ankle boots'],['灰色运动连体训练服','gray opaque athletic bodysuit, high-support covered bust, trainers'],['墨绿色贴身长裙','dark green fitted long dress, soft waist curve, low but safe neckline'],['黑白条纹针织上衣牛仔裤','black-white striped fitted knit top, blue jeans, ordinary street mood'],['米白衬衫背心叠穿包臀裙','cream blouse layered over fitted tank, bodycon skirt'],['棕色复古紧身毛衣半裙','brown retro fitted sweater, matching midi skirt, leather belt'],['黑色露肩针织衫长裤','black off-shoulder knit top, high-waist trousers, key areas covered'],['蓝色贴身牛仔连衣裙','blue fitted denim dress, front seams, natural fabric tension'],['酒红包裹式针织裙','burgundy wrap-style knit dress, covered bust support, soft folds'],['黑色健身拉链背心短裤','black athletic zip tank, high-waist bike shorts, trainers'],['白色短款针织上衣高腰牛仔裤','white cropped fitted knit top, high-waist jeans, no midriff overexposure'],['灰黑皮衣紧身裙套装','charcoal leather jacket, black fitted skirt, boots'],['红色复古连衣裙','red retro fitted dress, opaque fabric, refined film mood'],['咖色吊带内搭针织外套牛仔裤','coffee-color fitted camisole under knit cardigan, jeans'],['深灰长袖贴身裙','dark gray fitted long-sleeve dress, simple pendant necklace'],['蓝白运动夹克紧身裤','blue-white athletic jacket, opaque fitted leggings, running shoes'],['黑色马甲白色贴身上衣长裤','black vest, white fitted top, high-waist trousers'],['卡其短外套黑色连衣裙','khaki short jacket over black bodycon dress, boots'],['白色罗纹背心高腰西裤','white ribbed tank top, high-waist trousers, simple heels'],['黑色双人针织牛仔套装','two 28-year-old Chinese women, coordinated black knit tops and jeans, different silhouettes'],['白黑双人旧公寓套装','two 28-year-old Chinese women, one in white fitted blouse and black skirt, one in black bodycon dress'],['复古双人皮衣裙装','two 28-year-old Chinese women, leather jacket styling, fitted dresses, boots'],['运动双人训练套装','two 28-year-old Chinese women, opaque athletic tops and leggings, confident sports mood'],['灰色背心格纹衬衫牛仔裤','gray fitted tank top, loose plaid shirt worn open, high-waist jeans, sneakers, ordinary street snapshot'],['黑色低领针织衫咖色半裙','black low-neck fitted knit top, brown midi skirt, soft fabric pressure, refined retro mood'],['白色短袖贴身上衣卡其阔腿裤','white fitted short-sleeve top, khaki high-waist wide-leg trousers, slim belt, city-walk travel photo'],['深蓝罗纹开衫牛仔长裙','deep blue ribbed cardigan, fitted denim long skirt, natural chest line, understated life texture'],['红棕皮裙黑色针织上衣','black fitted knit top, reddish-brown leather skirt, ankle boots, old street film mood'],['米灰瑜伽外套运动背心长裤','greige yoga jacket half-zipped over opaque sports tank, fitted training pants, running shoes'],['白色宽领针织衫浅蓝牛仔裤','white wide-neck knit top, light blue high-waist jeans, soft wrinkles, relaxed adult apartment mood']],
 gear:[['黑色短靴','black ankle boots, small pendant necklace'],['白色运动鞋','white sneakers, sports bag prop'],['细高跟鞋','simple heels, small handbag'],['复古皮带','retro leather belt, small shoulder bag'],['帆布包','canvas tote bag, everyday street prop'],['雨伞','plain umbrella, wet street reflections'],['无明显道具','minimal props, focus on clothing and body silhouette']],
 poses:[['正面扶腰站姿','front-facing standing pose, one hand on waist, no back view'],['侧坐回头看镜头','slightly side seated pose, looking toward camera, relaxed shoulders'],['倚靠门框','leaning against doorway, body angled, face clear'],['走路被抓拍','walking candidly, slight motion in hair and fabric'],['低头整理项链','looking down while adjusting necklace, chest garment structure clear'],['坐在床边','sitting at bed edge, torso turned to camera, relaxed mood'],['靠窗站立','standing by window, natural light on face and fabric'],['双手插兜','hands in pockets, confident adult posture'],['双人近距离对视','two 28-year-old Chinese women standing close, eye contact, non-explicit'],['双人并肩抓拍','two 28-year-old Chinese women shoulder to shoulder, both faces clear']],
 cameras:[['半身到大腿','medium shot from upper body to thighs, clothing and body line readable'],['胸腰结构近景','close half-body framing, covered bust and waist fabric tension clear'],['手机随手近景','realistic phone-camera close shot, slight imperfection'],['长焦街拍','long-lens candid street photo, background softly compressed'],['低光手持构图','handheld low-light composition, slight motion blur only at edges'],['4:5社媒近景','vertical 4:5 close portrait, face and outfit readable'],['全身生活照','full-body everyday photo, shoes visible, stable pose'],['双人电影构图','two-person cinematic composition, both faces and outfits clear']],
@@ -200,7 +200,7 @@ DATA.outfits=[
  ['白衬衫黑色高腰短裙','white fitted blouse, black high-waist skirt, confident city-walk travel style'],
  ['棕色皮夹克白色背心牛仔裤','brown leather jacket, white fitted tank top, high-waist jeans, boots, northern old street travel'],
  ['灰色宽领针织上衣高腰长裤','gray wide-neck soft knit top, high-waist trousers, relaxed adult travel mood'],
- ['黑色长袖连体衣卡其工装裤','black fitted long-sleeve bodysuit, khaki cargo pants, boots, tea-field travel look'],
+ ['黑色长袖贴身上衣卡其直筒裤','black fitted long-sleeve top, khaki high-waist straight trousers, slim belt, loafers, tea-field travel look'],
  ['浅粉贴身针织开衫短裙','soft pink fitted knit cardigan, matching skirt, natural folds, flower town travel'],
  ['白色背心牛仔短外套长裤','white fitted tank, cropped denim jacket, straight jeans, sneakers, city landmark walk'],
  ['蓝色贴身牛仔连衣裙','blue fitted denim dress, front seams, natural fabric tension, old-town street photo'],
@@ -215,13 +215,13 @@ DATA.outfits=[
  ['黑色露肩针织衫长裤','black off-shoulder knit top, high-waist trousers, key areas covered, riverside travel wind'],
  ['深蓝罗纹开衫牛仔长裙','deep blue ribbed cardigan, fitted denim long skirt, natural chest line, understated travel texture'],
  ['灰色背心格纹衬衫牛仔裤','gray fitted tank top, loose plaid shirt open, high-waist jeans, backpack travel snapshot'],
- ['白色短袖贴身上衣工装长裤','white fitted short-sleeve top, khaki cargo pants, canvas belt, village travel photo'],
+ ['白色短袖贴身上衣卡其阔腿裤','white fitted short-sleeve top, khaki high-waist wide-leg trousers, slim belt, village travel photo'],
  ['黑色马甲白色贴身上衣长裤','black vest, white fitted top, high-waist trousers, Chinese city-walk travel'],
  ['咖色吊带内搭针织外套牛仔裤','coffee-color fitted camisole under knit cardigan, jeans, old-town cafe travel'],
  ['深灰长袖贴身裙','dark gray fitted long-sleeve dress, simple pendant necklace, museum street travel'],
  ['蓝白运动夹克紧身裤','blue-white athletic jacket, opaque fitted leggings, sneakers, lakeside travel walk'],
  ['白色罗纹背心高腰西裤','white ribbed tank top, high-waist trousers, simple heels, urban Chinese landmark photo'],
- ['橄榄绿工装连体裤','olive fitted utility jumpsuit, cinched waist, front zipper safe, work boots, mountain village travel'],
+ ['橄榄绿防晒短外套运动短裙','olive fitted sun-protection cropped jacket, high-waist athletic skirt, clean trainers, mountain village travel'],
  ['黑色缎面吊带裙针织外套','black satin slip dress, loose knit cardigan, subtle shine, rainy old alley travel'],
  ['烟粉改良旗袍针织披肩','dusty-pink modern qipao, fitted waist and hips, soft knit shawl, covered bust, Jiangnan garden mood'],
  ['青花瓷色修身旅拍裙','blue-and-white porcelain color fitted travel dress, opaque fabric, narrow waist, subtle Chinese pattern'],
@@ -335,7 +335,7 @@ DATA.outfits.push(
 DATA.outfits.push(
  ['黑色速干运动背心高腰瑜伽裤越野鞋','black quick-dry fitted sport tank, high-waist yoga leggings, lightweight trail shoes, mountain travel outfit, body-flattering but fully covered'],
  ['雾灰防晒拉链上衣紧身骑行短裤徒步鞋','mist-gray fitted sun-protection zip top, black cycling shorts, hiking shoes, outdoor mountain snapshot outfit'],
- ['橄榄绿工装短外套运动短裙登山鞋','olive cropped utility jacket, fitted sport top, high-waist athletic skirt, hiking shoes, scenic trail travel style'],
+ ['橄榄绿防晒短外套运动短裙登山鞋','olive fitted sun-protection cropped jacket, fitted sport top, high-waist athletic skirt, hiking shoes, scenic trail travel style'],
  ['冰蓝瑜伽上衣高腰训练裤白色运动鞋','ice-blue fitted yoga top, high-waist training pants, clean white sneakers, tea-field and mountain travel look'],
  ['黑色连体泳装薄纱罩衫绑带凉鞋','black opaque one-piece swimsuit, sheer beach cover-up skirt, strappy sandals, seaside resort travel outfit, key areas fully covered'],
  ['白色泳装上衣亚麻短裤草编凉鞋','white structured swim top with full coverage, high-waist linen shorts, woven sandals, beach vacation travel look'],
@@ -360,18 +360,18 @@ DATA.gear.push(
 );
 // subtractive cleanup: fewer, stronger travel modules; keep scene-outfit matching pools.
 (function subtractiveTravelCleanup(){
- const KEEP=/(旗袍|新中式|马面|盘扣|水墨|月白|青花瓷|瑜伽|运动|训练|防晒|徒步|越野|工装|速干|骑行|泳装|短裤|挂脖|抹胸|亚麻|Boho|钩针|草编|Polo|Capri|牛仔|马甲|针织|皮衣|西装|短裙|包臀|双人)/;
+ const KEEP=/(旗袍|新中式|马面|盘扣|水墨|月白|青花瓷|瑜伽|运动|训练|防晒|徒步|越野|速干|骑行|泳装|短裤|挂脖|抹胸|亚麻|Boho|钩针|草编|Polo|Capri|牛仔|马甲|针织|皮衣|西装|短裙|包臀|直筒|阔腿|双人)/;
  const uniq=a=>{const seen=new Set();return a.filter(x=>{const k=x[0];if(seen.has(k))return false;seen.add(k);return true})};
  DATA.outfitStandards=uniq(DATA.outfitStandards).slice(0,8);
  DATA.outfits=uniq(DATA.outfits).filter(x=>KEEP.test(x[0]+x[1])).slice(0,84);
- DATA.gear=uniq(DATA.gear).filter(x=>!/(黑色短靴|白色运动鞋|细高跟鞋|行李箱|travel crowd|passenger crowd)/i.test(x[0]+x[1])).slice(0,9);
+ DATA.gear=uniq(DATA.gear).filter(x=>!/(黑色短靴|白色运动鞋|细高跟鞋|行李箱|suitcase|luggage)/i.test(x[0]+x[1])).slice(0,9);
  DATA.poses=uniq(DATA.poses).filter((x,i)=>i<8||/(双人|two 28-year-old Chinese women)/i.test(x[0]+x[1])).slice(0,10);
  DATA.cameras=uniq(DATA.cameras).slice(0,7);
  DATA.lights=uniq(DATA.lights).slice(0,7);
 })();
 DATA.face=DATA.faces;DATA.ratio=DATA.ratios;DATA.style=DATA.styles;DATA.outfit=DATA.outfits;DATA.pose=DATA.poses;DATA.camera=DATA.cameras;DATA.light=DATA.lights;DATA.outfitStandard=DATA.outfitStandards;
 })();
-const NEG=['child, teenager, underage, young-looking minor, school uniform, childish face, lolita','nude, explicit nudity, exposed nipples, exposed areola, exposed genitals, nipple outline, pornographic, sexual act, vulgar pose, fetish, wardrobe malfunction, transparent clothing exposing key areas','plastic skin, waxy face, overly smooth skin, heavy beauty filter, airbrushed face, flat lighting, harsh artificial HDR, unnatural shadows','painted-on clothes, impossible fabric folds, over-sharpened, low detail, muddy unreadable background','small breasts, flat chest, average bust, chest flattened by clothing, body becoming overweight, thick waist, broad shoulders','bad anatomy, deformed body, deformed breasts, extra limbs, missing limbs, bad hands, extra fingers, fused fingers','blurry face, crossed eyes, unwanted extra person, duplicated face artifact, watermark, logo, unreadable text','modern editorial, futuristic city, modern editorial armor, spaceship, robot, neon modern editorial style, anime unless requested, cartoon, 3d doll'];
+const NEG=['child, teenager, underage, young-looking minor, school uniform, childish face, lolita','nude, explicit nudity, exposed nipples, exposed areola, exposed genitals, nipple outline, pornographic, sexual act, vulgar pose, fetish, wardrobe malfunction, transparent clothing exposing key areas','plastic skin, waxy face, overly smooth skin, heavy beauty filter, airbrushed face, flat lighting, harsh artificial HDR, unnatural shadows','painted-on clothes, impossible fabric folds, over-sharpened, low detail, muddy unreadable background','small breasts, flat chest, average bust, chest flattened by clothing, body becoming overweight, thick waist, broad shoulders','bad anatomy, deformed body, deformed breasts, extra limbs, missing limbs, bad hands, extra fingers, fused fingers','blurry face, crossed eyes, unwanted extra person, duplicated face artifact, watermark, logo, unreadable text','cyberpunk, futuristic city, sci-fi armor, spaceship, robot, neon cyber style, anime unless requested, cartoon, 3d doll'];
 const app={
 $(id){return document.getElementById(id)},val(id){const e=this.$(id);return e.options?e.options[e.selectedIndex]?.dataset?.text||e.value:e.value},label(id){const e=this.$(id);return e.options?e.options[e.selectedIndex]?.textContent||'':''},setNum(id,v){this.$(id).textContent=v},fill(id,arr){const e=this.$(id);e.innerHTML='';arr.forEach((x,i)=>{const o=document.createElement('option');o.textContent=x[0];o.value=String(i);o.dataset.text=x[1];e.appendChild(o)})},setByLabel(id,label){const e=this.$(id);const idx=[...e.options].findIndex(o=>o.textContent===label);if(idx>=0)e.selectedIndex=idx},
 init(){['face','people','body','ratio','style','realism','outfitStandard','outfit','gear','pose','camera','light','usage'].forEach(id=>this.fill(id,DATA[id]));this.fill('quickPreset',this.makePresets().map(x=>[x.name,x.name]));Object.keys(DATA.sceneGroups).forEach(k=>{const o=document.createElement('option');o.textContent=k;o.value=k;this.$('sceneGroup').appendChild(o)});this.refreshScene();this.applyPreset();this.renderLibrary('scenes')},
@@ -379,13 +379,748 @@ refreshScene(){this.fill('scene',DATA.sceneGroups[this.$('sceneGroup').value])},
 makePresets(){const singleScenes=Object.entries(DATA.sceneGroups).filter(([g])=>!g.includes('双人')).flatMap(([g,a])=>a.map(s=>[g,s[0]]));const doubleScenes=DATA.sceneGroups['双人中国旅拍'].map(s=>['双人中国旅拍',s[0]]);return DATA.outfits.slice(0,50).map((o,i)=>{const dbl=/双人/.test(o[0]);const sc=(dbl?doubleScenes:singleScenes)[i%(dbl?doubleScenes:singleScenes).length];const posePool=DATA.poses.filter(x=>dbl?x[0].includes('双人'):!x[0].includes('双人'));const facePool=DATA.faces.filter(x=>dbl?/双人|两位/.test(x[0]+x[1]):!/双人|两位/.test(x[0]+x[1]));return {name:'中国旅拍 '+String(i+1).padStart(2,'0')+' '+o[0],face:facePool[i%facePool.length][0],people:dbl?'双人成年生活海报':'单人现实写真',body:dbl?'双人成年曲线型':DATA.body[i%3][0],group:sc[0],scene:sc[1],standard:DATA.outfitStandards[i%DATA.outfitStandards.length][0],outfit:o[0],gear:DATA.gear[i%DATA.gear.length][0],pose:posePool[i%posePool.length][0],camera:DATA.cameras[i%DATA.cameras.length][0],light:DATA.lights[i%DATA.lights.length][0],style:DATA.styles[i%DATA.styles.length][0],realism:DATA.realism[i%DATA.realism.length][0],usage:DATA.usage[i%DATA.usage.length][0],ratio:DATA.ratios[i%DATA.ratios.length][0]}})},
 applyPreset(){const p=this.makePresets()[this.$('quickPreset').selectedIndex]||this.makePresets()[0];this.setByLabel('face',p.face);this.setByLabel('people',p.people);this.setByLabel('body',p.body);this.setByLabel('outfitStandard',p.standard);this.setByLabel('outfit',p.outfit);this.setByLabel('gear',p.gear);this.setByLabel('pose',p.pose);this.setByLabel('camera',p.camera);this.setByLabel('light',p.light);this.setByLabel('style',p.style);this.setByLabel('realism',p.realism);this.setByLabel('usage',p.usage);this.setByLabel('ratio',p.ratio);this.$('sceneGroup').value=p.group;this.refreshScene();this.setByLabel('scene',p.scene);this.syncOutfitToScene(false);this.generate()},
 sceneText(){return [this.$('sceneGroup').value,this.label('scene'),this.val('scene')].join(' ')},
-sceneOutfitRule(text=this.sceneText()){if(this.isDouble()){if(/江南|水乡|石桥|胡同|红门|西安|城墙|土楼|古镇/.test(text))return /双人.*(新中式|旗袍|古镇|胡同|西安|针织开衫)/;if(/茶园|山|梯田|小路/.test(text))return /双人.*(运动|茶园)/;if(/骑楼|上海|石库门|城市|雨街/.test(text))return /双人.*(城市|Balletcore|Coquette|牛仔|皮衣|新中式)/;return /双人/}if(/江南|水乡|乌镇|西塘|苏州|园林|南浔|周庄|绍兴|乌篷|扬州|杭州|宏村|西递|徽州|土楼|红砖厝|平遥|京都|韩屋|八坂塔|威尼斯/.test(text))return /旗袍|新中式|马面|盘扣|青花瓷|水墨|月白|改良旗袍/;if(/茶园|茶山|武夷山|龙脊|梯田|元阳|香格里拉|川西|藏寨|苗寨|多洛米蒂|瑞士|冰岛|黑沙滩|草坡|湖畔|山城|栈道|稻田/.test(text))return /瑜伽|运动|训练|防晒|徒步|越野|工装|速干|骑行|高腰瑜伽裤/;if(/海边|海岛|海滩|海湾|海岸|海崖|渔港|滩涂|三亚|霞浦|洱海|青海湖|苏梅|马尔代夫|圣托里尼|撒丁|阿马尔菲|夏威夷|水屋|木栈道|巴厘|松巴|普吉|米克诺斯/.test(text))return /泳装|短裤|挂脖|抹胸|亚麻|Boho|钩针|草编|度假|海岛/;if(/沙漠|摩洛哥|佩特拉|马拉喀什|开罗|伊斯坦布尔|迪拜|庭院/.test(text))return /Boho|钩针|亚麻|麂皮|棕色|挂脖|长裙|马甲/;return /Polo|Capri|牛仔|马甲|针织|皮衣|西装|街拍|工装|百褶|乐福|短裙|包臀/},
+sceneOutfitRule(text=this.sceneText()){if(this.isDouble()){if(/江南|水乡|石桥|胡同|红门|西安|城墙|土楼|古镇/.test(text))return /双人.*(新中式|旗袍|古镇|胡同|西安|针织开衫)/;if(/茶园|山|梯田|小路/.test(text))return /双人.*(运动|茶园)/;if(/骑楼|上海|石库门|城市|雨街/.test(text))return /双人.*(城市|Balletcore|Coquette|牛仔|皮衣|新中式)/;return /双人/}if(/江南|水乡|乌镇|西塘|苏州|园林|南浔|周庄|绍兴|乌篷|扬州|杭州|宏村|西递|徽州|土楼|红砖厝|平遥|京都|韩屋|八坂塔|威尼斯/.test(text))return /旗袍|新中式|马面|盘扣|青花瓷|水墨|月白|改良旗袍/;if(/茶园|茶山|武夷山|龙脊|梯田|元阳|香格里拉|川西|藏寨|苗寨|多洛米蒂|瑞士|冰岛|黑沙滩|草坡|湖畔|山城|栈道|稻田/.test(text))return /瑜伽|运动|训练|防晒|徒步|越野|速干|骑行|高腰瑜伽裤|运动短裙|直筒裤|阔腿裤/;if(/海边|海岛|海滩|海湾|海岸|海崖|渔港|滩涂|三亚|霞浦|洱海|青海湖|苏梅|马尔代夫|圣托里尼|撒丁|阿马尔菲|夏威夷|水屋|木栈道|巴厘|松巴|普吉|米克诺斯/.test(text))return /泳装|短裤|挂脖|抹胸|亚麻|Boho|钩针|草编|度假|海岛/;if(/沙漠|摩洛哥|佩特拉|马拉喀什|开罗|伊斯坦布尔|迪拜|庭院/.test(text))return /Boho|钩针|亚麻|麂皮|棕色|挂脖|长裙|马甲/;return /Polo|Capri|牛仔|马甲|针织|皮衣|西装|街拍|百褶|乐福|短裙|包臀|直筒裤|阔腿裤/},
 syncOutfitToScene(force=false){const e=this.$('outfit');if(!e||!e.options.length)return;const d=this.isDouble();const rule=this.sceneOutfitRule();const current=this.label('outfit')+' '+this.val('outfit');const countOk=d?/双人/.test(current):!/双人/.test(current);if(countOk&&rule.test(current)&&!force)return;let opts=[...e.options].map((o,i)=>[o,i]).filter(([o])=>{const t=o.textContent+' '+(o.dataset.text||'');return (d?/双人/.test(t):!/双人/.test(t))&&rule.test(t)});if(!opts.length)opts=[...e.options].map((o,i)=>[o,i]).filter(([o])=>d?/双人/.test(o.textContent):!/双人/.test(o.textContent));if(opts.length)e.selectedIndex=opts[Math.floor(Math.random()*opts.length)][1]},
-shoeText(){const o=this.label('outfit');if(/芭蕾|Balletcore|Capri|蝴蝶结|Coquette|珍珠扣/.test(o))return 'matched shoes: ballet flats or low Mary Jane shoes, delicate and coordinated with the outfit';if(/海岛|Boho|钩针|亚麻|草编|吊带|挂脖|抹胸|泳装|短裤|度假|马尔代夫|圣托里尼/.test(o))return 'matched shoes: slim strappy sandals or woven flat sandals, summer travel style';if(/旗袍|新中式|马面|盘扣|缎面|茶歇|鱼尾|包臀|长裙/.test(o))return 'matched shoes: slim low heels, kitten heels or elegant Mary Jane heels, color coordinated with the dress';if(/运动|瑜伽|茶园|背心|训练|高腰瑜伽裤|防晒|徒步|越野|登山|速干|骑行/.test(o))return 'matched shoes: clean white sneakers, low-profile travel trainers or lightweight trail shoes';if(/牛仔|皮衣|工装|机车|皮裙|短靴/.test(o))return 'matched shoes: black ankle boots or simple leather boots, street travel style';if(/双人/.test(o))return 'matched shoes: coordinated shoes for both adult women, same style family, no mismatched footwear';return 'matched shoes: simple low heels or clean travel flats, coordinated color and style with the full outfit'},
-generate(){const parts=[this.val('people'),this.val('face'),this.clean(this.$('subjectExtra').value),this.val('body'),this.glamourText(),this.val('style'),this.val('realism'),this.val('usage'),this.val('outfitStandard'),'scene: '+this.val('scene'),'complete coordinated travel outfit only: '+this.val('outfit'),this.shoeText(),'travel prop and accessory only, no extra random shoes: '+this.val('gear'),'pose: '+this.val('pose'),'camera: '+this.val('camera'),'lighting: '+this.val('light'),this.val('ratio'),'adult subject only, realistic Chinese travel photography, recognizable Chinese architecture or Chinese local landscape, body-flattering travel outfit, non-modern editorial, non-futuristic, real fabric pressure, real skin texture, natural hair gravity, travel snapshot atmosphere, no text, no watermark'];if(this.$('i2v').checked)parts.push(this.isDouble()?'image2 generation ready, two 28-year-old Chinese women, both faces clear, stable travel outfit edges, no extra people':'image2 generation ready, single adult woman, stable complete travel outfit, clear face, readable limbs');if(this.$('safe').checked)parts.push(this.isDouble()?'two 28-year-old Chinese women only, tasteful close Chinese travel interaction, non-explicit, no nudity, no sexual act, no minors':'adult woman only, tasteful realistic Chinese travel styling, non-explicit, no nudity, no sexual act, no minors');const custom=this.clean(this.$('custom').value);if(custom)parts.push(custom);this.$('prompt').textContent=parts.filter(Boolean).join(', ')+'.';this.$('negative').textContent=NEG.join(', ');this.$('chips').innerHTML=['人物:'+this.label('people'),'场景:'+this.$('sceneGroup').value+'/'+this.label('scene'),'衣物:'+this.label('outfit'),'鞋:'+this.shoeText().replace('matched shoes: ',''),'标准:'+this.label('outfitStandard')].map(x=>`<span class="chip">${x}</span>`).join('')},
+shoeText(){const o=this.label('outfit');if(/芭蕾|Balletcore|Capri|蝴蝶结|Coquette|珍珠扣/.test(o))return 'matched shoes: ballet flats or low Mary Jane shoes, delicate and coordinated with the outfit';if(/海岛|Boho|钩针|亚麻|草编|吊带|挂脖|抹胸|泳装|短裤|度假|马尔代夫|圣托里尼/.test(o))return 'matched shoes: slim strappy sandals or woven flat sandals, summer travel style';if(/旗袍|新中式|马面|盘扣|缎面|茶歇|鱼尾|包臀|长裙/.test(o))return 'matched shoes: slim low heels, kitten heels or elegant Mary Jane heels, color coordinated with the dress';if(/运动|瑜伽|茶园|背心|训练|高腰瑜伽裤|防晒|徒步|越野|登山|速干|骑行/.test(o))return 'matched shoes: clean white sneakers, low-profile travel trainers or lightweight trail shoes';if(/牛仔|皮衣|机车|皮裙|短靴|直筒裤|阔腿裤/.test(o))return 'matched shoes: black ankle boots or simple leather boots, street travel style';if(/双人/.test(o))return 'matched shoes: coordinated shoes for both adult women, same style family, no mismatched footwear';return 'matched shoes: simple low heels or clean travel flats, coordinated color and style with the full outfit'},
+generate(){const parts=[this.val('people'),this.val('face'),this.clean(this.$('subjectExtra').value),this.val('body'),this.glamourText(),this.val('style'),this.val('realism'),this.val('usage'),this.val('outfitStandard'),'scene: '+this.val('scene'),'complete coordinated travel outfit only: '+this.val('outfit'),this.shoeText(),'travel prop and accessory only, no extra random shoes: '+this.val('gear'),'pose: '+this.val('pose'),'camera: '+this.val('camera'),'lighting: '+this.val('light'),this.val('ratio'),'adult subject only, realistic Chinese travel photography, recognizable Chinese architecture or Chinese local landscape, body-flattering travel outfit, non-cyber, non-futuristic, real fabric pressure, real skin texture, natural hair gravity, travel snapshot atmosphere, no text, no watermark'];if(this.$('i2v').checked)parts.push(this.isDouble()?'image2 generation ready, two 28-year-old Chinese women, both faces clear, stable travel outfit edges, no extra people':'image2 generation ready, single adult woman, stable complete travel outfit, clear face, readable limbs');if(this.$('safe').checked)parts.push(this.isDouble()?'two 28-year-old Chinese women only, tasteful close Chinese travel interaction, non-explicit, no nudity, no sexual act, no minors':'adult woman only, tasteful realistic Chinese travel styling, non-explicit, no nudity, no sexual act, no minors');const custom=this.clean(this.$('custom').value);if(custom)parts.push(custom);this.$('prompt').textContent=parts.filter(Boolean).join(', ')+'.';this.$('negative').textContent=NEG.join(', ');this.$('chips').innerHTML=['人物:'+this.label('people'),'场景:'+this.$('sceneGroup').value+'/'+this.label('scene'),'衣物:'+this.label('outfit'),'鞋:'+this.shoeText().replace('matched shoes: ',''),'标准:'+this.label('outfitStandard')].map(x=>`<span class="chip">${x}</span>`).join('')},
 rand(id,filter){const e=this.$(id);let opts=[...e.options].map((o,i)=>[o,i]);if(filter)opts=opts.filter(([o])=>filter(o.textContent+' '+(o.dataset.text||'')));if(!opts.length)opts=[...e.options].map((o,i)=>[o,i]);e.selectedIndex=opts[Math.floor(Math.random()*opts.length)][1]},randomAll(){const d=this.isDouble();this.rand('usage');this.rand('outfitStandard');this.rand('gear');this.rand('light');const groups=Object.keys(DATA.sceneGroups).filter(g=>d?g.includes('双人'):!g.includes('双人'));this.$('sceneGroup').value=groups[Math.floor(Math.random()*groups.length)]||Object.keys(DATA.sceneGroups)[0];this.refreshScene();this.rand('scene');this.syncOutfitToScene(true);this.rand('pose',t=>d?/双人/.test(t):!/双人/.test(t));this.rand('camera',t=>d?/双人/.test(t):!/双人/.test(t));this.generate()},
 batch(n=10){const rows=[];for(let i=1;i<=n;i++){this.randomAll();rows.push(`【变体 ${String(i).padStart(2,'0')}】\n${this.$('prompt').textContent}\n\n反向提示词：\n${this.$('negative').textContent}`)}this.$('batchOut').textContent=rows.join('\n\n------------------------------\n\n');this.showTab('batchTab',[...document.querySelectorAll('.card:last-child > .tabs .tab')][2])},showTab(id,btn){['output','negativeTab','batchTab','libraryTab'].forEach(x=>this.$(x).style.display=x===id?'block':'none');if(btn){btn.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active')}},renderLibrary(type,btn){if(btn){btn.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active')}let arr=[];if(type==='scenes')arr=Object.entries(DATA.sceneGroups).flatMap(([g,a])=>a.map(x=>[g+' / '+x[0],x[1]]));if(type==='outfits')arr=DATA.outfits;if(type==='standards')arr=DATA.outfitStandards;if(type==='gear')arr=DATA.gear;this.$('library').innerHTML=arr.map(x=>`<div class="item"><b>${x[0]}</b><p>${x[1]}</p></div>`).join('')},async copy(id){const text=this.$(id).textContent||'';try{await navigator.clipboard.writeText(text)}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}this.toast('已复制')},copyAll(){this.copyText(`正向提示词：\n${this.$('prompt').textContent}\n\n反向提示词：\n${this.$('negative').textContent}`)},async copyText(text){try{await navigator.clipboard.writeText(text)}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}this.toast('已复制')},toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1500)}
 };
+app.short=function(text,n=2){
+ return String(text||'').split(/[,，。;]/).map(x=>x.trim()).filter(Boolean).slice(0,n).join(', ');
+};
+app.cleanSignal=function(text){
+ return String(text||'')
+  .replace(/\b(8k|16k|masterpiece|best quality|ultra detailed|highly detailed|sharp focus|85mm|35mm|f\/1\.2|Kodak Portra 400|film grain|subsurface scattering)\b/ig,'')
+  .replace(/,\s*,+/g,',')
+  .replace(/\s{2,}/g,' ')
+  .trim();
+};
+app.directorCue=function(){
+ const scene=this.short(this.val('scene'),2), outfit=this.short(this.val('outfit'),3), pose=this.short(this.val('pose'),2), light=this.short(this.val('light'),1);
+ const route=/旗袍|新中式|马面|盘扣|水墨/.test(outfit)?'Chinese landmark travel route':/泳装|海岛|海边|短裤|亚麻|Boho/.test(outfit+scene)?'seaside vacation route':/瑜伽|运动|徒步|训练|山|茶园|梯田/.test(outfit+scene)?'mountain outdoor route':'city walk travel route';
+ return [
+  route,
+  'scene: '+scene,
+  'outfit: '+outfit,
+  'pose: '+pose,
+  'natural soft light: '+light,
+  'clean travel photography, realistic skin texture'
+ ];
+};
+app.generate=function(){
+ const parts=[
+  this.short(this.val('people'),1),this.short(this.val('face'),1),this.clean(this.$('subjectExtra').value),this.short(this.val('body'),1),
+  'body-flattering travel outfit, tasteful covered curvy silhouette',this.short(this.val('style'),1),
+  ...this.directorCue(),this.val('ratio'),
+  'realistic travel photography, recognizable Chinese architecture or local landscape, non-cyber, no text, no watermark'
+ ];
+ if(this.$('i2v').checked)parts.push('image2 ready, stable outfit, clear face');
+ if(this.$('safe').checked)parts.push('adult woman only, non-explicit, no nudity, no minors');
+ const custom=this.clean(this.$('custom').value);if(custom)parts.push(custom);
+ this.$('prompt').textContent=this.cleanSignal(parts.filter(Boolean).join(', '))+'.';
+ this.$('negative').textContent='child, teenager, underage, nude, exposed nipples, pornographic, sexual act, vulgar pose, plastic skin, waxy face, heavy beauty filter, over-sharpened, bad anatomy, bad hands, extra fingers, unwanted extra person, watermark, text, logo, cyberpunk, sci-fi';
+ this.$('chips').innerHTML=['人物:'+this.label('people'),'场景:'+this.$('sceneGroup').value+'/'+this.label('scene'),'衣物:'+this.label('outfit'),'鞋:'+this.shoeText().replace('matched shoes: ',''),'导演:'+this.directorCue()[0]].map(x=>`<span class="chip">${x}</span>`).join('');
+};
+(function modernTravelUpgrade(){
+ DATA.faces=[
+  ['明艳御姐脸','28岁中国女性，明艳御姐脸，精致立体五官，清晰下颌线，长黑发，淡烟熏眼妆，真实皮肤纹理，自信眼神'],
+  ['清冷御姐脸','28岁中国女性，清冷御姐脸，小脸但不幼态，直黑长发，清晰鼻梁，克制妆容，冷静高级眼神，真实毛孔'],
+  ['港风御姐脸','28岁中国女性，港风御姐脸，浓密黑发，红唇克制，五官立体，眼神强势但自然，真实油光和皮肤纹理'],
+  ['运动御姐脸','28岁中国女性，运动御姐脸，高马尾或湿发感碎发，清晰脸部骨相，健康肤色，自信利落，非幼态'],
+  ['双人御姐脸','两位28岁中国女性，都是精致御姐脸，五官清晰，表情克制自信，真实妆容和皮肤纹理']
+ ];
+ DATA.outfitStandards=[
+  ['明星机场街拍标准','现代女明星机场街拍感，整套服装完整协调，贴身内搭或收腰外套突出身材，鞋包同风格，非廉价网红感'],
+  ['城市打卡热销标准','2026热门城市旅拍穿搭，Capri裤、亚麻马甲、缎面长裙、短夹克或低领针织，身材线条清楚但完整遮挡'],
+  ['度假旅拍标准','海边与古城度假穿搭，挂脖长裙、亚麻套装、钩针外搭、细带凉鞋或坡跟凉鞋，轻盈但不走光'],
+  ['新中式现代标准','改良旗袍、新中式挂脖上衣、马面灵感半裙或缎面长裙，适合中国建筑旅拍，贴合身材但高级克制'],
+  ['轻户外显身材标准','防晒短外套、运动背心、瑜伽裤、骑行短裤、运动短裙和徒步鞋，适合山里茶园梯田，健康性感'],
+  ['双人明星旅拍标准','两位28岁中国女性，穿不同但协调的明星街拍或度假装，鞋包统一，姿态自然，非色情互动']
+ ];
+ DATA.outfits=[
+  ['黑色廓形西装白色吊带微喇牛仔裤尖头短靴','black oversized blazer, white fitted camisole, high-waist bootcut jeans, pointed ankle boots, Yang-Mi-style celebrity airport street look'],
+  ['灰色短西装黑色低领背心Capri裤尖头低跟','gray cropped blazer, black low-neck fitted tank, black capri pants, pointed kitten heels, modern celebrity city travel outfit'],
+  ['白色亚麻马甲同色阔腿裤棕色凉拖','white linen fitted vest, matching high-waist wide-leg trousers, brown leather flat mules, quiet luxury summer travel look'],
+  ['奶油黄挂脖针织上衣白色长裤坡跟凉鞋','butter-yellow halter knit top, white high-waist long trousers, cork wedge sandals, fresh 2026 summer city travel'],
+  ['冰蓝缎面吊带长裙银色细带凉鞋','ice-blue satin camisole maxi dress with opaque lining, silver strappy sandals, elegant riverside travel portrait'],
+  ['黑色皮衣白色背心直筒牛仔裤黑色短靴','black cropped leather jacket, white fitted tank, straight blue jeans, black ankle boots, sharp celebrity street photo'],
+  ['浅卡其风衣黑色针织背心白色Capri裤乐福鞋','light khaki trench coat, black fitted knit tank, white capri pants, leather loafers, city landmark travel outfit'],
+  ['白色挂脖上衣牛仔长裙银色凉鞋','white halter fitted top, denim maxi skirt, silver strappy sandals, modern old-town travel look'],
+  ['黑色低领针织开衫灰色鱼尾长裙尖头低跟','black low-neck fitted cardigan, gray fishtail maxi skirt, pointed kitten heels, refined street travel'],
+  ['红色针织吊带深蓝直筒牛仔裤白色穆勒鞋','red fitted knit camisole, dark-blue straight jeans, white leather mules, bright city-walk outfit'],
+  ['白色短款衬衫黑色高腰伞裙尖头低跟','white cropped shirt, black high-waist midi skirt, pointed kitten heels, clean celebrity travel styling'],
+  ['银灰缎面挂脖上衣黑色高腰长裤细跟凉鞋','silver-gray satin halter top, black high-waist trousers, slim strappy heels, evening city travel'],
+  ['黑色无袖针织长裙金色腰链细带凉鞋','black sleeveless fitted knit maxi dress, subtle gold waist chain, black strappy sandals, mature travel portrait'],
+  ['米白钩针外搭黑色吊带长裙厚底凉鞋','cream crochet cardigan layer over black opaque slip maxi dress, platform sandals, resort old-town look'],
+  ['白色蕾丝边吊带裙短牛仔外套银色凉鞋','white lace-trim opaque camisole dress, cropped denim jacket, silver sandals, modern summer travel photo'],
+  ['咖色麂皮短外套白色包臀长裙棕色短靴','brown suede cropped jacket, white body-skimming maxi dress, brown ankle boots, desert and old-town travel'],
+  ['墨绿挂脖包臀长裙金色细带凉鞋','dark-green halter body-skimming maxi dress, gold strappy sandals, garden and riverside travel mood'],
+  ['香槟色缎面衬衫黑色皮短裙黑色短靴','champagne satin shirt, black leather mini skirt, black ankle boots, celebrity night street travel'],
+  ['黑色背心白色高腰西裤黑色乐福鞋','black fitted tank top, white high-waist tailored trousers, black loafers, minimal star airport outfit'],
+  ['灰色罗纹针织背心黑色Capri裤尖头低跟','gray ribbed knit tank, black capri pants, pointed kitten heels, current city travel trend'],
+  ['蓝白条纹衬衫白色短裤棕色凉拖','blue-white striped oversized shirt, white tailored shorts, brown leather mules, coastal city travel outfit'],
+  ['白色鱼骨感背心亚麻长裙坡跟凉鞋','white structured corset-style vest with full coverage, linen maxi skirt, wedge sandals, summer resort travel'],
+  ['黑色挂脖连体裤金属腰带细跟凉鞋','black halter jumpsuit, subtle metal belt, slim heel sandals, urban evening travel look'],
+  ['奶咖Polo针织上衣深色百褶短裙乐福鞋','latte fitted polo knit top, dark pleated mini skirt, leather loafers, smart city-walk style'],
+  ['浅粉短开衫白色高腰长裤裸色低跟','soft-pink cropped cardigan, white high-waist trousers, nude kitten heels, soft celebrity street look'],
+  ['白色新中式挂脖上衣黑色马面灵感半裙玛丽珍低跟','white modern Chinese halter top, black mamian-inspired midi skirt, low Mary Jane heels, Chinese landmark travel'],
+  ['黑色新中式盘扣短上衣缎面鱼尾裙尖头低跟','black fitted new-Chinese frog-button crop top, satin fishtail skirt, pointed kitten heels, old-town portrait'],
+  ['水墨印花改良旗袍长裙银色低跟','ink-wash modern qipao maxi dress, silver low heels, Jiangnan water-town travel'],
+  ['月白短款新中式上衣牛仔长裙乐福鞋','moon-white fitted new-Chinese short top, denim maxi skirt, leather loafers, modern China travel'],
+  ['青绿缎面改良旗袍短裙裸色细跟凉鞋','cyan-green satin modern qipao mini dress, nude strappy kitten heels, garden travel portrait'],
+  ['白色防晒短外套冰蓝运动背心瑜伽裤运动鞋','white cropped sun-protection jacket, ice-blue sports tank, high-waist yoga leggings, clean sneakers, tea-field travel'],
+  ['黑色速干背心灰色骑行短裤越野跑鞋','black quick-dry fitted tank, gray cycling shorts, lightweight trail running shoes, mountain road travel'],
+  ['雾灰拉链防晒上衣黑色运动短裙徒步鞋','mist-gray zip sun-protection top, black high-waist athletic skirt, hiking shoes, scenic trail travel'],
+  ['橄榄绿运动背心黑色瑜伽裤登山鞋','olive fitted sports tank, black yoga leggings, hiking shoes, mountain and terrace travel outfit'],
+  ['白色运动短外套蓝色训练裤白色运动鞋','white cropped athletic jacket, blue fitted training pants, white sneakers, clean outdoor travel look'],
+  ['黑色连体泳装白色亚麻衬衫细带凉鞋','black opaque one-piece swimsuit, loose white linen shirt, slim strappy sandals, seaside resort travel'],
+  ['白色挂脖泳装高腰亚麻短裤草编坡跟','white halter swim top with full coverage, high-waist linen shorts, woven wedge sandals, beach vacation'],
+  ['蓝色抹胸长裙白色薄开衫银色凉鞋','blue strapless opaque maxi dress, thin white cardigan, silver sandals, coastal city travel'],
+  ['红色吊带背心白色高腰短裤金色凉鞋','red fitted camisole, white high-waist tailored shorts, gold strappy sandals, seaside street travel'],
+  ['棕色钩针上衣黑色亚麻长裙厚底凉鞋','brown crochet-style top with opaque lining, black linen maxi skirt, platform sandals, island old-town travel'],
+  ['双人黑白明星机场套装','two 28-year-old Chinese women, one black blazer and jeans, one white fitted vest and wide trousers, coordinated celebrity airport travel'],
+  ['双人新中式古镇套装','two 28-year-old Chinese women, modern new-Chinese fitted tops with slim skirts, coordinated low heels, old-town travel'],
+  ['双人海边缎面长裙套装','two 28-year-old Chinese women, satin halter maxi dresses in blue and champagne, strappy sandals, seaside travel poster'],
+ ['双人城市皮衣牛仔套装','two 28-year-old Chinese women, cropped leather jacket and denim styling, ankle boots, city landmark street photo'],
+ ['双人轻户外运动套装','two 28-year-old Chinese women, fitted sun-protection tops and leggings, trail shoes, tea-field mountain travel']
+ ];
+ DATA.sceneGroups['中国真实地标打卡']=[
+  ['故宫午门红墙打卡','Forbidden City Meridian Gate red wall check-in, palace gate and red wall clearly visible, tourists at distance for scale, vertical phone travel photo'],
+  ['天坛祈年殿外圈栏杆','Temple of Heaven Hall of Prayer for Good Harvests outside railing, blue roof visible, open plaza, tourist check-in composition'],
+  ['上海外滩万国建筑群','Shanghai Bund promenade check-in, historic building row and river railing visible, skyline depth, clean city landmark photo'],
+  ['重庆洪崖洞江边栏杆','Chongqing Hongyadong riverside railing, layered stilt-house lights and bridge background, night landmark check-in'],
+  ['成都太古里玻璃街角','Chengdu Taikoo Li glass storefront corner, modern commercial street sign, pedestrians softly blurred, fashion check-in photo'],
+  ['广州塔江边步道','Canton Tower riverside promenade, tower full silhouette visible behind subject, city lights and railing, tourist photo angle'],
+  ['西安城墙永宁门外','Xi’an city wall Yongning Gate exterior, ancient gate and brick wall visible, stone plaza, full-body landmark check-in'],
+  ['苏州园林月洞门框景','Suzhou garden moon gate framing, white wall black tile and plaque detail visible, classical Chinese travel check-in'],
+  ['杭州西湖断桥边','Hangzhou West Lake Broken Bridge side, lake railing and willow branches, bridge identifiable in background, soft tourist depth'],
+  ['南京梧桐大道民国墙','Nanjing plane-tree avenue with Republic-era wall, street name plate and tree tunnel visible, city-walk check-in'],
+  ['青岛栈桥海边栏杆','Qingdao Zhanqiao pier railing, red-roof pavilion and sea visible, wind-blown coastal check-in photo'],
+  ['厦门鼓浪屿转角楼梯','Gulangyu island corner stairs, old villa wall and street sign visible, bougainvillea, island landmark check-in']
+ ];
+ DATA.sceneGroups['国际真实打卡位']=[
+  ['东京涩谷十字路口路牌','Tokyo Shibuya crossing check-in, crosswalk stripes, street signs and crowd scale visible, vertical street photo'],
+  ['京都八坂塔石板坡道','Kyoto Yasaka Pagoda stone slope, pagoda full silhouette and wooden houses visible, morning tourist check-in'],
+  ['首尔北村韩屋斜坡','Seoul Bukchon Hanok sloped alley, tiled roofs and alley sign visible, Hallyu travel check-in photo'],
+  ['新加坡滨海湾栏杆','Singapore Marina Bay promenade railing, skyline and water reflection visible, tropical clean check-in'],
+  ['巴黎塞纳河铁塔远景','Paris Seine riverside railing with Eiffel Tower distant view, bridge and river visible, elegant travel check-in'],
+  ['罗马斗兽场外石墙','Rome Colosseum exterior stone wall, arches visible, tourist scale, warm daylight check-in'],
+  ['伦敦红电话亭街角','London red telephone booth street corner, classic facade and street sign visible, fashion travel check-in'],
+  ['纽约布鲁克林桥步道','New York Brooklyn Bridge walkway, bridge cables and skyline visible, urban landmark check-in']
+ ];
+ DATA.outfit=DATA.outfits;
+ DATA.face=DATA.faces;
+ DATA.outfitStandard=DATA.outfitStandards;
+ app.sceneOutfitRule=function(text=this.sceneText()){
+  if(this.isDouble())return /双人/;
+  if(/江南|水乡|乌镇|西塘|苏州|园林|南浔|周庄|绍兴|乌篷|扬州|杭州|宏村|西递|徽州|土楼|红砖厝|平遥|京都|韩屋|八坂塔|威尼斯|故宫|胡同|城墙/.test(text))return /新中式|旗袍|马面|水墨|月白|鱼尾|缎面|牛仔长裙|低跟/;
+  if(/茶园|茶山|武夷山|龙脊|梯田|元阳|香格里拉|川西|藏寨|苗寨|多洛米蒂|瑞士|冰岛|黑沙滩|草坡|湖畔|山城|栈道|稻田/.test(text))return /防晒|运动|瑜伽|骑行|徒步|越野|训练|运动短裙|登山|trail/;
+  if(/海边|海岛|海滩|海湾|海岸|海崖|渔港|滩涂|三亚|霞浦|洱海|青海湖|苏梅|马尔代夫|圣托里尼|撒丁|阿马尔菲|夏威夷|水屋|木栈道|巴厘|松巴|普吉|米克诺斯/.test(text))return /泳装|亚麻|挂脖|抹胸|缎面|吊带|短裤|钩针|坡跟|凉鞋|海边/;
+  if(/沙漠|摩洛哥|佩特拉|马拉喀什|开罗|伊斯坦布尔|迪拜|庭院/.test(text))return /亚麻|麂皮|挂脖|长裙|马甲|钩针|坡跟|缎面/;
+  return /西装|皮衣|Capri|牛仔|针织|马甲|Polo|衬衫|乐福|尖头|城市|机场|明星/;
+ };
+ app.shoeText=function(){
+  const o=this.label('outfit');
+  if(/徒步|登山|越野|trail|运动|瑜伽|骑行|训练|防晒/.test(o))return 'matched shoes: clean sneakers, trail running shoes or hiking shoes, practical and coordinated';
+  if(/海边|海岛|泳装|亚麻|钩针|度假|坡跟|凉鞋|挂脖|抹胸/.test(o))return 'matched shoes: strappy sandals, platform sandals or woven wedge sandals, summer travel style';
+  if(/旗袍|新中式|马面|鱼尾|缎面|长裙|改良/.test(o))return 'matched shoes: pointed kitten heels, slim low heels or elegant strappy heels, color coordinated';
+  if(/西装|Capri|西裤|衬衫|马甲|乐福|机场/.test(o))return 'matched shoes: loafers, pointed kitten heels or leather mules, celebrity street style';
+  if(/皮衣|牛仔|皮裙|短靴/.test(o))return 'matched shoes: ankle boots, pointed boots or leather mules, sharp street travel style';
+  if(/双人/.test(o))return 'matched shoes: coordinated heels, loafers, sandals or sneakers for both adult women, no mismatched footwear';
+  return 'matched shoes: loafers, kitten heels, mules or strappy sandals, coordinated with the full outfit';
+ };
+ app.directorCue=function(){
+  const scene=this.short(this.val('scene'),2), outfit=this.short(this.val('outfit'),3), pose=this.short(this.val('pose'),2), light=this.short(this.val('light'),1);
+  const route=/旗袍|新中式|马面|水墨|月白/.test(outfit)?'modern Chinese landmark route':/泳装|海岛|海边|短裤|亚麻|钩针|坡跟/.test(outfit+scene)?'modern resort travel route':/瑜伽|运动|徒步|训练|山|茶园|梯田|防晒/.test(outfit+scene)?'light outdoor travel route':'celebrity street travel route';
+  return [
+   route,
+   'real check-in photo, landmark must be recognizable',
+   'scene: '+scene,
+   'check-in proof: entrance, plaque, street sign, railing, tower, bridge or iconic facade visible',
+   'composition: vertical phone travel framing, full outfit and shoes visible, tourists softly blurred for scale',
+   'outfit: '+outfit,
+   'pose: '+pose,
+   'natural soft light: '+light,
+   'clean travel photography, realistic skin texture, not generic background'
+  ];
+ };
+})();
+(function checkinDetailUpgrade(){
+ DATA.faces=[
+  ['短发明艳御姐脸','28岁中国女性，短中发或锁骨发，明艳御姐脸，精致立体五官，清晰下颌线，眼神自信，真实皮肤纹理'],
+  ['长发清冷御姐脸','28岁中国女性，长黑发，清冷御姐脸，小脸但不幼态，鼻梁清晰，妆容干净，冷静高级眼神'],
+  ['港风柔媚御姐脸','28岁中国女性，蓬松黑发，港风柔媚御姐脸，红唇克制，眼神柔和但成熟，真实毛孔和自然油光'],
+  ['街拍元气御姐脸','28岁中国女性，锁骨发或半扎发，元气御姐脸，笑容自然，五官清晰，成年感明确，非幼态'],
+  ['双人御姐脸','两位28岁中国女性，精致御姐脸，五官清晰，表情自信自然，真实妆容和皮肤纹理']
+ ];
+ DATA.outfitStandards=[
+  ['参考图贴身针织标准','参考抖音私域写真里的贴身针织、露肩、方领、挂脖元素，改成可外拍的完整旅拍服装，性感但完整遮挡'],
+  ['明星街拍打卡标准','女明星机场街拍和城市打卡感，短上衣、收腰外套、高腰裙裤、鞋包协调，身材线条清楚'],
+  ['轻甜但成人标准','粉色开衫、花朵吊带、蕾丝边、短裙等元素只做成年女性风格，避免学生制服和幼态'],
+  ['新中式打卡标准','改良旗袍、新中式上衣、轻纱外搭、马面灵感半裙，适合中式建筑打卡，贴合身材但克制高级'],
+  ['度假贴身标准','缎面吊带、挂脖长裙、亚麻外搭、钩针层次和凉鞋，适合海边古城度假打卡'],
+  ['轻户外标准','防晒短外套、运动背心、瑜伽裤、运动短裙、徒步鞋，适合山景茶园梯田，健康显身材']
+ ];
+ DATA.outfits=[
+  ['白色蕾丝挂脖上衣灰色百褶短裙尖头低跟','white lace halter fitted top with full lining, gray pleated mini skirt, pointed kitten heels, adult influencer check-in outfit'],
+  ['白色修身短T粉色百褶短裙白色厚底运动鞋','white fitted cropped T-shirt, pink pleated mini skirt, white platform sneakers, playful adult city check-in look'],
+  ['白色挂脖钥匙孔上衣黑色高腰包臀裙细跟凉鞋','white halter keyhole fitted top, black high-waist bodycon skirt, slim strappy heels, mature street check-in styling'],
+  ['白衬衫黑色马甲连衣裙领结低跟鞋','white blouse, black fitted vest mini dress, small bow tie detail, low heels, adult cafe and city landmark check-in'],
+  ['白色短袖衬衫红色领带黑色皮质包臀裙短靴','white fitted short-sleeve shirt, red tie accent, black leather bodycon skirt, ankle boots, adult fashion poster travel look'],
+  ['紫色缎面吊带包身长裙银色细带凉鞋','purple satin camisole body-skimming maxi dress, silver strappy sandals, evening riverside check-in outfit'],
+  ['黑色高领镂空针织包臀连衣裙尖头低跟','black high-neck keyhole cutout fitted knit dress, pointed kitten heels, mature city check-in outfit'],
+  ['米白垂坠无袖针织上衣藕粉贴身长裤穆勒鞋','cream draped sleeveless knit top, mauve fitted trousers, leather mules, soft indoor-to-city travel look'],
+  ['藏蓝贴身短袖上衣灰色包臀长裙短靴','navy fitted short-sleeve top, gray bodycon maxi skirt, ankle boots, understated celebrity street check-in'],
+  ['白色露肩宽松毛衣蓝灰缎面长裙低跟凉鞋','white off-shoulder loose sweater, blue-gray satin maxi skirt, low strappy heels, soft landmark portrait outfit'],
+  ['灰色高领罗纹针织连衣裙尖头短靴','gray turtleneck ribbed fitted knit dress, pointed ankle boots, clean winter city check-in'],
+  ['黑色高领胸前开口针织上衣深色直筒牛仔裤短靴','black high-neck chest-keyhole knit top, dark straight jeans, ankle boots, sharp celebrity travel outfit'],
+  ['红色修身短款针织上衣深蓝高腰牛仔裤穆勒鞋','red fitted cropped knit top, dark high-waist jeans, white leather mules, bright city check-in look'],
+  ['白色方领长袖上衣深蓝包臀开衩裙低跟凉鞋','white square-neck long-sleeve top, deep-blue bodycon slit skirt, low strappy heels, elegant street check-in'],
+  ['浅蓝露肩交叉褶皱针织裙银色凉鞋','light-blue off-shoulder ruched knit dress, silver sandals, soft feminine landmark photo'],
+  ['薰衣草露肩包身连衣裙裸色低跟','lavender off-shoulder body-skimming dress, nude kitten heels, clean social-media check-in portrait'],
+  ['粉色短开衫碎花吊带裙白色细带凉鞋','pink cropped cardigan, floral camisole dress with opaque lining, white strappy sandals, adult soft travel outfit'],
+  ['蓝白花朵改良旗袍低跟凉鞋','blue-white floral modern qipao, low heel sandals, Chinese garden and old-town check-in outfit'],
+  ['白色轻纱外搭橘色抹胸上衣青绿色半裙细跟凉鞋','white sheer outer robe, orange structured tube top, cyan-green midi skirt, slim sandals, modern hanfu-inspired travel outfit'],
+  ['黑色方领绑带短上衣格纹短裙短靴','black square-neck strappy fitted top, plaid mini skirt, black ankle boots, adult street check-in outfit'],
+  ['棕色低V罗纹针织上衣黑色高腰半裙短靴','brown low-V ribbed knit top, black high-waist skirt, ankle boots, evening city check-in'],
+  ['雾蓝宽领针织上衣白色高腰长裤乐福鞋','mist-blue wide-neck knit top, white high-waist trousers, leather loafers, clean city landmark outfit'],
+  ['白色衬衫灰色束腰半裙尖头低跟','white blouse, gray cinched-waist midi skirt, pointed kitten heels, mature office-to-travel check-in'],
+  ['黑色廓形西装白色吊带微喇牛仔裤尖头短靴','black oversized blazer, white fitted camisole, high-waist bootcut jeans, pointed ankle boots, celebrity airport check-in'],
+  ['灰色短西装黑色低领背心Capri裤尖头低跟','gray cropped blazer, black low-neck fitted tank, black capri pants, pointed kitten heels, modern city travel outfit'],
+  ['白色亚麻马甲同色阔腿裤棕色穆勒鞋','white linen fitted vest, matching high-waist wide-leg trousers, brown leather mules, quiet luxury summer check-in'],
+  ['奶油黄挂脖针织上衣白色长裤坡跟凉鞋','butter-yellow halter knit top, white high-waist trousers, cork wedge sandals, 2026 summer city check-in'],
+  ['冰蓝缎面吊带长裙银色细带凉鞋','ice-blue satin camisole maxi dress with opaque lining, silver strappy sandals, elegant riverside check-in'],
+  ['黑色皮衣白色背心直筒牛仔裤黑色短靴','black cropped leather jacket, white fitted tank, straight blue jeans, black ankle boots, sharp celebrity street photo'],
+  ['浅卡其风衣黑色针织背心白色Capri裤乐福鞋','light khaki trench coat, black fitted knit tank, white capri pants, leather loafers, city landmark check-in'],
+  ['白色新中式挂脖上衣黑色马面灵感半裙尖头低跟','white modern Chinese halter top, black mamian-inspired midi skirt, pointed kitten heels, Chinese landmark outfit'],
+  ['黑色新中式盘扣短上衣缎面鱼尾裙尖头低跟','black fitted new-Chinese frog-button crop top, satin fishtail skirt, pointed kitten heels, old-town portrait'],
+  ['水墨印花改良旗袍长裙银色低跟','ink-wash modern qipao maxi dress, silver low heels, Jiangnan water-town check-in'],
+  ['月白短款新中式上衣牛仔长裙乐福鞋','moon-white fitted new-Chinese short top, denim maxi skirt, leather loafers, modern China travel'],
+  ['黑色连体泳装白色亚麻衬衫细带凉鞋','black opaque one-piece swimsuit, loose white linen shirt, slim strappy sandals, seaside resort check-in'],
+  ['白色挂脖泳装高腰亚麻短裤草编坡跟','white halter swim top with full coverage, high-waist linen shorts, woven wedge sandals, beach vacation check-in'],
+  ['白色防晒短外套冰蓝运动背心瑜伽裤运动鞋','white cropped sun-protection jacket, ice-blue sports tank, high-waist yoga leggings, clean sneakers, tea-field check-in'],
+  ['雾灰拉链防晒上衣黑色运动短裙徒步鞋','mist-gray zip sun-protection top, black high-waist athletic skirt, hiking shoes, scenic trail check-in'],
+  ['黑色速干背心灰色骑行短裤越野跑鞋','black quick-dry fitted tank, gray cycling shorts, lightweight trail running shoes, mountain road check-in'],
+  ['双人御姐黑白街拍套装','two 28-year-old Chinese women, one in black blazer and jeans, one in white fitted vest and trousers, coordinated celebrity check-in'],
+  ['双人新中式古镇套装','two 28-year-old Chinese women, modern new-Chinese fitted tops with slim skirts, pointed low heels, old-town check-in'],
+  ['双人缎面长裙江边套装','two 28-year-old Chinese women, satin halter maxi dresses in blue and champagne, strappy sandals, riverside check-in'],
+  ['双人皮衣牛仔城市套装','two 28-year-old Chinese women, cropped leather jacket and denim styling, ankle boots, city landmark street photo'],
+  ['双人轻户外茶园套装','two 28-year-old Chinese women, fitted sun-protection tops and leggings, trail shoes, tea-field mountain check-in']
+ ];
+ DATA.sceneGroups={
+  '北京西安地标打卡':[
+   ['故宫午门正门红墙','Forbidden City Meridian Gate front check-in, red wall, palace gate, golden roof edge, security railing, tourists softly blurred, vertical phone photo'],
+   ['故宫角楼护城河边','Forbidden City corner tower by moat, tower reflection, red wall and willow branches visible, tourist-scale landmark check-in'],
+   ['天坛祈年殿栏杆外','Temple of Heaven Hall of Prayer for Good Harvests outside railing, blue roof centered, open plaza and visitor line visible'],
+   ['颐和园长廊彩绘柱旁','Summer Palace Long Corridor painted columns, Kunming Lake glimpse, corridor plaque and handrail visible'],
+   ['北京胡同红门门牌','Beijing hutong red door check-in, gray brick wall, visible house number plate, bicycle and alley depth'],
+   ['前门箭楼步行街口','Qianmen Arrow Tower pedestrian street, tower gate visible, shop signs and stone pavement, tourists in depth'],
+   ['西安永宁门城墙下','Xi’an Yongning Gate city wall exterior, brick gate full silhouette, stone plaza, travel crowd scale'],
+   ['大唐不夜城灯牌街景','Tang Paradise pedestrian street at night, Tang-style facade, lantern signboards and crowd blur visible']
+  ],
+  '上海广州成都重庆打卡':[
+   ['上海外滩江边栏杆','Shanghai Bund riverside railing, historic building row and Huangpu River visible, skyline depth, real check-in framing'],
+   ['陆家嘴天桥东方明珠','Lujiazui pedestrian bridge, Oriental Pearl Tower visible behind subject, glass rail and city crowd scale'],
+   ['武康路老洋房路牌','Shanghai Wukang Road old villa corner, street sign and plane trees visible, celebrity city-walk check-in'],
+   ['广州塔江边步道','Canton Tower riverside promenade, tower full silhouette, river railing, city lights and visitors visible'],
+   ['广州永庆坊骑楼巷口','Guangzhou Yongqing Fang arcade alley, Lingnan facade, shop sign and stone lane visible'],
+   ['成都太古里玻璃街角','Chengdu Taikoo Li glass storefront corner, luxury shop facade, pedestrians softly blurred, fashion check-in'],
+   ['重庆洪崖洞江边栏杆','Chongqing Hongyadong riverside railing, layered stilt-house lights, bridge background, night check-in'],
+   ['重庆李子坝观景台','Liziba monorail viewing platform, train track and station sign visible, crowd scale, urban check-in']
+  ],
+  '江南园林古镇打卡':[
+   ['苏州园林月洞门框景','Suzhou garden moon gate framing, white wall, black tile, plaque detail and bamboo shadow visible'],
+   ['拙政园水池亭台边','Humble Administrator Garden pond edge, pavilion, stone bridge and lotus water visible, classical check-in'],
+   ['乌镇石桥牌坊水巷','Wuzhen stone bridge with canal, wooden shop sign, white walls and black tiles, tourists softly blurred'],
+   ['西塘廊棚红灯笼河边','Xitang covered riverside corridor, red lanterns, wet stone path, canal railing visible'],
+   ['南浔百间楼河埠头','Nanxun Baijianlou river dock, old wooden houses, canal steps and boat visible'],
+   ['绍兴乌篷船码头','Shaoxing black-awning boat dock, wine-shop sign, stone embankment and boat ropes visible'],
+   ['杭州西湖断桥栏杆','Hangzhou West Lake Broken Bridge railing, lake water, willow branches and bridge line visible'],
+   ['扬州瘦西湖五亭桥远景','Yangzhou Slender West Lake bridge-side check-in, Five Pavilion Bridge visible across water']
+  ],
+  '山海茶园自然打卡':[
+   ['龙井茶园观景小路','Longjing tea plantation path, tea rows curve behind subject, wooden sign and mountain mist visible'],
+   ['武夷山茶山栈道','Wuyi Mountain tea-field boardwalk, red rock cliff, tea field layers and railing visible'],
+   ['龙脊梯田观景台','Longji rice terrace viewpoint, layered terrace lines, wooden viewing rail and village distance visible'],
+   ['元阳梯田日落水面','Yuanyang terrace sunset check-in, water reflection, terrace curves, viewpoint rail visible'],
+   ['洱海S弯公路栏杆','Erhai S-curve lakeside road, blue lake, white railing, road bend visible behind subject'],
+   ['青岛栈桥海边栏杆','Qingdao Zhanqiao pier railing, red-roof pavilion, sea wind and waves visible'],
+   ['三亚椰梦长廊海边','Sanya Coconut Dream Corridor, palm trees, beach path, sea horizon and visitors visible'],
+   ['霞浦滩涂栈道日落','Xiapu tidal flat boardwalk, fishing poles, sunset water reflection, wooden rail visible']
+  ],
+  '国际城市真实打卡':[
+   ['东京涩谷十字路口路牌','Tokyo Shibuya crossing, crosswalk stripes, traffic lights, street signs and crowd scale visible'],
+   ['京都八坂塔石板坡道','Kyoto Yasaka Pagoda stone slope, pagoda full silhouette, wooden houses and street sign visible'],
+   ['首尔北村韩屋斜坡','Seoul Bukchon Hanok sloped alley, tiled roofs, lane sign and tourists visible'],
+   ['新加坡滨海湾栏杆','Singapore Marina Bay railing, skyline, water reflection and promenade sign visible'],
+   ['巴黎塞纳河铁塔远景','Paris Seine riverside railing, Eiffel Tower distant view, bridge and river visible'],
+   ['罗马斗兽场外石墙','Rome Colosseum exterior, arches, stone wall, visitor scale and warm daylight visible'],
+   ['伦敦红电话亭街角','London red telephone booth corner, street sign, classic facade and pavement visible'],
+   ['纽约布鲁克林桥步道','Brooklyn Bridge walkway, cables, skyline, wooden path and people scale visible']
+  ],
+  '国际海岛度假打卡':[
+   ['巴厘岛稻田秋千旁','Bali rice terrace swing area, tropical rice layers, wooden platform and path visible'],
+   ['普吉老镇彩色骑楼','Phuket Old Town colorful arcade, Sino-Portuguese facade, shop sign and tropical light visible'],
+   ['苏梅岛木栈道海边','Koh Samui beach wooden walkway, palms, sea horizon, resort sign and rail visible'],
+   ['圣托里尼蓝顶教堂巷','Santorini blue-domed church alley, white wall steps, sea view and tourists visible'],
+   ['马尔代夫水屋栈桥','Maldives overwater villa boardwalk, turquoise water, rail line and villa silhouette visible'],
+   ['夏威夷海岸公路观景台','Hawaii coastal road viewpoint, guardrail, ocean cliff and palm trees visible'],
+   ['阿马尔菲海岸彩色楼梯','Amalfi Coast colorful village stairs, sea glimpse, stone wall and balcony visible'],
+   ['冰岛黑沙滩玄武岩','Iceland black sand beach, basalt columns, warning sign and ocean waves visible']
+  ],
+  '室内热门打卡位':[
+   ['酒店落地窗城市景','hotel floor-to-ceiling window check-in, city skyline visible, curtain edge and window frame evidence'],
+   ['精品民宿白墙镜前','boutique homestay white-wall mirror corner, bed edge, plant and framed mirror visible'],
+   ['艺术馆白墙展厅','art gallery white-wall exhibition room, artwork label and gallery bench visible, quiet check-in'],
+   ['咖啡馆窗边座位','cafe window seat, shop logo on glass, coffee cup and street outside visible'],
+   ['商场玻璃扶梯旁','mall glass escalator area, brand storefront and railing visible, fashion check-in'],
+   ['书店木架转角','bookstore wooden shelf corner, book rows and sign plate visible, soft indoor light'],
+   ['餐厅吧台暖光','restaurant bar counter, pendant lights, menu board and bottles visible, evening check-in'],
+   ['地铁站出口导视牌','subway station exit sign, tiled wall, exit number and city crowd visible']
+  ],
+  '双人真实打卡':[
+   ['双人故宫红墙','two 28-year-old Chinese women by Forbidden City red wall, palace gate and tourists visible, coordinated outfits'],
+   ['双人外滩江边','two 28-year-old Chinese women at Shanghai Bund railing, historic buildings and river visible'],
+   ['双人苏州园林月洞门','two 28-year-old Chinese women framed by Suzhou garden moon gate, white wall and plaque visible'],
+   ['双人广州塔夜景','two 28-year-old Chinese women on Canton Tower riverside promenade, tower lights and railing visible'],
+   ['双人重庆洪崖洞','two 28-year-old Chinese women by Hongyadong riverside railing, layered lights and bridge visible'],
+   ['双人茶园小路','two 28-year-old Chinese women on tea plantation path, tea rows and wooden sign visible'],
+   ['双人京都八坂塔','two 28-year-old Chinese women on Kyoto Yasaka stone slope, pagoda and wooden houses visible'],
+   ['双人海岛栈桥','two 28-year-old Chinese women on beach wooden walkway, sea horizon and palms visible']
+  ]
+ };
+ DATA.outfit=DATA.outfits;DATA.face=DATA.faces;DATA.outfitStandard=DATA.outfitStandards;
+ app.sceneOutfitRule=function(text=this.sceneText()){
+  if(this.isDouble())return /双人/;
+  if(/故宫|天坛|颐和园|胡同|前门|西安|江南|苏州|园林|乌镇|西塘|南浔|绍兴|杭州|扬州|京都|韩屋/.test(text))return /新中式|旗袍|马面|水墨|月白|白衬衫|马甲|挂脖|针织|低跟|乐福/;
+  if(/海|三亚|青岛|霞浦|巴厘|普吉|苏梅|圣托里尼|马尔代夫|夏威夷|阿马尔菲|水屋|栈桥/.test(text))return /泳装|亚麻|挂脖|缎面|吊带|短裤|钩针|坡跟|凉鞋|连衣裙/;
+  if(/茶园|武夷|龙脊|元阳|梯田|冰岛|黑沙滩|山|观景台/.test(text))return /防晒|运动|瑜伽|骑行|徒步|越野|训练|运动短裙|登山|trail/;
+  if(/酒店|民宿|艺术馆|咖啡馆|商场|书店|餐厅|地铁/.test(text))return /针织|露肩|方领|开衫|吊带|衬衫|马甲|连衣裙|包臀|低跟/;
+  return /西装|皮衣|Capri|牛仔|针织|马甲|Polo|衬衫|乐福|尖头|城市|机场|明星|短靴/;
+ };
+ app.shoeText=function(){
+  const o=this.label('outfit');
+  if(/徒步|登山|越野|trail|运动|瑜伽|骑行|训练|防晒/.test(o))return 'matched shoes: clean sneakers, trail running shoes or hiking shoes, practical and coordinated';
+  if(/海边|海岛|泳装|亚麻|钩针|度假|坡跟|凉鞋|挂脖|抹胸/.test(o))return 'matched shoes: strappy sandals, platform sandals or woven wedge sandals, summer travel style';
+  if(/旗袍|新中式|马面|鱼尾|缎面|长裙|改良|低跟/.test(o))return 'matched shoes: pointed kitten heels, slim low heels or elegant strappy heels, color coordinated';
+  if(/西装|Capri|西裤|衬衫|马甲|乐福|机场|阔腿/.test(o))return 'matched shoes: loafers, pointed kitten heels or leather mules, celebrity street style';
+  if(/皮衣|牛仔|皮裙|短靴/.test(o))return 'matched shoes: ankle boots, pointed boots or leather mules, sharp street travel style';
+  if(/双人/.test(o))return 'matched shoes: coordinated heels, loafers, sandals or sneakers for both adult women, no mismatched footwear';
+  return 'matched shoes: kitten heels, loafers, mules or strappy sandals, coordinated with the full outfit';
+ };
+ app.directorCue=function(){
+  const scene=this.short(this.val('scene'),2), outfit=this.short(this.val('outfit'),3), pose=this.short(this.val('pose'),2), light=this.short(this.val('light'),1);
+  const route=/旗袍|新中式|马面|水墨|月白|汉服|轻纱/.test(outfit)?'modern Chinese landmark check-in route':/泳装|海岛|海边|短裤|亚麻|钩针|坡跟|缎面/.test(outfit+scene)?'resort landmark check-in route':/瑜伽|运动|徒步|训练|山|茶园|梯田|防晒/.test(outfit+scene)?'outdoor viewpoint check-in route':/酒店|民宿|艺术馆|咖啡馆|商场|书店|餐厅|地铁/.test(scene)?'indoor social-media check-in route':'celebrity street landmark check-in route';
+  return [route,'real check-in photo, landmark or venue must be recognizable','scene: '+scene,'proof details: entrance, plaque, street sign, railing, window frame, shop logo, bridge, tower or iconic facade visible','composition: vertical phone travel framing, outfit and shoes readable, background not generic','outfit: '+outfit,'pose: '+pose,'natural soft light: '+light,'clean realistic travel photography, not studio cosplay'];
+ };
+ app.makePresets=function(){
+  const singleScenes=Object.entries(DATA.sceneGroups).filter(([g])=>!g.includes('双人')).flatMap(([g,a])=>a.map(s=>[g,s[0]]));
+  const doubleScenes=(DATA.sceneGroups['双人真实打卡']||[]).map(s=>['双人真实打卡',s[0]]);
+  return DATA.outfits.map((o,i)=>{
+   const dbl=/双人/.test(o[0]);
+   const scenePool=dbl&&doubleScenes.length?doubleScenes:singleScenes;
+   const sc=scenePool[i%scenePool.length];
+   const posePool=DATA.poses.filter(x=>dbl?x[0].includes('双人'):!x[0].includes('双人'));
+   const facePool=DATA.faces.filter(x=>dbl?/双人|两位/.test(x[0]+x[1]):!/双人|两位/.test(x[0]+x[1]));
+   return {name:'真实打卡 '+String(i+1).padStart(2,'0')+' '+o[0],face:facePool[i%facePool.length][0],people:dbl?'双人成年生活海报':'单人现实写真',body:dbl?'双人成年曲线型':DATA.body[i%3][0],group:sc[0],scene:sc[1],standard:DATA.outfitStandards[i%DATA.outfitStandards.length][0],outfit:o[0],gear:DATA.gear[i%DATA.gear.length][0],pose:posePool[i%posePool.length][0],camera:DATA.cameras[i%DATA.cameras.length][0],light:DATA.lights[i%DATA.lights.length][0],style:DATA.styles[i%DATA.styles.length][0],realism:DATA.realism[i%DATA.realism.length][0],usage:DATA.usage[i%DATA.usage.length][0],ratio:DATA.ratios[i%DATA.ratios.length][0]};
+  });
+ };
+})();
+(function scenicStyleNoRepeatUpgrade(){
+ DATA.styles=[
+  ['真实手机打卡照','real phone travel check-in photo, recognizable landmark evidence, vertical social-media framing, natural tourists and street depth'],
+  ['小红书清透旅拍','Xiaohongshu-style clean travel portrait, bright but realistic skin texture, soft daylight, not over-filtered'],
+  ['明星路透街拍','celebrity candid street-travel photo, long-lens compression, outfit readable, casual but polished'],
+  ['旅行博主全身照','travel blogger full-body check-in photo, shoes visible, landmark clearly behind subject, clean composition'],
+  ['Citywalk路线照','citywalk route photo, street signs, storefronts, crosswalks and local facades visible, handheld realism'],
+  ['古镇胶片旅拍','old-town film travel portrait, stone alley, wooden facade, mild grain, imperfect candid framing'],
+  ['山海风吹抓拍','windy mountain or seaside candid travel photo, moving hair and fabric, real outdoor light, readable body line'],
+  ['夜景氛围打卡','night landmark check-in photo, practical city lights, soft rim light, readable face and outfit, no muddy background'],
+  ['酒店民宿随拍','hotel or homestay lifestyle travel photo, window frame or room detail visible, relaxed social-media snapshot'],
+  ['机场车站出发照','airport or station departure-style travel photo, signage and luggage-free concourse depth, celebrity off-duty styling']
+ ];
+ Object.assign(DATA.sceneGroups,{
+  '西南热门旅拍':[
+   ['大理兴盛大桥洱海风','Dali Xingsheng Bridge check-in, Erhai lake wind, bridge railing, blue lake and Cangshan mountain visible'],
+   ['丽江玉河广场水车旁','Lijiang Yuhe Square waterwheel check-in, wooden waterwheel, old-town sign and stone path visible'],
+   ['独克宗月光广场转经筒','Dukezong Moonlight Square, giant prayer wheel exterior, Tibetan architecture and plaza rail visible'],
+   ['重庆鹅岭二厂天台墙','Chongqing Testbed 2 rooftop wall, industrial sign, city slope and concrete railing visible'],
+   ['成都IFS熊猫墙街角','Chengdu IFS panda wall street corner, panda facade, shop signs and pedestrians visible'],
+   ['贵阳青岩古镇牌坊','Guiyang Qingyan Ancient Town archway, stone gate, old street plaque and visitors visible'],
+   ['桂林东西巷牌楼','Guilin East West Alley archway, shop signs, stone pavement and karst city mood visible'],
+   ['阳朔遇龙河竹筏码头','Yangshuo Yulong River bamboo raft dock, karst mountains, water reflection and dock sign visible']
+  ],
+  '东南海岸打卡':[
+   ['厦门沙坡尾避风坞','Xiamen Shapowei shelter harbor, fishing boats, colorful storefronts and quay railing visible'],
+   ['鼓浪屿日光岩路牌','Gulangyu Sunlight Rock lane sign, villa wall, bougainvillea and island slope visible'],
+   ['泉州西街钟楼路口','Quanzhou West Street clock tower crossing, tower facade, shop signs and crowd scale visible'],
+   ['平潭北港村石厝海边','Pingtan Beigang stone-house village, sea horizon, stone wall and village sign visible'],
+   ['深圳大梅沙海滨栈道','Shenzhen Dameisha beach boardwalk, sea rail, palm trees and beach sign visible'],
+   ['珠海日月贝海边栏杆','Zhuhai Opera House shell silhouette, seaside railing, city bay and promenade visible'],
+   ['北海银滩椰林路','Beihai Silver Beach palm path, beach sign, white sand and sea horizon visible'],
+   ['舟山东极岛灯塔路','Zhoushan Dongji Island lighthouse road, lighthouse, sea cliff and wind rail visible']
+  ],
+  '江浙沪Citywalk':[
+   ['上海安福路梧桐街角','Shanghai Anfu Road plane-tree corner, cafe sign, old villa facade and citywalk crowd visible'],
+   ['苏州金鸡湖湖边栏杆','Suzhou Jinji Lake railing, skyline and lake reflection visible, clean city travel framing'],
+   ['南京总统府红墙门牌','Nanjing Presidential Palace red wall, entrance plaque, tree shadow and tourist line visible'],
+   ['杭州法喜寺黄墙台阶','Hangzhou Faxi Temple yellow wall steps, temple plaque, incense trees and stone stair visible'],
+   ['宁波老外滩江边','Ningbo Old Bund riverside, historic facades, river railing and street lamps visible'],
+   ['无锡南长街运河边','Wuxi Nanchang Street canal side, old shops, bridge and water reflection visible'],
+   ['嘉兴月河老街桥头','Jiaxing Yuehe old street bridgehead, canal, shop signs and stone bridge visible'],
+   ['湖州太湖月亮湾','Huzhou Taihu Moon Bay, lake railing, curved skyline and open water visible']
+  ],
+  '北方古建城市':[
+   ['承德避暑山庄湖边','Chengde Mountain Resort lakeside, palace pavilion, lake railing and garden path visible'],
+   ['山西应县木塔广场','Yingxian Wooden Pagoda plaza, full pagoda silhouette, stone ground and visitor scale visible'],
+   ['大同华严寺红墙外','Datong Huayan Temple red wall, temple roofline, plaque and stone steps visible'],
+   ['洛阳应天门夜景','Luoyang Yingtian Gate night check-in, Tang-style gate, plaza lights and crowd depth visible'],
+   ['开封清明上河园虹桥','Kaifeng Millennium City Park Rainbow Bridge, Song-style facade, bridge rail and lanterns visible'],
+   ['青岛八大关红瓦路','Qingdao Badaguan red-roof villa road, stone wall, trees and sea-breeze daylight visible'],
+   ['威海火炬八街坡道','Weihai Torch 8th Street slope, sea at road end, street sign and crowd scale visible'],
+   ['哈尔滨索菲亚教堂广场','Harbin Saint Sophia Cathedral square, church facade, open stone plaza and visitors visible']
+  ],
+  '西北公路风景':[
+   ['敦煌鸣沙山月牙泉栈道','Dunhuang Mingsha Mountain and Crescent Lake boardwalk, desert dune, rail and scenic sign visible'],
+   ['张掖七彩丹霞观景台','Zhangye Danxia viewpoint, colored hills, wooden rail and warning sign visible'],
+   ['青海茶卡盐湖栈道','Chaka Salt Lake boardwalk, white salt flats, water reflection and signpost visible'],
+   ['新疆赛里木湖公路边','Sayram Lake roadside check-in, blue lake, guardrail, mountain and road line visible'],
+   ['喀什古城彩门巷口','Kashgar Old City colorful gate alley, carved door, street sign and local facade visible'],
+   ['伊犁那拉提草原木栏','Nalati grassland wooden fence, rolling grass hills, road sign and distant yurts visible'],
+   ['甘南扎尕那观景台','Zhagana viewpoint, Tibetan village, mountain peaks and viewing rail visible'],
+   ['宁夏中卫沙坡头黄河边','Zhongwei Shapotou Yellow River side, desert, river bend, scenic rail and sign visible']
+  ],
+  '亚洲热门旅拍':[
+   ['曼谷郑王庙河边','Bangkok Wat Arun riverside check-in, temple spires, river railing and boat traffic visible'],
+   ['清迈塔佩门红砖墙','Chiang Mai Tha Phae Gate red brick wall, gate sign, square and tourists visible'],
+   ['河内火车街轨道旁','Hanoi Train Street track-side cafe, rails, shop sign and narrow street depth visible'],
+   ['台北101街口斑马线','Taipei 101 street crossing, tower silhouette, crosswalk and traffic lights visible'],
+   ['香港中环天桥栏杆','Hong Kong Central footbridge railing, dense signs, tram road and skyline depth visible'],
+   ['吉隆坡双子塔喷泉边','Kuala Lumpur Petronas Towers fountain side, towers full silhouette, pool rail visible'],
+   ['首尔汉江公园栏杆','Seoul Han River park railing, bridge, skyline and riverside sign visible'],
+   ['大阪道顿堀霓虹桥','Osaka Dotonbori neon bridge, Glico sign area, canal rail and crowd scale visible']
+  ],
+  '欧美热门旅拍':[
+   ['洛杉矶格里菲斯天文台','Los Angeles Griffith Observatory terrace, city view, observatory facade and rail visible'],
+   ['旧金山金门桥观景台','San Francisco Golden Gate Bridge viewpoint, red bridge, guardrail and bay fog visible'],
+   ['巴塞罗那米拉之家街角','Barcelona Casa Mila street corner, stone facade, street sign and crowd scale visible'],
+   ['布拉格查理大桥塔边','Prague Charles Bridge tower side, stone railing, old-town tower and tourists visible'],
+   ['阿姆斯特丹运河桥','Amsterdam canal bridge, canal houses, bicycle rail and bridge sign visible'],
+   ['里斯本电车街坡道','Lisbon tram street slope, yellow tram, tiled facade and track line visible'],
+   ['伊斯坦布尔蓝色清真寺外','Istanbul Blue Mosque exterior plaza, domes, courtyard rail and visitors visible'],
+   ['悉尼歌剧院海边步道','Sydney Opera House promenade, shell roof, harbor railing and water visible']
+  ],
+  '国内夜景打卡':[
+   ['西安钟楼夜景栏杆','Xi’an Bell Tower night railing, tower lights, road trails and crowd blur visible'],
+   ['南京夫子庙秦淮河边','Nanjing Confucius Temple Qinhuai riverside, lantern reflections, bridge and plaque visible'],
+   ['长沙IFS街口夜景','Changsha IFS street corner at night, storefront lights, crosswalk and crowd scale visible'],
+   ['武汉江汉关钟楼夜景','Wuhan Jianghan Customs House night view, clock tower, riverside rail and street lights visible'],
+   ['天津海河桥夜景','Tianjin Haihe bridge night check-in, bridge lights, river railing and European facade visible'],
+   ['青岛五四广场灯光','Qingdao May Fourth Square night lights, sea breeze, sculpture silhouette and plaza visible'],
+   ['三亚鹿回头夜景台','Sanya Luhuitou night viewpoint, bay lights, viewing rail and scenic sign visible'],
+   ['重庆南滨路江景','Chongqing Nanbin Road riverside, bridge lights, river railing and skyline layers visible']
+  ]
+ });
+ DATA.style=DATA.styles;
+ app._lastRandom={scene:'',outfit:''};
+ app.optionLabel=function(id){return this.label(id)};
+ app.pickOption=function(id,filter,avoid){
+  const e=this.$(id);
+  let opts=[...e.options].map((o,i)=>({o,i,label:o.textContent,text:o.textContent+' '+(o.dataset.text||'')}));
+  if(filter)opts=opts.filter(x=>filter(x.text));
+  if(!opts.length)opts=[...e.options].map((o,i)=>({o,i,label:o.textContent,text:o.textContent+' '+(o.dataset.text||'')}));
+  const current=this.label(id);
+  const avoidSet=avoid||new Set();
+  let pool=opts.filter(x=>!avoidSet.has(x.label)&&x.label!==current);
+  if(!pool.length)pool=opts.filter(x=>!avoidSet.has(x.label));
+  if(!pool.length)pool=opts.filter(x=>x.label!==current);
+  if(!pool.length)pool=opts;
+  const picked=pool[Math.floor(Math.random()*pool.length)];
+  e.selectedIndex=picked.i;
+  return picked.label;
+ };
+ app.pickScene=function(avoidScenes){
+  const d=this.isDouble();
+  const current=this.label('scene');
+  let scenes=Object.entries(DATA.sceneGroups).filter(([g])=>d?g.includes('双人'):!g.includes('双人')).flatMap(([g,a])=>a.map(s=>({group:g,label:s[0]})));
+  let pool=scenes.filter(x=>!(avoidScenes||new Set()).has(x.label)&&x.label!==current&&x.label!==this._lastRandom.scene);
+  if(!pool.length)pool=scenes.filter(x=>!(avoidScenes||new Set()).has(x.label)&&x.label!==current);
+  if(!pool.length)pool=scenes.filter(x=>x.label!==current);
+  if(!pool.length)pool=scenes;
+  const picked=pool[Math.floor(Math.random()*pool.length)];
+  this.$('sceneGroup').value=picked.group;
+  this.refreshScene();
+  this.setByLabel('scene',picked.label);
+  return picked.label;
+ };
+ app.syncOutfitToScene=function(force=false,avoidOutfits=new Set()){
+  const e=this.$('outfit');if(!e||!e.options.length)return;
+  const d=this.isDouble(), rule=this.sceneOutfitRule(), current=this.label('outfit');
+  const currentText=current+' '+this.val('outfit');
+  const countOk=d?/双人/.test(currentText):!/双人/.test(currentText);
+  if(countOk&&rule.test(currentText)&&!force&&!avoidOutfits.has(current))return;
+  let opts=[...e.options].map((o,i)=>({o,i,label:o.textContent,text:o.textContent+' '+(o.dataset.text||'')})).filter(x=>(d?/双人/.test(x.text):!/双人/.test(x.text))&&rule.test(x.text));
+  if(!opts.length)opts=[...e.options].map((o,i)=>({o,i,label:o.textContent,text:o.textContent+' '+(o.dataset.text||'')})).filter(x=>d?/双人/.test(x.text):!/双人/.test(x.text));
+  let pool=opts.filter(x=>!avoidOutfits.has(x.label)&&x.label!==current&&x.label!==this._lastRandom.outfit);
+  if(!pool.length)pool=opts.filter(x=>!avoidOutfits.has(x.label)&&x.label!==current);
+  if(!pool.length)pool=opts.filter(x=>x.label!==current);
+  if(!pool.length)pool=opts;
+  if(pool.length)e.selectedIndex=pool[Math.floor(Math.random()*pool.length)].i;
+ };
+ app.randomAll=function(state){
+  const d=this.isDouble();
+  const usedScenes=state?.scenes||new Set(), usedOutfits=state?.outfits||new Set();
+  this.pickOption('style');
+  this.pickOption('realism');
+  this.pickOption('usage');
+  this.pickOption('outfitStandard');
+  this.pickOption('gear');
+  this.pickOption('light');
+  const sceneLabel=this.pickScene(usedScenes);
+  this.syncOutfitToScene(true,usedOutfits);
+  const outfitLabel=this.label('outfit');
+  this.pickOption('pose',t=>d?/双人/.test(t):!/双人/.test(t));
+  this.pickOption('camera',t=>d?/双人/.test(t):!/双人/.test(t));
+  this._lastRandom={scene:sceneLabel,outfit:outfitLabel};
+  usedScenes.add(sceneLabel);
+  usedOutfits.add(outfitLabel);
+  this.generate();
+ };
+ app.batch=function(n=10){
+  const rows=[], state={scenes:new Set(),outfits:new Set()};
+  for(let i=1;i<=n;i++){
+   this.randomAll(state);
+   rows.push(`【变体 ${String(i).padStart(2,'0')}】\n${this.$('prompt').textContent}\n\n反向提示词：\n${this.$('negative').textContent}`);
+  }
+  this.$('batchOut').textContent=rows.join('\n\n------------------------------\n\n');
+  this.showTab('batchTab',[...document.querySelectorAll('.card:last-child > .tabs .tab')][2]);
+ };
+ app.directorCue=function(){
+  const scene=this.short(this.val('scene'),2), outfit=this.short(this.val('outfit'),3), pose=this.short(this.val('pose'),2), light=this.short(this.val('light'),1), style=this.short(this.val('style'),2);
+  const route=/旗袍|新中式|马面|水墨|月白|汉服|轻纱/.test(outfit)?'modern Chinese landmark check-in route':/泳装|海岛|海边|短裤|亚麻|钩针|坡跟|缎面/.test(outfit+scene)?'resort landmark check-in route':/瑜伽|运动|徒步|训练|山|茶园|梯田|防晒/.test(outfit+scene)?'outdoor viewpoint check-in route':/酒店|民宿|艺术馆|咖啡馆|商场|书店|餐厅|地铁/.test(scene)?'indoor social-media check-in route':'celebrity street landmark check-in route';
+  return [route,'travel-photo style: '+style,'real check-in photo, landmark or venue must be recognizable','scene: '+scene,'proof details: entrance, plaque, street sign, railing, window frame, shop logo, bridge, tower or iconic facade visible','composition: vertical phone travel framing, outfit and shoes readable, background not generic','outfit: '+outfit,'pose: '+pose,'natural soft light: '+light,'clean realistic travel photography, not studio cosplay'];
+ };
+})();
+(function glamourSliderFix(){
+ app.glamourText=function(){
+  const v=Number(this.$('glamour')?.value||9);
+  if(v<=2)return 'curvy level 1-2: restrained natural adult figure, modest covered bustline, soft waist curve, clothing-forward travel portrait, no exaggerated cleavage';
+  if(v<=4)return 'curvy level 3-4: balanced adult curves, naturally full covered bust, clear waistline, realistic fabric fit, elegant travel-photo sensuality';
+  if(v<=6)return 'curvy level 5-6: noticeably full bust silhouette, fuller upper body and slim waist contrast, fitted fabric tension around chest and waist, tasteful non-explicit styling';
+  if(v<=8)return 'curvy level 7-8: strong full-bust visual emphasis, prominent covered bust curve, deep but safe neckline possible, clear bust-waist contrast, realistic cloth pressure and folds';
+  if(v===9)return 'curvy level 9: maximum tasteful glamour, very full covered bust silhouette, strong chest volume and slim waist contrast, clothing visibly supported by natural body shape, no nipple outline';
+  return 'curvy level 10: exaggerated full-bust fashion-photo emphasis, extremely full but fully covered bust silhouette, dramatic bust-waist contrast, high visual impact from tight fabric and structured neckline, non-explicit, no nudity';
+ };
+ app.generate=function(){
+  const glamour=this.glamourText();
+  const body=this.short(this.val('body'),1);
+  const parts=[
+   this.short(this.val('people'),1),
+   this.short(this.val('face'),1),
+   this.clean(this.$('subjectExtra').value),
+   'body anchor: '+body,
+   'active fullness slider override: '+glamour,
+   this.short(this.val('style'),1),
+   this.short(this.val('realism'),1),
+   this.short(this.val('usage'),1),
+   this.short(this.val('outfitStandard'),1),
+   ...this.directorCue(),
+   'complete coordinated travel outfit only: '+this.short(this.val('outfit'),3),
+   this.shoeText(),
+   'travel prop and accessory only, no extra random shoes: '+this.short(this.val('gear'),1),
+   this.val('ratio'),
+   'realistic travel photography, recognizable Chinese architecture or local landscape, non-cyber, no text, no watermark'
+  ];
+  if(this.$('i2v').checked)parts.push(this.isDouble()?'image2 ready, two adult women, both faces clear, stable outfit edges, no extra people':'image2 ready, single adult woman, stable outfit, clear face, readable limbs');
+  if(this.$('safe').checked)parts.push(this.isDouble()?'two 28-year-old Chinese women only, non-explicit, no nudity, no sexual act, no minors':'adult woman only, non-explicit, no nudity, no sexual act, no minors');
+  const custom=this.clean(this.$('custom').value);if(custom)parts.push(custom);
+  this.$('prompt').textContent=this.cleanSignal(parts.filter(Boolean).join(', '))+'.';
+  this.$('negative').textContent='child, teenager, underage, nude, exposed nipples, pornographic, sexual act, vulgar pose, plastic skin, waxy face, heavy beauty filter, over-sharpened, bad anatomy, bad hands, extra fingers, unwanted extra person, watermark, text, logo, cyberpunk, sci-fi, random shoes, mismatched footwear';
+  this.$('chips').innerHTML=['人物:'+this.label('people'),'丰满:'+Number(this.$('glamour').value)+'/10','场景:'+this.$('sceneGroup').value+'/'+this.label('scene'),'衣物:'+this.label('outfit'),'鞋:'+this.shoeText().replace('matched shoes: ',''),'旅拍:'+this.label('style')].map(x=>`<span class="chip">${x}</span>`).join('');
+ };
+ app.variantMeta=function(i){
+  return [
+   '【变体 '+String(i).padStart(2,'0')+'】',
+   '人物: '+this.label('people')+' / '+this.label('face'),
+   '丰满: '+Number(this.$('glamour').value)+'/10',
+   '旅拍风格: '+this.label('style'),
+   '地点: '+this.$('sceneGroup').value+' / '+this.label('scene'),
+   '衣服: '+this.label('outfit'),
+   '鞋履: '+this.shoeText().replace('matched shoes: ','')
+  ].join('\n');
+ };
+ app.batch=function(n=10){
+  const rows=[], state={scenes:new Set(),outfits:new Set()};
+  const fixedPeople=this.label('people');
+  const fixedFace=this.label('face');
+  const fixedBody=this.label('body');
+  const fixedGlamour=Number(this.$('glamour').value)||9;
+  for(let i=1;i<=n;i++){
+   this.setByLabel('people',fixedPeople);
+   this.setByLabel('face',fixedFace);
+   this.setByLabel('body',fixedBody);
+   this.$('glamour').value=String(fixedGlamour);
+   this.setNum('glamourN',fixedGlamour);
+   this.randomAll(state);
+   this.setByLabel('people',fixedPeople);
+   this.setByLabel('face',fixedFace);
+   this.setByLabel('body',fixedBody);
+   this.$('glamour').value=String(fixedGlamour);
+   this.setNum('glamourN',fixedGlamour);
+   this.generate();
+   rows.push(`${this.variantMeta(i)}\n\n正向提示词：\n${this.$('prompt').textContent}\n\n反向提示词：\n${this.$('negative').textContent}`);
+  }
+  this.$('batchOut').textContent=rows.join('\n\n------------------------------\n\n');
+  this.showTab('batchTab',[...document.querySelectorAll('.card:last-child > .tabs .tab')][2]);
+ };
+})();
+(function aestheticSeriesUpgrade(){
+ DATA.formats=[
+  ['通用自然语言','plain natural-language prompt, best for most image generators'],
+  ['SDXL分段','SDXL-friendly comma-separated prompt, clear positive and negative structure'],
+  ['即梦/可灵图生视频','image-to-video friendly prompt, stable subject identity, stable outfit edges, clean limbs'],
+  ['Midjourney风格','Midjourney-friendly concise visual prompt with aspect ratio and photographic style']
+ ];
+ DATA.faces=[
+  ['明艳短发网红御姐脸','28岁中国女性，短发或锁骨发，明艳漂亮网红御姐脸，小脸但不幼态，五官精致立体，眼睛有神，鼻梁清晰，唇形饱满，真实皮肤纹理'],
+  ['清冷长发漂亮御姐脸','28岁中国女性，长黑发自然垂落，清冷漂亮御姐脸，脸型精致，妆容干净，眼神高级，非显老，非AI娃娃脸'],
+  ['港风浓颜御姐脸','28岁中国女性，蓬松黑发，港风浓颜漂亮脸，眉眼深邃，红唇克制，五官立体，气质强但不显老，真实毛孔和自然油光'],
+  ['甜酷街拍御姐脸','28岁中国女性，甜酷御姐脸，笑容自然，五官清晰，锁骨发或半扎发，社媒旅拍感，成年但年轻漂亮，非幼态'],
+  ['双人漂亮御姐脸','两位28岁中国女性，漂亮御姐脸，脸型精致，五官清晰，表情自然有吸引力，真实妆容和皮肤纹理']
+ ];
+ DATA.body=[
+  ['漂亮网红丰满细腰型','28岁中国女性，漂亮网红身材，胸部丰满圆润但完整遮挡，细腰，修长双腿，肩颈线条好，整体比例协调有吸引力'],
+  ['高挑丰盈曲线型','28岁中国女性，高挑身材，丰满上围，腰线清晰，臀腿线条顺，贴身衣料显身材，真实自然不低俗'],
+  ['柔软丰腴显瘦型','28岁中国女性，丰腴但显瘦，胸部自然饱满，腰腹收紧，身体曲线柔和，适合生活化旅拍和社媒写真'],
+  ['双人漂亮曲线型','两位28岁中国女性，漂亮丰满曲线，胸腰臀比例自然明显，衣物不同但审美统一，非色情互动']
+ ];
+ DATA.outfitStandards=[
+  ['贴身网红旅拍标准','服装以贴身、露肩、方领、挂脖、短款上衣、高腰裙裤为主，显胸腰线但完整遮挡，像热门女装旅拍而不是普通游客'],
+  ['明星路透显身材标准','参考女明星机场街拍和城市路透：短西装、吊带、针织、微喇裤、包臀裙、尖头鞋，精致但不红毯'],
+  ['温柔针织显曲线标准','罗纹针织、宽领、露肩、开衫、包身裙，强调柔软衣料贴合和自然褶皱，适合室内/古镇/城市打卡'],
+  ['轻辣短裙套装标准','短T、挂脖、方领、百褶裙、包臀短裙、短靴或低跟鞋，成年轻辣风，避免学生制服感'],
+  ['新中式身材旅拍标准','改良旗袍、新中式挂脖上衣、马面灵感半裙、缎面鱼尾裙，收腰显曲线，适合中国建筑打卡'],
+  ['海边度假显身材标准','泳装外搭、缎面吊带、挂脖长裙、亚麻短裤、坡跟凉鞋，适合海边和海岛，性感但不走光'],
+  ['轻户外紧身标准','防晒短外套、运动背心、瑜伽裤、运动短裙和徒步鞋，适合茶园、山景、梯田，健康显身材']
+ ];
+ DATA.outfits=[
+  ['黑色深V贴身长袖上衣高腰微喇牛仔裤尖头短靴','black deep V fitted long-sleeve top with safe full coverage, high-waist bootcut jeans, pointed ankle boots, pendant necklace, hot influencer travel outfit'],
+  ['白色蕾丝挂脖上衣灰色百褶短裙尖头低跟','white lace halter fitted top with opaque lining, gray pleated mini skirt, pointed kitten heels, adult pretty influencer check-in outfit'],
+  ['白色修身短T粉色百褶短裙白色厚底运动鞋','white fitted cropped T-shirt, pink pleated mini skirt, white platform sneakers, cute but adult social-media travel look'],
+  ['黑色方领绑带短上衣格纹短裙黑色短靴','black square-neck strappy fitted crop top, plaid mini skirt, black ankle boots, sharp pretty street check-in outfit'],
+  ['白色挂脖钥匙孔上衣黑色高腰包臀裙细跟凉鞋','white halter keyhole fitted top, black high-waist bodycon skirt, slim strappy heels, pretty mature landmark outfit'],
+  ['黑色高领胸前开口针织上衣深色直筒牛仔裤短靴','black high-neck chest-keyhole knit top, dark straight jeans, ankle boots, clean celebrity citywalk look'],
+  ['灰色高领罗纹贴身针织连衣裙尖头短靴','gray turtleneck ribbed bodycon knit dress, pointed ankle boots, clean curvy winter city check-in outfit'],
+  ['浅蓝露肩交叉褶皱针织裙银色细带凉鞋','light-blue off-shoulder ruched knit bodycon dress, silver strappy sandals, soft pretty travel portrait outfit'],
+  ['薰衣草露肩包身连衣裙裸色低跟','lavender off-shoulder body-skimming dress, nude kitten heels, gentle social-media landmark photo outfit'],
+  ['棕色低V罗纹针织上衣黑色高腰半裙短靴','brown low-V ribbed fitted knit top, black high-waist skirt, ankle boots, evening city check-in styling'],
+  ['雾蓝宽领针织上衣白色高腰长裤乐福鞋','mist-blue wide-neck fitted knit top, white high-waist trousers, leather loafers, clean pretty citywalk outfit'],
+  ['白色方领长袖上衣深蓝包臀开衩裙低跟凉鞋','white square-neck long-sleeve fitted top, deep-blue bodycon slit skirt, low strappy heels, elegant travel outfit'],
+  ['粉色短开衫碎花吊带裙白色细带凉鞋','pink cropped cardigan, floral camisole dress with opaque lining, white strappy sandals, soft pretty travel outfit'],
+  ['白色短开衫蓝色吊带包臀裙细带凉鞋','white cropped cardigan, blue fitted camisole bodycon skirt, slim sandals, clean adult social-media outfit'],
+  ['黑色廓形西装白色吊带微喇牛仔裤尖头短靴','black oversized blazer, white fitted camisole, high-waist bootcut jeans, pointed ankle boots, celebrity airport-style travel outfit'],
+  ['灰色短西装黑色低领背心白色Capri裤尖头低跟','gray cropped blazer, black low-neck fitted tank, white capri pants, pointed kitten heels, modern celebrity city outfit'],
+  ['白色亚麻马甲同色高腰阔腿裤棕色穆勒鞋','white fitted linen vest, matching high-waist wide-leg trousers, brown leather mules, quiet luxury summer check-in'],
+  ['奶油黄挂脖针织上衣白色高腰长裤坡跟凉鞋','butter-yellow halter knit top, white high-waist trousers, cork wedge sandals, bright summer city check-in outfit'],
+  ['冰蓝缎面吊带长裙银色细带凉鞋','ice-blue satin camisole maxi dress with opaque lining, silver strappy sandals, elegant riverside check-in outfit'],
+  ['紫色缎面吊带包身长裙银色细带凉鞋','purple satin camisole body-skimming maxi dress, silver strappy sandals, evening travel portrait outfit'],
+  ['黑色缎面吊带包身裙白色短开衫细跟凉鞋','black satin fitted slip dress, white cropped cardigan, slim heels, pretty night city check-in outfit'],
+  ['白色衬衫黑色马甲连衣裙领结低跟鞋','white blouse, black fitted vest mini dress, small bow tie detail, low heels, adult cafe and city landmark check-in'],
+  ['白色短袖衬衫红色领带黑色皮质包臀裙短靴','white fitted short-sleeve shirt, red tie accent, black leather bodycon skirt, ankle boots, adult fashion poster travel look'],
+  ['藏蓝贴身短袖上衣灰色包臀长裙短靴','navy fitted short-sleeve top, gray bodycon maxi skirt, ankle boots, understated pretty street check-in'],
+  ['米白垂坠无袖针织上衣藕粉贴身长裤穆勒鞋','cream draped sleeveless knit top, mauve fitted trousers, leather mules, soft indoor-to-city travel look'],
+  ['白色露肩宽松毛衣蓝灰缎面长裙低跟凉鞋','white off-shoulder loose sweater, blue-gray satin maxi skirt, low strappy heels, soft landmark portrait outfit'],
+  ['蓝白花朵改良旗袍低跟凉鞋','blue-white floral modern qipao, low heel sandals, Chinese garden and old-town check-in outfit'],
+  ['水墨印花改良旗袍长裙银色低跟','ink-wash modern qipao maxi dress, silver low heels, Jiangnan water-town pretty check-in outfit'],
+  ['白色新中式挂脖上衣黑色马面灵感半裙尖头低跟','white modern Chinese halter top, black mamian-inspired midi skirt, pointed kitten heels, Chinese landmark outfit'],
+  ['黑色新中式盘扣短上衣缎面鱼尾裙尖头低跟','black fitted new-Chinese frog-button crop top, satin fishtail skirt, pointed kitten heels, old-town portrait outfit'],
+  ['月白短款新中式上衣牛仔长裙乐福鞋','moon-white fitted new-Chinese short top, denim maxi skirt, leather loafers, modern Chinese travel outfit'],
+  ['白色轻纱外搭橘色抹胸上衣青绿色半裙细跟凉鞋','white sheer outer robe, orange structured tube top with full coverage, cyan-green midi skirt, slim sandals, modern hanfu-inspired travel outfit'],
+  ['黑色连体泳装白色亚麻衬衫细带凉鞋','black opaque one-piece swimsuit, loose white linen shirt, slim strappy sandals, seaside resort check-in outfit'],
+  ['白色挂脖泳装高腰亚麻短裤草编坡跟','white halter swim top with full coverage, high-waist linen shorts, woven wedge sandals, beach vacation check-in outfit'],
+  ['黑色挂脖短上衣白色亚麻短裤坡跟凉鞋','black halter fitted top, white high-waist linen shorts, woven wedge sandals, seaside citywalk outfit'],
+  ['焦糖色抹胸连体裤棕色坡跟凉鞋','caramel structured tube jumpsuit with safe full coverage, cinched waist, brown wedge sandals, resort city outfit'],
+  ['白色防晒短外套冰蓝运动背心瑜伽裤运动鞋','white cropped sun-protection jacket, ice-blue sports tank, high-waist yoga leggings, clean sneakers, tea-field check-in'],
+  ['雾灰拉链防晒上衣黑色运动短裙徒步鞋','mist-gray zip sun-protection top, black high-waist athletic skirt, hiking shoes, scenic trail check-in outfit'],
+  ['黑色速干背心灰色骑行短裤越野跑鞋','black quick-dry fitted tank, gray cycling shorts, lightweight trail running shoes, mountain road check-in outfit'],
+  ['双人御姐黑白街拍套装','two 28-year-old Chinese women, one in black blazer and jeans, one in white fitted vest and trousers, coordinated pretty celebrity check-in'],
+  ['双人新中式古镇套装','two 28-year-old Chinese women, modern new-Chinese fitted tops with slim skirts, pointed low heels, old-town check-in'],
+  ['双人缎面长裙江边套装','two 28-year-old Chinese women, satin halter maxi dresses in blue and champagne, strappy sandals, riverside check-in'],
+  ['双人皮衣牛仔城市套装','two 28-year-old Chinese women, cropped leather jacket and denim styling, ankle boots, city landmark street photo'],
+  ['双人轻户外茶园套装','two 28-year-old Chinese women, fitted sun-protection tops and leggings, trail shoes, tea-field mountain check-in']
+ ];
+ DATA.face=DATA.faces;DATA.outfit=DATA.outfits;DATA.outfitStandard=DATA.outfitStandards;DATA.format=DATA.formats;
+ const oldInit=app.init.bind(app);
+ app.init=function(){
+  oldInit();
+  if(this.$('format'))this.fill('format',DATA.formats);
+  this.generate();
+ };
+ app.sameSeriesRule=function(){
+  const current=this.label('outfit')+' '+this.val('outfit')+' '+this.label('outfitStandard')+' '+this.label('style');
+  if(/双人/.test(current))return /双人/;
+  if(/旗袍|新中式|马面|水墨|汉服|轻纱|古镇|Chinese landmark/.test(current))return /旗袍|新中式|马面|水墨|月白|轻纱|改良|盘扣/;
+  if(/泳装|海边|海岛|度假|亚麻|坡跟|resort|seaside/.test(current))return /泳装|亚麻|挂脖|缎面|吊带|短裤|坡跟|连体裤/;
+  if(/运动|瑜伽|防晒|茶园|山|户外|outdoor/.test(current))return /运动|瑜伽|防晒|速干|骑行|徒步|越野|训练/;
+  if(/西装|路透|明星|airport|celebrity/.test(current))return /西装|吊带|Capri|微喇|马甲|阔腿|乐福|尖头/;
+  if(/针织|露肩|方领|开衫|温柔/.test(current))return /针织|露肩|方领|开衫|罗纹|包身|宽领/;
+  return /蕾丝|挂脖|短T|百褶|方领|针织|包臀|缎面|吊带|短裙|低V/;
+ };
+ app.pickAestheticOutfit=function(avoidOutfits=new Set()){
+  const d=this.isDouble(), rule=this.sameSeriesRule(), current=this.label('outfit');
+  const all=[...this.$('outfit').options].map((o,i)=>({i,label:o.textContent,text:o.textContent+' '+(o.dataset.text||'')}));
+  let pool=all.filter(x=>(d?/双人/.test(x.text):!/双人/.test(x.text))&&rule.test(x.text)&&!avoidOutfits.has(x.label)&&x.label!==current);
+  if(pool.length<3)pool=all.filter(x=>(d?/双人/.test(x.text):!/双人/.test(x.text))&&!avoidOutfits.has(x.label)&&x.label!==current);
+  if(!pool.length)pool=all.filter(x=>x.label!==current);
+  if(!pool.length)pool=all;
+  const picked=pool[Math.floor(Math.random()*pool.length)];
+  this.$('outfit').selectedIndex=picked.i;
+  return picked.label;
+ };
+ app.randomSameSeries=function(state){
+  const usedScenes=state?.scenes||new Set(), usedOutfits=state?.outfits||new Set();
+  const sceneLabel=this.pickScene(usedScenes);
+  const outfitLabel=this.pickAestheticOutfit(usedOutfits);
+  this._lastRandom={scene:sceneLabel,outfit:outfitLabel};
+  usedScenes.add(sceneLabel);
+  usedOutfits.add(outfitLabel);
+  this.generate();
+ };
+ app.formatPrompt=function(text){
+  const f=this.label('format');
+  if(/SDXL/.test(f))return 'POSITIVE PROMPT:\\n'+text+'\\n\\nNEGATIVE PROMPT:\\n'+this.$('negative').textContent;
+  if(/即梦|可灵|视频/.test(f))return '图生视频首帧提示词：\\n'+text+'\\n\\n稳定要求：同一人物脸型，服装边缘稳定，手指清楚，身体不变形，背景轻微运动即可。\\n\\n反向提示词：\\n'+this.$('negative').textContent;
+  if(/Midjourney/.test(f))return text.replace(/negative prompt[^.]+/ig,'')+' --ar 9:16 --style raw --v 6';
+  return '正向提示词：\\n'+text+'\\n\\n反向提示词：\\n'+this.$('negative').textContent;
+ };
+ app.batch=function(n=10){
+  const rows=[], state={scenes:new Set(),outfits:new Set()};
+  const fixed={people:this.label('people'),face:this.label('face'),body:this.label('body'),glamour:Number(this.$('glamour').value)||9,style:this.label('style'),realism:this.label('realism'),standard:this.label('outfitStandard'),pose:this.label('pose'),camera:this.label('camera'),light:this.label('light'),usage:this.label('usage'),ratio:this.label('ratio'),format:this.label('format')};
+  for(let i=1;i<=n;i++){
+   this.setByLabel('people',fixed.people);this.setByLabel('face',fixed.face);this.setByLabel('body',fixed.body);
+   this.$('glamour').value=String(fixed.glamour);this.setNum('glamourN',fixed.glamour);
+   this.setByLabel('style',fixed.style);this.setByLabel('realism',fixed.realism);this.setByLabel('outfitStandard',fixed.standard);
+   this.setByLabel('pose',fixed.pose);this.setByLabel('camera',fixed.camera);this.setByLabel('light',fixed.light);this.setByLabel('usage',fixed.usage);this.setByLabel('ratio',fixed.ratio);this.setByLabel('format',fixed.format);
+   this.randomSameSeries(state);
+   rows.push(`${this.variantMeta(i)}\\n\\n${this.formatPrompt(this.$('prompt').textContent)}`);
+  }
+  this.$('batchOut').textContent=rows.join('\\n\\n------------------------------\\n\\n');
+  this.showTab('batchTab',[...document.querySelectorAll('.card:last-child > .tabs .tab')][2]);
+ };
+ app.copyAll=function(){this.copyText(this.formatPrompt(this.$('prompt').textContent))};
+ app.copyDynamicTemplate=function(){
+  const lines=[
+   '同一位28岁中国女性，固定脸型与发型，'+this.val('face'),
+   '{'+DATA.styles.map(x=>x[1]).join('|')+'}',
+   'active fullness slider override: '+this.glamourText(),
+   '{'+Object.values(DATA.sceneGroups).flat().filter(x=>!/^双人/.test(x[0])).slice(0,80).map(x=>x[1]).join('|')+'}',
+   '{'+DATA.outfits.filter(x=>!/^双人/.test(x[0])).map(x=>x[1]).join('|')+'}',
+   'realistic skin texture, natural hair gravity, outfit and shoes readable, no text, no watermark'
+  ];
+  this.copyText(lines.join(', '));
+ };
+})();
 window.addEventListener('DOMContentLoaded',()=>app.init());
 </script>
 </body>

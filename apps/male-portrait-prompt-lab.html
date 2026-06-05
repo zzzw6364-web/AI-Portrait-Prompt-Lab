@@ -1,0 +1,359 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>男性写真提示词生成器 Male Portrait Prompt Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#101216;--panel:#181c23;--panel2:#202633;--line:#303848;--text:#eef2f7;--muted:#a9b3c3;--accent:#79c7ff;--ok:#8de6b1}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+main{max-width:1240px;margin:0 auto;padding:24px}.hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin-bottom:18px}
+h1{margin:0;font-size:30px}.sub{color:var(--muted);margin-top:8px;line-height:1.55}.pill{border:1px solid var(--line);background:var(--panel2);padding:8px 12px;border-radius:999px;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:360px 1fr;gap:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px}
+.title{font-weight:700;margin-bottom:12px}.form{display:grid;gap:12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}select,textarea,input{width:100%;background:#0f131a;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:10px;font:inherit}
+textarea{min-height:86px;resize:vertical}.switch{display:flex;justify-content:space-between;gap:12px;align-items:center;color:var(--muted);font-size:13px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:10px 13px;border-radius:7px;cursor:pointer}.btn:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#08111c;border-color:var(--accent);font-weight:700}.green{background:var(--ok);border-color:var(--ok);color:#07140c;font-weight:700}
+.tabs{display:flex;gap:8px;margin-bottom:12px}.tab{padding:9px 12px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:7px;cursor:pointer}.tab.active{color:#06111a;background:var(--accent);border-color:var(--accent);font-weight:700}
+.out{white-space:pre-wrap;line-height:1.7;background:#0f131a;border:1px solid var(--line);border-radius:8px;padding:14px;min-height:180px;color:#eef3fb}.chipbox{display:flex;gap:8px;flex-wrap:wrap}.chip{padding:6px 9px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px;background:var(--panel2)}
+.library{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.item{border:1px solid var(--line);background:#11151d;border-radius:8px;padding:10px}.item b{display:block;margin-bottom:6px}.item p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--ok);color:#07140c;padding:10px 14px;border-radius:7px;font-weight:700}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.hero{display:block}.two,.three{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<div class="hero">
+  <div>
+    <h1>男性写真提示词生成器</h1>
+    <div class="sub">面向男士写真、商务肖像、城市街拍、旅拍、运动和国风男装。强调脸部结构、肩背比例、服装质感、镜头和图生视频稳定性。</div>
+  </div>
+  <div class="pill">standalone HTML · positive + negative · image2video ready</div>
+</div>
+<div class="grid">
+  <section class="card">
+    <div class="title">① 人物锚点</div>
+    <div class="form">
+      <div><label>人脸模板</label><select id="face" onchange="app.generate()"></select></div>
+      <div class="two"><div><label>人物数量</label><select id="people" onchange="app.generate()"></select></div><div><label>画幅</label><select id="ratio" onchange="app.generate()"></select></div></div>
+      <div><label>体态锚点</label><select id="body" onchange="app.generate()"></select></div>
+      <div class="two"><div><label>整体风格</label><select id="style" onchange="app.generate()"></select></div><div><label>去AI味</label><select id="realism" onchange="app.generate()"></select></div></div>
+      <div><label>快速设定</label><select id="quickPreset" onchange="app.applyPreset()"></select></div>
+      <div class="switch"><span>图生视频适配：主体清晰、衣服稳定</span><input id="i2v" type="checkbox" checked onchange="app.generate()"></div>
+      <div class="switch"><span>成人安全边界</span><input id="safe" type="checkbox" checked onchange="app.generate()"></div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="title">② 替换模块</div>
+    <div class="form">
+      <div class="two"><div><label>场景大类</label><select id="sceneGroup" onchange="app.refreshScene();app.syncOutfitToScene(true);app.generate()"></select></div><div><label>具体场景</label><select id="scene" onchange="app.syncOutfitToScene(true);app.generate()"></select></div></div>
+      <div class="two"><div><label>服装标准</label><select id="outfitStandard" onchange="app.generate()"></select></div><div><label>完整服装</label><select id="outfit" onchange="app.generate()"></select></div></div>
+      <div class="three"><div><label>道具/配饰</label><select id="gear" onchange="app.generate()"></select></div><div><label>姿势</label><select id="pose" onchange="app.generate()"></select></div><div><label>镜头</label><select id="camera" onchange="app.generate()"></select></div></div>
+      <div class="two"><div><label>光线</label><select id="light" onchange="app.generate()"></select></div><div><label>用途</label><select id="usage" onchange="app.generate()"></select></div></div>
+      <div><label>自定义补充</label><textarea id="custom" oninput="app.generate()" placeholder="例：更像杂志封面、普通街拍、胡茬更自然、衣服褶皱真实、不要精修脸"></textarea></div>
+      <div class="btns"><button class="btn primary" onclick="app.generate()">生成提示词</button><button class="btn" onclick="app.randomAll()">随机组合</button><button class="btn green" onclick="app.batch(10)">生成10条变体</button><button class="btn" onclick="app.copyAll()">复制正向+反向</button></div>
+    </div>
+  </section>
+</div>
+<section class="card" style="margin-top:18px">
+  <div class="tabs"><button class="tab active" onclick="app.showTab('output',this)">正向</button><button class="tab" onclick="app.showTab('negativeTab',this)">反向</button><button class="tab" onclick="app.showTab('batchTab',this)">批量</button><button class="tab" onclick="app.showTab('libraryTab',this)">素材库</button></div>
+  <div id="output"><div class="btns" style="margin-bottom:10px"><button class="btn primary" onclick="app.copyAll()">复制正向+反向</button></div><div id="prompt" class="out"></div><div style="height:12px"></div><div id="chips" class="chipbox"></div></div>
+  <div id="negativeTab" style="display:none"><div class="btns" style="margin-bottom:10px"><button class="btn primary" onclick="app.copy('negative')">复制反向词</button></div><div id="negative" class="out"></div></div>
+  <div id="batchTab" style="display:none"><div class="btns" style="margin-bottom:10px"><button class="btn primary" onclick="app.copy('batchOut')">复制批量</button><button class="btn" onclick="app.batch(20)">生成20条</button></div><div id="batchOut" class="out">点击“生成10条变体”。</div></div>
+  <div id="libraryTab" style="display:none"><div class="tabs"><button class="tab active" onclick="app.renderLibrary('scenes',this)">场景</button><button class="tab" onclick="app.renderLibrary('outfits',this)">服装</button><button class="tab" onclick="app.renderLibrary('standards',this)">标准</button><button class="tab" onclick="app.renderLibrary('gear',this)">配饰</button></div><div id="library" class="library"></div></div>
+</section>
+</main>
+<script>
+'use strict';
+const DATA={
+faces:[
+ ['清爽短发脸','28岁中国男性，清爽短发，五官干净，眉骨清晰，下颌线明确，真实皮肤纹理，自然神情'],
+ ['冷感都市脸','28岁中国男性，冷静眼神，短黑发，立体鼻梁，清晰颧骨，轻微胡茬，高级都市气质'],
+ ['阳光运动脸','28岁中国男性，健康肤色，利落短发，笑意克制，肩颈线条清楚，真实汗感和皮肤质感'],
+ ['复古港风脸','28岁中国男性，微卷黑发，干净唇形，复古电影感，眼神安静，真实毛孔和自然油光'],
+ ['双人男士搭档脸','两位28岁中国男性，五官自然清晰，风格协调但脸型不同，表情克制，真实皮肤纹理']
+],
+people:[
+ ['单人男士写真','single 28-year-old Chinese man only, front or three-quarter view, no back-only view'],
+ ['双人男士海报','two 28-year-old Chinese men only, both faces clear, coordinated styling, no extra people']
+],
+body:[
+ ['精瘦宽肩型','lean athletic Chinese male physique, broad shoulders, narrow waist, clear neck and jawline, natural proportions'],
+ ['商务挺拔型','upright confident male posture, straight shoulders, fitted suit silhouette, clean waistline, realistic body proportions'],
+ ['运动肌肉型','athletic toned body, defined shoulders and arms under clothing, strong back line, not bulky, realistic fitness look'],
+ ['双人协调型','two men with coordinated but different body silhouettes, both adult, clean posture, no body overlap']
+],
+ratios:[['9:16 竖屏','vertical 9:16 portrait framing'],['4:5 社媒','portrait 4:5 social media crop'],['3:4 人像','vertical 3:4 portrait'],['16:9 横屏','horizontal cinematic still']],
+styles:[
+ ['男士杂志写真','realistic men fashion editorial, clean composition, real skin texture, restrained styling'],
+ ['城市街拍','realistic city street-style photography, natural background depth, candid movement'],
+ ['商务肖像','modern business portrait, quiet confidence, suit fabric and posture readable'],
+ ['运动生活','athletic lifestyle photography, practical light, realistic sweat and fabric pressure'],
+ ['中国旅拍','Chinese travel portrait, recognizable architecture or landscape, natural local light']
+],
+realism:[
+ ['真实皮肤层','visible pores, slight skin oil, natural asymmetry, realistic hairline and beard stubble'],
+ ['去精修感','no beauty-filter face, imperfect candid framing, realistic shadows and skin tone variation'],
+ ['胶片颗粒','subtle film grain, natural color noise, soft highlight roll-off, face still readable'],
+ ['服装真实感','real fabric folds, shoulder seams, collar tension, sleeve wrinkles and material weight']
+],
+outfitStandards:[
+ ['男装剪裁标准','complete coordinated menswear outfit, shoulder line and waist fit clear, realistic collar seams, no random mismatched items'],
+ ['商务西装标准','tailored suit, shirt collar, lapel, trousers and leather shoes coordinated, clean executive portrait style'],
+ ['城市街拍标准','jacket, denim, knitwear, boots or sneakers, real street fashion, layered but not over-designed'],
+ ['运动户外标准','training jacket, fitted T-shirt, track pants, hiking or running shoes, practical movement and realistic fabric pressure'],
+ ['国风男装标准','modern new-Chinese menswear, mandarin collar, linen or satin texture, restrained ornament, suitable for old-town travel'],
+ ['双人海报标准','two men in coordinated outfits, different silhouettes, both faces clear, poster-like but realistic']
+],
+sceneGroups:{
+ '城市街拍':[
+  ['上海石库门街角','Shanghai shikumen street corner, old brick walls, afternoon side light'],
+  ['北京胡同灰墙','Beijing hutong gray brick wall, wooden door, bicycle, calm daylight'],
+  ['广州骑楼雨街','Guangzhou arcade street after rain, reflections, humid southern light'],
+  ['香港旧楼路口','Hong Kong old building street corner, signs and traffic blur'],
+  ['成都茶馆外','Chengdu teahouse exterior, bamboo chairs, local street depth'],
+  ['青岛德式老街','Qingdao old German-style street, stone facade, coastal daylight'],
+  ['重庆山城梯坎','Chongqing hillside steps, night city depth, practical lights'],
+  ['东京涩谷街口','Tokyo Shibuya street crossing, urban crowd blur, clean daylight']
+ ],
+ '商务空间':[
+  ['玻璃办公室','modern glass office, city window, wooden desk, soft directional light'],
+  ['酒店大堂','luxury hotel lobby, marble floor, warm practical lights, shallow depth of field'],
+  ['会议室门口','meeting room doorway, frosted glass, quiet executive mood'],
+  ['书店咖啡角','bookstore cafe corner, shelves, warm table lamp, calm portrait'],
+  ['黑色电梯厅','black elevator hall, reflective wall, clean commercial lighting'],
+  ['艺术馆白墙','minimal art gallery white wall, soft shadow, quiet high-end mood']
+ ],
+ '运动户外':[
+  ['城市夜跑街道','city night running street, lamps, slight motion at edge'],
+  ['海边防波堤','seawall breakwater, wind, gray sea, casual athletic portrait'],
+  ['山路徒步栈道','mountain hiking boardwalk, forest depth, practical outdoor light'],
+  ['健身房器械区','neighborhood gym equipment area, mirrors, overhead light'],
+  ['篮球场边','outdoor basketball court, cracked floor, sunset rim light'],
+  ['拳击馆沙袋旁','boxing gym near heavy bags, hard side light, gritty texture']
+ ],
+ '中国旅拍':[
+  ['乌镇石桥水巷','Jiangnan water town stone bridge, canal, white walls and black tiles'],
+  ['西安城墙根','Xi’an city wall base, ancient brick texture, golden dusk light'],
+  ['苏州园林门洞','Suzhou garden moon gate, bamboo shadow, refined travel portrait'],
+  ['大理白族民居','Dali Bai-style wall, mountain light, relaxed travel mood'],
+  ['龙井茶园小路','Longjing tea field path, green layers, morning mist'],
+  ['故宫红墙外','outside Forbidden City red wall, clean tourist portrait']
+ ],
+ '双人男士海报':[
+  ['双人城市街角','two men at city street corner, coordinated outfits, both faces clear'],
+  ['双人办公室窗边','two men by office window, executive poster composition'],
+  ['双人胡同灰墙','two men by Beijing hutong wall, calm travel poster'],
+  ['双人夜跑街道','two men in athletic city night street, movement-ready framing'],
+  ['双人酒店大堂','two men in hotel lobby, commercial fashion poster mood']
+ ]
+},
+outfits:[
+ ['黑色修身西装白衬衫皮鞋','black tailored suit, white shirt, black leather shoes, clean executive menswear'],
+ ['深灰双排扣西装高领针织','charcoal double-breasted suit, black turtleneck knit, leather loafers'],
+ ['海军蓝西装浅蓝衬衫','navy tailored suit, light blue shirt, brown leather shoes, business portrait'],
+ ['白衬衫黑色西裤腕表','white fitted shirt, black trousers, leather belt, silver wristwatch'],
+ ['黑色皮夹克白T牛仔裤短靴','black leather jacket, white fitted T-shirt, dark jeans, black ankle boots'],
+ ['牛仔夹克灰T工装裤','denim jacket, gray T-shirt, khaki cargo pants, clean sneakers'],
+ ['米色风衣黑色高领长裤','beige trench coat, black turtleneck, slim trousers, leather boots'],
+ ['深蓝针织开衫白T牛仔裤','navy knit cardigan, white T-shirt, straight jeans, simple sneakers'],
+ ['黑色短袖Polo灰色西裤','black fitted polo shirt, gray tailored trousers, loafers'],
+ ['白色亚麻衬衫卡其长裤','white linen shirt, khaki trousers, woven belt, summer travel menswear'],
+ ['黑色训练夹克速干T运动裤','black training jacket, quick-dry T-shirt, tapered track pants, running shoes'],
+ ['灰色压缩训练上衣黑色短裤','gray fitted athletic top, black training shorts, running shoes'],
+ ['深绿冲锋衣黑色徒步裤','dark green hiking shell jacket, black outdoor pants, trail shoes'],
+ ['黑色拳击背心运动长裤','black athletic tank, loose training pants, boxing gym style'],
+ ['月白新中式立领衬衫黑色长裤','moon-white modern new-Chinese mandarin-collar shirt, black trousers, cloth shoes'],
+ ['墨蓝新中式盘扣外套长裤','ink-blue new-Chinese frog-button jacket, matching trousers, subtle satin texture'],
+ ['米灰中式亚麻套装','greige Chinese linen set, relaxed mandarin collar, straight trousers, travel portrait'],
+ ['黑色国风短外套白衬衫长裤','black modern guofeng short jacket, white shirt, slim trousers, old-town styling'],
+ ['双人黑灰西装海报','two 28-year-old Chinese men, coordinated black and gray suits, leather shoes, commercial poster'],
+ ['双人皮夹克牛仔街拍','two 28-year-old Chinese men, leather jacket and denim jacket styling, boots and sneakers'],
+ ['双人新中式旅拍套装','two 28-year-old Chinese men, coordinated modern new-Chinese shirts and trousers, old-town travel'],
+ ['双人运动夜跑套装','two 28-year-old Chinese men, black and gray athletic jackets, running pants, running shoes']
+],
+gear:[
+ ['银色腕表','silver wristwatch, clean masculine detail'],
+ ['黑色皮带','black leather belt, simple metal buckle'],
+ ['细框眼镜','thin-frame glasses, refined portrait detail'],
+ ['皮质公文包','small leather briefcase, business styling'],
+ ['复古相机','compact vintage camera, travel snapshot prop'],
+ ['棒球帽','plain baseball cap, casual city styling'],
+ ['无明显道具','minimal props, focus on face, posture and outfit']
+],
+poses:[
+ ['正面站姿插兜','front-facing standing pose, one hand in pocket, shoulders relaxed'],
+ ['侧身整理袖口','three-quarter pose adjusting shirt cuff, jawline visible'],
+ ['倚靠墙面看镜头','leaning against wall, face toward camera, calm expression'],
+ ['走路抓拍','walking candidly, coat and hair slight motion, no back view'],
+ ['坐姿前倾','seated leaning slightly forward, elbows relaxed, face clear'],
+ ['运动热身','athletic warm-up pose, arms and shoulder line readable'],
+ ['双人并肩站立','two men standing shoulder to shoulder, both faces clear'],
+ ['双人对角线海报','two men in diagonal poster composition, coordinated posture']
+],
+cameras:[
+ ['半身到大腿','medium shot from upper body to thighs, outfit and posture readable'],
+ ['全身男装照','full-body vertical photo, shoes visible, stable pose'],
+ ['近景肖像','close portrait, face, jawline and collar detail sharp'],
+ ['长焦街拍','long-lens candid street photo, background softly compressed'],
+ ['低角度商务感','slight low-angle fashion portrait, shoulders strong, face clear'],
+ ['手持电影感','handheld cinematic frame, slight imperfection, realistic crop'],
+ ['双人半身海报','two-person medium portrait, both faces and outfits clear']
+],
+lights:[
+ ['城市阴天柔光','overcast city soft light, natural skin texture'],
+ ['黄昏侧逆光','golden dusk side backlight, rim on hair and shoulders'],
+ ['办公室窗光','office window directional light, soft shadow on suit fabric'],
+ ['酒店暖光','warm hotel practical light, polished commercial mood'],
+ ['夜景混合光','city night mixed light, street signs and window glow'],
+ ['运动硬侧光','hard side light for athletic texture, readable face'],
+ ['古镇灯笼暖光','old-town warm lantern light, stone wall reflections']
+],
+usage:[
+ ['Image2底图','image-to-image ready, clean male subject, outfit structure readable'],
+ ['图生视频首帧','image-to-video first frame ready, stable clothing edges, readable limbs'],
+ ['社媒封面','social media cover image, strong realistic first glance'],
+ ['角色设定','male character reference image, stable face identity and outfit details']
+]
+};
+(function maleSingleCleanup(){
+ const noDouble=x=>!/双人|两位|two 28-year-old|two men|two-person/i.test(x[0]+' '+x[1]);
+ const add=(arr,item)=>{if(!arr.some(x=>x[0]===item[0]))arr.push(item)};
+ DATA.faces=DATA.faces.filter(noDouble).slice(0,4);
+ add(DATA.faces,['古风侠士脸','28岁中国男性，长发或半束发，剑眉，清晰鼻梁，沉静眼神，古风侠士气质']);
+ DATA.people=[['单人男士写真','single 28-year-old Chinese man only, front or three-quarter view, no back-only view']];
+ DATA.body=DATA.body.filter(noDouble).slice(0,3);
+ add(DATA.body,['古风修长型','tall lean Chinese male silhouette, long neck, straight shoulders, narrow waist, elegant posture, robe layers readable']);
+ DATA.outfitStandards=DATA.outfitStandards.filter(noDouble).slice(0,4);
+ add(DATA.outfitStandards,['古风男装标准','complete guofeng menswear, robe collar, belt, layered sleeves and fabric weight clear, elegant but not costume-cluttered']);
+ Object.keys(DATA.sceneGroups).forEach(k=>{if(/双人/.test(k))delete DATA.sceneGroups[k]});
+ DATA.sceneGroups['古风男装']=[
+  ['竹林石阶','bamboo forest stone steps, mist, cinematic guofeng portrait'],
+  ['宫墙红门','red palace wall and dark wooden gate, warm side light'],
+  ['水墨庭院','ink-wash Chinese courtyard, white wall, black tiles, quiet rain mood'],
+  ['山寺长廊','mountain temple corridor, wooden pillars, incense haze, soft light'],
+  ['夜色灯笼街','ancient-style lantern street at night, warm light, wet stone road'],
+  ['书房窗前','classical study by window, books, wooden table, calm scholar mood']
+ ];
+ DATA.outfits=DATA.outfits.filter(noDouble).filter(x=>!/(拳击|压缩|海军蓝|深蓝针织)/.test(x[0])).slice(0,12);
+ [
+  ['玄色交领长袍玉扣腰带','black cross-collar guofeng robe, jade-button belt, layered sleeves, elegant swordsman styling'],
+  ['月白宽袖长衫墨色腰封','moon-white wide-sleeve long robe, ink-black waist sash, scholar guofeng look'],
+  ['青灰竹纹直裾长袍','blue-gray bamboo-pattern straight robe, structured collar, cloth belt, restrained guofeng texture'],
+  ['深棕侠客短袍护腕长裤','dark brown swordsman short robe, wrist guards, slim trousers, travel boots'],
+  ['黑金暗纹圆领袍','black-gold subtle patterned round-collar robe, leather belt, refined palace portrait'],
+  ['白金轻甲披风男装','white-gold light armor-inspired guofeng outfit, cloak layer, no heavy fantasy clutter']
+ ].forEach(x=>add(DATA.outfits,x));
+ DATA.gear=DATA.gear.filter(noDouble).filter(x=>!/(皮质公文包|棒球帽)/.test(x[0])).slice(0,5);
+ add(DATA.gear,['玉佩腰饰','jade waist ornament, guofeng menswear detail']);
+ add(DATA.gear,['折扇','folding fan held naturally, scholar guofeng prop']);
+ DATA.poses=DATA.poses.filter(noDouble).slice(0,5);
+ add(DATA.poses,['持扇侧立','standing three-quarter view holding folding fan, robe sleeves readable']);
+ add(DATA.poses,['拂袖回身','turning slightly while robe sleeve moves, face clear, no back-only view']);
+ DATA.cameras=DATA.cameras.filter(noDouble).slice(0,5);
+ add(DATA.cameras,['古风半身像','guofeng half-body portrait, robe collar, belt and sleeves clear']);
+ add(DATA.lights,['宫墙暖侧光','warm side light against palace wall, robe texture visible']);
+ add(DATA.lights,['竹林雾光','bamboo forest mist light, soft green reflection']);
+ DATA.faces=DATA.faces.slice(0,4);
+ DATA.body=DATA.body.slice(0,4);
+ DATA.outfitStandards=DATA.outfitStandards.slice(0,4);
+ DATA.outfits=DATA.outfits.filter(x=>/(西装|衬衫|皮夹克|牛仔|风衣|训练|冲锋衣|新中式|亚麻|长袍|长衫|侠客|圆领袍|轻甲)/.test(x[0])).slice(0,14);
+ DATA.gear=DATA.gear.slice(0,5);
+ DATA.poses=DATA.poses.slice(0,5);
+ DATA.cameras=DATA.cameras.slice(0,5);
+ DATA.lights=DATA.lights.slice(0,6);
+})();
+DATA.face=DATA.faces;DATA.ratio=DATA.ratios;DATA.style=DATA.styles;DATA.outfit=DATA.outfits;DATA.pose=DATA.poses;DATA.camera=DATA.cameras;DATA.light=DATA.lights;DATA.outfitStandard=DATA.outfitStandards;
+const NEG=[
+ 'child, teenager, underage, young-looking minor, school uniform, childish face',
+ 'nude, explicit nudity, exposed genitals, pornographic, sexual act, vulgar pose, fetish, wardrobe malfunction',
+ 'plastic skin, waxy face, overly smooth skin, heavy beauty filter, airbrushed face, flat lighting, harsh HDR',
+ 'painted-on clothes, impossible fabric folds, over-sharpened, low detail, muddy unreadable background',
+ 'bad anatomy, deformed body, extra limbs, missing limbs, bad hands, extra fingers, fused fingers',
+ 'blurry face, crossed eyes, unwanted extra person, duplicated face artifact, watermark, logo, unreadable text',
+ 'overly bulky body, bodybuilder exaggeration, aged face, elderly look, messy beard, unkempt styling unless requested'
+];
+const app={
+$(id){return document.getElementById(id)},
+val(id){const e=this.$(id);return e.options?e.options[e.selectedIndex]?.dataset?.text||e.value:e.value},
+label(id){const e=this.$(id);return e.options?e.options[e.selectedIndex]?.textContent||'':''},
+fill(id,arr){const e=this.$(id);e.innerHTML='';arr.forEach((x,i)=>{const o=document.createElement('option');o.textContent=x[0];o.value=String(i);o.dataset.text=x[1];e.appendChild(o)})},
+setByLabel(id,label){const e=this.$(id);const i=[...e.options].findIndex(o=>o.textContent===label);if(i>=0)e.selectedIndex=i},
+init(){['face','people','body','ratio','style','realism','outfitStandard','outfit','gear','pose','camera','light','usage'].forEach(id=>this.fill(id,DATA[id]));this.fill('quickPreset',this.makePresets().map(x=>[x.name,x.name]));Object.keys(DATA.sceneGroups).forEach(k=>{const o=document.createElement('option');o.textContent=k;o.value=k;this.$('sceneGroup').appendChild(o)});this.refreshScene();this.applyPreset();this.renderLibrary('scenes')},
+refreshScene(){this.fill('scene',DATA.sceneGroups[this.$('sceneGroup').value])},
+clean(s){return String(s||'').replace(/[<>]/g,'').trim()},
+isDouble(){return this.label('people').includes('双人')},
+sceneText(){return [this.$('sceneGroup').value,this.label('scene'),this.val('scene')].join(' ')},
+sceneOutfitRule(text=this.sceneText()){if(this.isDouble())return /双人/;if(/商务|办公室|会议|酒店|电梯|艺术馆/.test(text))return /西装|衬衫|Polo|风衣|高领/;if(/运动|夜跑|徒步|健身|篮球|拳击|海边|山路/.test(text))return /训练|运动|冲锋衣|徒步|拳击|速干/;if(/乌镇|胡同|城墙|园林|大理|茶园|故宫|中国旅拍/.test(text))return /新中式|国风|亚麻|立领|盘扣|白色亚麻/;return /皮夹克|牛仔|风衣|针织|Polo|衬衫/},
+syncOutfitToScene(force=false){const e=this.$('outfit');const d=this.isDouble();const rule=this.sceneOutfitRule();const current=this.label('outfit')+' '+this.val('outfit');const countOk=d?/双人/.test(current):!/双人/.test(current);if(countOk&&rule.test(current)&&!force)return;let opts=[...e.options].map((o,i)=>[o,i]).filter(([o])=>{const t=o.textContent+' '+(o.dataset.text||'');return (d?/双人/.test(t):!/双人/.test(t))&&rule.test(t)});if(!opts.length)opts=[...e.options].map((o,i)=>[o,i]).filter(([o])=>d?/双人/.test(o.textContent):!/双人/.test(o.textContent));if(opts.length)e.selectedIndex=opts[Math.floor(Math.random()*opts.length)][1]},
+shoeText(){const o=this.label('outfit');if(/西装|衬衫|商务|高领|Polo/.test(o))return 'matched shoes: leather shoes, loafers or clean dress shoes, coordinated with menswear';if(/运动|训练|徒步|冲锋衣|拳击|速干/.test(o))return 'matched shoes: running shoes, training shoes or lightweight trail shoes';if(/新中式|国风|亚麻|立领|盘扣/.test(o))return 'matched shoes: simple cloth shoes, loafers or minimal leather shoes';if(/皮夹克|牛仔|风衣|工装/.test(o))return 'matched shoes: boots or clean sneakers, street-style menswear';if(/双人/.test(o))return 'matched shoes: coordinated shoes for both men, same style family';return 'matched shoes: clean sneakers or leather loafers'},
+makePresets(){const scenes=Object.entries(DATA.sceneGroups).flatMap(([g,a])=>a.map(s=>[g,s[0]]));return DATA.outfits.map((o,i)=>{const dbl=/双人/.test(o[0]);const scenePool=dbl?DATA.sceneGroups['双人男士海报'].map(s=>['双人男士海报',s[0]]):scenes.filter(x=>!x[0].includes('双人'));const sc=scenePool[i%scenePool.length];const posePool=DATA.poses.filter(x=>dbl?/双人/.test(x[0]):!/双人/.test(x[0]));const facePool=DATA.faces.filter(x=>dbl?/双人|两位/.test(x[0]+x[1]):!/双人|两位/.test(x[0]+x[1]));return {name:'男士 '+String(i+1).padStart(2,'0')+' '+o[0],face:facePool[i%facePool.length][0],people:dbl?'双人男士海报':'单人男士写真',body:dbl?'双人协调型':DATA.body[i%3][0],group:sc[0],scene:sc[1],standard:DATA.outfitStandards[i%DATA.outfitStandards.length][0],outfit:o[0],gear:DATA.gear[i%DATA.gear.length][0],pose:posePool[i%posePool.length][0],camera:DATA.cameras[i%DATA.cameras.length][0],light:DATA.lights[i%DATA.lights.length][0],style:DATA.styles[i%DATA.styles.length][0],realism:DATA.realism[i%DATA.realism.length][0],usage:DATA.usage[i%DATA.usage.length][0],ratio:DATA.ratios[i%DATA.ratios.length][0]}})},
+applyPreset(){const p=this.makePresets()[this.$('quickPreset').selectedIndex]||this.makePresets()[0];this.setByLabel('face',p.face);this.setByLabel('people',p.people);this.setByLabel('body',p.body);this.setByLabel('outfitStandard',p.standard);this.setByLabel('outfit',p.outfit);this.setByLabel('gear',p.gear);this.setByLabel('pose',p.pose);this.setByLabel('camera',p.camera);this.setByLabel('light',p.light);this.setByLabel('style',p.style);this.setByLabel('realism',p.realism);this.setByLabel('usage',p.usage);this.setByLabel('ratio',p.ratio);this.$('sceneGroup').value=p.group;this.refreshScene();this.setByLabel('scene',p.scene);this.syncOutfitToScene(false);this.generate()},
+generate(){const parts=[this.val('people'),this.val('face'),this.clean(this.$('custom').value),this.val('body'),this.val('style'),this.val('realism'),this.val('outfitStandard'),'scene: '+this.val('scene'),'complete coordinated menswear outfit only: '+this.val('outfit'),this.shoeText(),'prop and accessory only, no random extra items: '+this.val('gear'),'pose: '+this.val('pose'),'camera: '+this.val('camera'),'lighting: '+this.val('light'),this.val('ratio'),'28-year-old Chinese male subject, realistic portrait photography, sharp face structure, clear jawline, natural hairline, real skin texture, masculine posture, realistic fabric folds, no text, no watermark'];if(this.$('i2v').checked)parts.push(this.isDouble()?'image2 generation ready, two men, both faces clear, stable outfit edges, no extra people':'image2 generation ready, single man, stable complete outfit, clear face, readable limbs');if(this.$('safe').checked)parts.push(this.isDouble()?'two adult men only, non-explicit, no nudity, no minors':'adult man only, non-explicit, no nudity, no minors');this.$('prompt').textContent=parts.filter(Boolean).join(', ')+'.';this.$('negative').textContent=NEG.join(', ');this.$('chips').innerHTML=['人物:'+this.label('people'),'场景:'+this.$('sceneGroup').value+'/'+this.label('scene'),'服装:'+this.label('outfit'),'鞋:'+this.shoeText().replace('matched shoes: ',''),'标准:'+this.label('outfitStandard')].map(x=>`<span class="chip">${x}</span>`).join('')},
+rand(id,filter){const e=this.$(id);let opts=[...e.options].map((o,i)=>[o,i]);if(filter)opts=opts.filter(([o])=>filter(o.textContent+' '+(o.dataset.text||'')));if(!opts.length)opts=[...e.options].map((o,i)=>[o,i]);e.selectedIndex=opts[Math.floor(Math.random()*opts.length)][1]},
+randomAll(){const d=this.isDouble();this.rand('usage');this.rand('outfitStandard');this.rand('gear');this.rand('light');const groups=Object.keys(DATA.sceneGroups).filter(g=>d?g.includes('双人'):!g.includes('双人'));this.$('sceneGroup').value=groups[Math.floor(Math.random()*groups.length)]||Object.keys(DATA.sceneGroups)[0];this.refreshScene();this.rand('scene');this.syncOutfitToScene(true);this.rand('pose',t=>d?/双人/.test(t):!/双人/.test(t));this.rand('camera');this.generate()},
+batch(n=10){const rows=[];for(let i=1;i<=n;i++){this.randomAll();rows.push(`【变体 ${String(i).padStart(2,'0')}】\n${this.$('prompt').textContent}\n\n反向提示词：\n${this.$('negative').textContent}`)}this.$('batchOut').textContent=rows.join('\n\n------------------------------\n\n');this.showTab('batchTab',[...document.querySelectorAll('.card:last-child > .tabs .tab')][2])},
+showTab(id,btn){['output','negativeTab','batchTab','libraryTab'].forEach(x=>this.$(x).style.display=x===id?'block':'none');if(btn){btn.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active')}},
+renderLibrary(type,btn){if(btn){btn.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active')}let arr=[];if(type==='scenes')arr=Object.entries(DATA.sceneGroups).flatMap(([g,a])=>a.map(x=>[g+' / '+x[0],x[1]]));if(type==='outfits')arr=DATA.outfits;if(type==='standards')arr=DATA.outfitStandards;if(type==='gear')arr=DATA.gear;this.$('library').innerHTML=arr.map(x=>`<div class="item"><b>${x[0]}</b><p>${x[1]}</p></div>`).join('')},
+async copy(id){const text=this.$(id).textContent||'';try{await navigator.clipboard.writeText(text)}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}this.toast('已复制')},
+copyAll(){this.copyText(`正向提示词：\n${this.$('prompt').textContent}\n\n反向提示词：\n${this.$('negative').textContent}`)},
+async copyText(text){try{await navigator.clipboard.writeText(text)}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}this.toast('已复制')},
+toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1500)}
+};
+app.makePresets=function(){
+ const scenes=Object.entries(DATA.sceneGroups).flatMap(([g,a])=>a.map(s=>[g,s[0]]));
+ return DATA.outfits.map((o,i)=>{
+  const sc=scenes[i%scenes.length];
+  return {name:'男士 '+String(i+1).padStart(2,'0')+' '+o[0],face:DATA.faces[i%DATA.faces.length][0],people:'单人男士写真',body:DATA.body[i%DATA.body.length][0],group:sc[0],scene:sc[1],standard:DATA.outfitStandards[i%DATA.outfitStandards.length][0],outfit:o[0],gear:DATA.gear[i%DATA.gear.length][0],pose:DATA.poses[i%DATA.poses.length][0],camera:DATA.cameras[i%DATA.cameras.length][0],light:DATA.lights[i%DATA.lights.length][0],style:DATA.styles[i%DATA.styles.length][0],realism:DATA.realism[i%DATA.realism.length][0],usage:DATA.usage[i%DATA.usage.length][0],ratio:DATA.ratios[i%DATA.ratios.length][0]};
+ });
+};
+app.isDouble=function(){return false};
+app.sceneOutfitRule=function(text=this.sceneText()){
+ if(/古风|宫墙|竹林|庭院|山寺|灯笼|书房|乌镇|园林|故宫|城墙/.test(text))return /新中式|国风|亚麻|立领|盘扣|长袍|长衫|侠客|圆领袍|轻甲/;
+ if(/商务|办公室|会议|酒店|电梯|艺术馆/.test(text))return /西装|衬衫|Polo|风衣|高领/;
+ if(/运动|夜跑|徒步|健身|篮球|山路/.test(text))return /训练|运动|冲锋衣|徒步|速干/;
+ return /皮夹克|牛仔|风衣|针织|Polo|衬衫/;
+};
+app.syncOutfitToScene=function(force=false){
+ const e=this.$('outfit');const rule=this.sceneOutfitRule();const current=this.label('outfit')+' '+this.val('outfit');
+ if(rule.test(current)&&!force)return;
+ const opts=[...e.options].map((o,i)=>[o,i]).filter(([o])=>rule.test(o.textContent+' '+(o.dataset.text||'')));
+ if(opts.length)e.selectedIndex=opts[Math.floor(Math.random()*opts.length)][1];
+};
+app.generate=function(){
+ const custom=this.clean(this.$('custom').value);
+ const short=(id,n=2)=>this.val(id).split(',').map(x=>x.trim()).filter(Boolean).slice(0,n).join(', ');
+ const shoes=this.shoeText().replace('matched shoes: ','shoes: ').split(',').slice(0,1).join('');
+ const parts=[
+  'single 28-year-old Chinese man',
+  short('face',2),
+  custom,
+  short('body',2),
+  short('style',1),
+  short('realism',2),
+  'scene: '+short('scene',2),
+  'outfit: '+short('outfit',3),
+  shoes,
+  'pose: '+short('pose',2),
+  'camera: '+short('camera',1),
+  'light: '+short('light',1),
+  this.val('ratio'),
+  'real skin texture, natural hair, realistic fabric folds, clean frame, no text, no watermark'
+ ];
+ if(this.$('i2v').checked)parts.push('image2 ready, stable outfit, clear face');
+ if(this.$('safe').checked)parts.push('adult man only, non-explicit, no nudity, no minors');
+ this.$('prompt').textContent=parts.filter(Boolean).join(', ')+'.';
+ this.$('negative').textContent=NEG.join(', ');
+ this.$('chips').innerHTML=['场景:'+this.$('sceneGroup').value+'/'+this.label('scene'),'服装:'+this.label('outfit'),'姿势:'+this.label('pose'),'镜头:'+this.label('camera')].map(x=>`<span class="chip">${x}</span>`).join('');
+};
+app.randomAll=function(){
+ this.rand('usage');this.rand('outfitStandard');this.rand('gear');this.rand('light');
+ const groups=Object.keys(DATA.sceneGroups).filter(g=>!/双人/.test(g));
+ this.$('sceneGroup').value=groups[Math.floor(Math.random()*groups.length)]||Object.keys(DATA.sceneGroups)[0];
+ this.refreshScene();this.rand('scene');this.syncOutfitToScene(true);this.rand('pose');this.rand('camera');this.generate();
+};
+window.addEventListener('DOMContentLoaded',()=>app.init());
+</script>
+</body>
+</html>
+
