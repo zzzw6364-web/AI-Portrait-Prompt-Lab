@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Image2 人像与商业提示词工具包</title>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#111318;--panel:#181b22;--panel2:#20242d;--line:#303641;
+      --text:#f2f4f8;--muted:#aab3c2;--accent:#69c2ff;--hot:#ff7a90;--gold:#e7c46b;--ok:#71dc9b;
+    }
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,"Microsoft YaHei",sans-serif}
+    main{max-width:1280px;margin:0 auto;padding:24px}
+    header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:16px}
+    h1{margin:0 0 8px;font-size:28px;line-height:1.15}p{margin:0;color:var(--muted);line-height:1.6}
+    .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:var(--muted);background:#151820;font-size:13px;white-space:nowrap}
+    .layout{display:grid;grid-template-columns:390px 1fr;gap:16px;align-items:start}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px}
+    .mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+    button,.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:7px;padding:10px 12px;cursor:pointer;font-weight:700}
+    button:hover,.btn:hover{border-color:var(--accent)}button.active{border-color:var(--accent);background:#143044;color:#d9f1ff}
+    label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px}
+    select,input,textarea{width:100%;border:1px solid var(--line);background:#101217;color:var(--text);border-radius:7px;padding:10px;font:inherit}
+    textarea{min-height:76px;resize:vertical}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .switch{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);background:#12151c;border-radius:7px;padding:10px;margin-top:10px;color:var(--muted);font-size:13px}
+    input[type=checkbox]{width:18px;height:18px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.primary{background:#153a4f;border-color:#2d88b8}.green{background:#173c2a;border-color:#2e8e58}.ghost{background:#101217}
+    .tabs{display:flex;gap:8px;margin-bottom:12px}.tab{padding:8px 11px;font-size:13px}.tab.active{border-color:var(--accent);background:#143044}
+    .out{white-space:pre-wrap;background:#0d0f14;border:1px solid var(--line);border-radius:8px;padding:14px;line-height:1.65;min-height:220px;color:#e8ecf3}
+    .meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.chip{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:var(--muted);font-size:12px;background:#11151d}
+    .chip.hot{color:#ffd6dc;border-color:#854050;background:#28141a}.chip.gold{color:#ffe6a3;border-color:#6d5d2a;background:#221e12}.chip.ok{color:#caf7da;border-color:#2f7148;background:#132117}
+    .library{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+    .item{border:1px solid var(--line);background:#12151c;border-radius:8px;padding:12px;min-height:128px}
+    .item h3{margin:0 0 8px;font-size:15px}.item p{font-size:13px}.item .tags{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+    .mini{font-size:12px;color:var(--muted)}.hidden{display:none}.toast{position:fixed;right:22px;bottom:22px;background:#0d0f14;border:1px solid var(--line);padding:10px 14px;border-radius:8px;color:var(--text)}
+    @media(max-width:920px){main{padding:16px}.layout{grid-template-columns:1fr}.two,.three{grid-template-columns:1fr}header{display:block}.badge{margin-top:12px}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Image2 人像与商业提示词工具包</h1>
+      <p>参考公开提示词图库、AI 视觉情报包和创作者工作流，输出短、高信号、可复制的 Image2 提示词。人像强调成人时尚写真与完整衣物覆盖；商业强调产品、品牌、版式与用途。</p>
+    </div>
+    <span class="badge">Prompt Atlas · Portrait / Commercial</span>
+  </header>
+  <div class="layout">
+    <section class="panel">
+      <div class="mode">
+        <button id="modePortrait" class="active" onclick="app.setMode('portrait')">人像</button>
+        <button id="modeCommercial" onclick="app.setMode('commercial')">商业</button>
+      </div>
+      <label>快速设定</label>
+      <select id="preset" onchange="app.applyPreset()"></select>
+
+      <div id="portraitControls">
+        <div class="two">
+          <div><label>主体</label><select id="pSubject" onchange="app.generate()"></select></div>
+          <div><label>画幅</label><select id="ratio" onchange="app.generate()"></select></div>
+        </div>
+        <label>脸部审美</label><select id="pFace" onchange="app.generate()"></select>
+        <label>丰满与身材表达</label><select id="pBody" onchange="app.generate()"></select>
+        <label>完整衣物</label><select id="pOutfit" onchange="app.generate()"></select>
+        <div class="two">
+          <div><label>场景</label><select id="pScene" onchange="app.generate()"></select></div>
+          <div><label>姿势</label><select id="pPose" onchange="app.generate()"></select></div>
+        </div>
+        <div class="two">
+          <div><label>镜头</label><select id="pCamera" onchange="app.generate()"></select></div>
+          <div><label>光线</label><select id="pLight" onchange="app.generate()"></select></div>
+        </div>
+        <div class="two">
+          <div><label>写真风格</label><select id="pStyle" onchange="app.generate()"></select></div>
+          <div><label>真实质感</label><select id="pRealism" onchange="app.generate()"></select></div>
+        </div>
+      </div>
+
+      <div id="commercialControls" class="hidden">
+        <div class="two">
+          <div><label>商业类型</label><select id="cType" onchange="app.generate()"></select></div>
+          <div><label>画幅</label><select id="cRatio" onchange="app.generate()"></select></div>
+        </div>
+        <label>品牌/产品名</label><input id="brand" placeholder="例：Aster Studio / 新款机械键盘 / 夏季香氛" oninput="app.generate()">
+        <label>核心产品</label><select id="cProduct" onchange="app.generate()"></select>
+        <label>版式结构</label><select id="cLayout" onchange="app.generate()"></select>
+        <label>场景与道具</label><select id="cScene" onchange="app.generate()"></select>
+        <div class="two">
+          <div><label>材质重点</label><select id="cMaterial" onchange="app.generate()"></select></div>
+          <div><label>光线</label><select id="cLight" onchange="app.generate()"></select></div>
+        </div>
+        <label>文案要求</label><select id="cCopy" onchange="app.generate()"></select>
+      </div>
+
+      <div class="two">
+        <div><label>输出格式</label><select id="format" onchange="app.generate()"></select></div>
+        <div><label>用途</label><select id="usage" onchange="app.generate()"></select></div>
+      </div>
+      <div class="switch"><span>Image2 友好：短提示词、少堆词</span><input id="shortMode" type="checkbox" checked onchange="app.generate()"></div>
+      <div class="switch"><span>图生视频首帧：主体和边缘稳定</span><input id="i2v" type="checkbox" checked onchange="app.generate()"></div>
+      <label>自定义补充</label><textarea id="custom" oninput="app.generate()" placeholder="例：更像手机抓拍 / 品牌色为银黑 / 需要产品卖点文字准确可读"></textarea>
+      <div class="actions">
+        <button class="primary" onclick="app.generate()">生成</button>
+        <button onclick="app.randomize()">随机</button>
+        <button class="green" onclick="app.batch(10)">生成10条变体</button>
+        <button class="ghost" onclick="app.copyAll()">复制正向+避开项</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="tabs">
+        <button class="tab active" onclick="app.show('output',this)">输出</button>
+        <button class="tab" onclick="app.show('batch',this)">10条变体</button>
+        <button class="tab" onclick="app.show('library',this)">模板库</button>
+      </div>
+      <div id="output">
+        <div class="meta" id="meta"></div>
+        <div id="result" class="out"></div>
+      </div>
+      <div id="batch" class="hidden"><div id="batchOut" class="out"></div></div>
+      <div id="library" class="hidden">
+        <div class="two" style="margin-bottom:12px">
+          <input id="searchLib" placeholder="搜索模板、标签、用途" oninput="app.renderLibrary()">
+          <select id="libraryMode" onchange="app.renderLibrary()">
+            <option value="all">全部</option><option value="portrait">人像</option><option value="commercial">商业</option>
+          </select>
+        </div>
+        <div class="library" id="libraryGrid"></div>
+      </div>
+    </section>
+  </div>
+</main>
+<script>
+'use strict';
+const DATA={
+ ratios:[['9:16竖屏','vertical 9:16 composition'],['4:5社媒','portrait 4:5 social media frame'],['1:1方图','square 1:1 clean composition'],['16:9横幅','wide 16:9 cinematic banner']],
+ formats:[['Image2自然语言','Image2 concise natural-language prompt'],['中文分段','Chinese sectioned prompt'],['SDXL分段','SDXL positive and avoid fields'],['Midjourney简写','Midjourney concise visual prompt']],
+ usage:[['通用出图','clean final image generation'],['图生视频首帧','image-to-video first frame, stable subject edges'],['社媒封面','social-media cover ready'],['商业投放','commercial campaign asset ready']],
+ portrait:{
+  subject:[['24岁中国女性时尚写真','single 24-year-old Chinese woman, clearly adult, front or three-quarter view, no back view'],['24岁东亚女性国际时尚写真','single 24-year-old East Asian fashion model, clearly adult, editorial portrait'],['24岁中国女明星路透感','single 24-year-old Chinese woman, celebrity street-photo aura, candid but polished']],
+  face:[['明艳御姐脸','bright confident pretty face, refined features, expressive eyes, clean makeup, not childlike'],['清冷高级脸','cool elegant face, defined nose bridge, calm eyes, clean makeup, high-fashion expression'],['港风浓颜脸','Hong Kong cinema inspired pretty face, fuller hair, restrained red lips, realistic skin texture'],['甜酷网红脸','sweet-cool influencer face, vivid eyes, soft smile, young adult but not childlike'],['低光电影脸','quiet cinematic face, slightly tired eyes, natural hair texture, imperfect realism']],
+  body:[['强丰满细腰','very full covered bust silhouette, strong bust-waist contrast, slim waist, long legs, fully covered key areas'],['高挑丰盈','tall balanced curvy figure, full upper-body curve, clear waistline, elegant shoulder and neck line'],['柔软丰腴显瘦','soft curvy body, natural fullness, waist visually shaped by fitted fabric, relaxed real-life posture'],['运动紧致曲线','fit athletic curves, full covered chest line, narrow waist, toned legs, opaque sports fabric tension']],
+  outfits:[
+   ['油光黑深V贴身长袖上衣高腰西裤尖头高跟','glossy black deep-V fitted long-sleeve top with safe full coverage, high-waist tailored trousers, pointed heels, pendant necklace'],
+   ['白色方领短上衣浅蓝高腰牛仔热裤厚底凉鞋','white square-neck fitted crop top, light-blue high-waist denim hot pants, platform sandals, summer social-media outfit'],
+   ['黑色挂脖针织上衣高腰皮质短裙尖头短靴','black halter fitted knit top, high-waist leather mini skirt, pointed ankle boots, sharp city look'],
+   ['酒红缎面吊带包身长裙银色细带凉鞋','burgundy satin camisole body-skimming maxi dress with opaque lining, silver strappy sandals, evening editorial look'],
+   ['亮银极简低领晚礼服黑色细高跟','shiny silver minimalist low-neck evening gown, structured draped silk, black slim heels, red-carpet fashion mood'],
+   ['白色极简深V晚礼服黑色细高跟','white minimalist deep-V evening gown with secure coverage, side waist cutout, high slit with layered overlap, black slim heels'],
+   ['黑色露肩包身针织连衣裙低跟玛丽珍','black off-shoulder ribbed bodycon knit dress, low Mary Jane heels, soft indoor editorial look'],
+   ['灰色高领胸前开口针织裙尖头短靴','gray high-neck keyhole ribbed knit dress, pointed ankle boots, clean fashion portrait'],
+   ['蓝白青花短款旗袍上衣黑色马面半裙尖头低跟','blue-white porcelain-print short qipao top, black mamian midi skirt, pointed kitten heels, modern Chinese look'],
+   ['黑色盘扣短上衣金色马面短裙短靴','black frog-button fitted short top, gold mamian-inspired mini skirt, ankle boots, modern Chinese street style'],
+   ['月白新中式挂脖上衣青绿色马面长裙银色低跟','moon-white modern Chinese halter top, cyan-green mamian maxi skirt, silver low heels, elegant garden outfit'],
+   ['白色防晒短外套冰蓝运动背心高腰瑜伽裤运动鞋','white cropped sun-protection jacket, ice-blue sports tank, high-waist yoga leggings, clean sneakers'],
+   ['黑色速干背心灰色骑行热裤越野跑鞋','black quick-dry fitted tank, gray cycling hot shorts, lightweight trail shoes, outdoor active look'],
+   ['白色短开衫蓝色吊带包臀裙细带凉鞋','white cropped cardigan, blue fitted camisole bodycon skirt, slim sandals, soft influencer look'],
+   ['黑色廓形西装白色吊带微喇牛仔裤尖头短靴','black oversized blazer, white fitted camisole, high-waist bootcut jeans, pointed ankle boots, celebrity street style'],
+   ['粉色短开衫碎花吊带裙白色细带凉鞋','pink cropped cardigan, floral camisole dress with opaque lining, white strappy sandals, soft travel portrait'],
+   ['巧克力色低V罗纹针织上衣黑色高腰包臀裙尖头短靴','chocolate low-V ribbed fitted knit top, black high-waist bodycon skirt, pointed ankle boots, warm city portrait look'],
+   ['冰蓝交叉挂脖上衣白色A字短裙银色凉鞋','ice-blue cross halter fitted top with secure coverage, white A-line mini skirt, silver sandals, bright riverside look'],
+   ['黑色一字肩贴身上衣白色百褶短裙低跟玛丽珍','black off-shoulder fitted top, white pleated mini skirt, low Mary Jane heels, adult sweet-spicy styling'],
+   ['奶油黄方领针织上衣牛仔热裤坡跟凉鞋','butter-yellow square-neck fitted knit top, denim hot pants, cork wedge sandals, summer check-in outfit'],
+   ['白色短袖衬衫黑色高腰皮质短裙细跟鞋','white fitted short-sleeve shirt, black high-waist leather mini skirt, slim heels, polished office-off-duty look'],
+   ['墨绿色缎面挂脖长裙金色细带凉鞋','dark emerald satin halter maxi dress with opaque lining, gold strappy sandals, luxury evening portrait'],
+   ['灰蓝露肩褶皱针织包身裙银色低跟','gray-blue off-shoulder ruched knit bodycon dress, silver low heels, soft fashion portrait'],
+   ['白色新中式盘扣短上衣红色马面短裙尖头低跟','white modern Chinese frog-button fitted short top, red mamian-inspired mini skirt, pointed kitten heels']
+  ],
+  scenes:[['城市公寓窗边','ordinary city apartment by window, real curtains, soft daylight, lived-in background'],['低光手机自拍房间','dim private room, smartphone selfie feel, uneven low light, slight grain'],['高端酒店落地窗','luxury hotel floor-to-ceiling window, city skyline, warm rim light'],['红毯入口背景板','red carpet entrance backdrop, soft flashes, shallow depth of field'],['艺术馆白墙展厅','gallery white wall, visible artwork frames, quiet premium space'],['夜晚街角便利店','night convenience-store corner, fluorescent light, street reflection'],['故宫红墙打卡','Forbidden City red wall, palace gate edge, tourist scale in background'],['江南园林月洞门','Jiangnan garden moon gate, white wall, bamboo shadow, stone path'],['海边木栈道','beach wooden walkway, sea horizon, palm trees, wind moving fabric'],['山间茶园小路','green tea plantation path, mountain mist, rows of tea visible'],['健身房镜墙','small gym mirror wall, equipment, practical light'],['咖啡馆窗边','street cafe window seat, readable shop sign outside, candid social mood'],['夜景天台栏杆','night rooftop railing, city lights behind, wind moving hair and fabric'],['商场玻璃橱窗','shopping mall glass storefront, reflected lights, fashion street snapshot'],['老街红砖墙','old red-brick street wall, shop sign and doorway visible, warm afternoon light'],['海边酒店阳台','seaside hotel balcony, ocean horizon, white curtains, golden-hour breeze']],
+  poses:[['正面一手扶腰','front-facing, one hand on waist, confident posture'],['侧身回头看镜头','three-quarter side pose, looking toward camera, no rear view'],['整理项链','looking down while adjusting necklace, neckline and garment structure clear'],['扶栏杆轻微前倾','leaning lightly on railing, landmark behind, natural posture'],['坐在窗边侧身','sitting sideways by window, relaxed shoulders, face clear'],['走路回眸抓拍','walking candidly, head turned toward camera, hair and fabric moving naturally'],['双手自然提裙摆','hands lightly holding skirt edge, full outfit readable'],['手扶头发看向远处','one hand adjusting hair, looking into distance, fashion editorial pose'],['轻靠墙交叉站姿','leaning lightly against wall, one leg crossed, face toward camera'],['抬手遮光微笑','one hand shielding soft light, slight smile, candid travel-photo posture'],['低头看手机抓拍','looking down at phone, candid social-media moment, outfit still readable'],['坐在高脚椅侧身','sitting sideways on high chair, legs naturally placed, posture relaxed']],
+  cameras:[['半身近景','upper-body close portrait, face and outfit structure clear'],['大腿以上构图','mid-length from head to thigh, outfit shape readable'],['全身竖图','full-body vertical photo, shoes visible'],['低机位轻微仰拍','slightly low-angle fashion shot, elongated silhouette'],['手机抓拍视角','handheld smartphone angle, imperfect but flattering framing'],['85mm时尚肖像','portrait lens look, shallow depth of field, natural compression']],
+  lights:[['柔和窗光','soft window light, natural shadow falloff'],['黄昏逆光','golden-hour backlight, subtle rim on hair and shoulders'],['低光手机噪点','low-light smartphone noise, uneven practical light, face still readable'],['红毯闪光灯','soft flash highlights, premium event atmosphere'],['阴天清透自然光','overcast daylight, clean skin texture'],['夜景轮廓光','night city rim light, readable face, background bokeh']],
+  styles:[['真实时尚写真','realistic fashion editorial photography, modern social-media polish'],['手机随手拍','candid smartphone photo, imperfect composition, authentic moment'],['奢华杂志封面','luxury fashion magazine cover mood, premium styling, calm background'],['电影生活截图','cinematic lifestyle still, emotional realism, natural texture'],['小红书打卡图','clean Xiaohongshu-style check-in photo, bright but not over-filtered']],
+  realism:[['真实皮肤纹理','visible pores, slight skin oil, natural asymmetry, real hair strands'],['去AI塑料感','no waxy skin, no over-smoothing, believable fabric pressure'],['衣料物理感','real fabric folds, tension, weight, seam details, natural drape'],['低光真实感','grain, slight motion softness, uneven practical light, non-studio mood']]
+ },
+ commercial:{
+  type:[['产品发布海报','premium product launch poster'],['品牌社媒广告','ultra-premium fashion SMM promotional poster'],['电商详情页主图','e-commerce hero and detail image'],['项目卡片海报','compact project card masthead'],['App/网站推荐卡','app or website recommendation card poster'],['品牌隐喻视觉','brand metaphor visual campaign']],
+  product:[['奢华机械键盘','single ultra-premium mechanical keyboard, metal frame, translucent keycaps, precise details'],['香水瓶','luxury perfume bottle, glass reflections, liquid color visible, premium cap'],['护肤精华瓶','premium skincare serum bottle, clean label, glossy glass, soft highlights'],['女装品牌主视觉','fashion model wearing body-flattering seasonal outfit, brand campaign hero'],['咖啡饮品杯','premium coffee cup or bottled drink, condensation, clean logo area'],['AI工具产品卡','AI software product interface card, dashboard panels, clean mockup screens'],['旅行城市通票','city-specific travel ticket or pass held in hand, landmark background'],['高端耳机','premium headphones, matte metal, leather texture, floating hero composition'],['智能手表','premium smartwatch, metal bezel, clean screen, strap texture, health-tech mood'],['设计师手袋','designer handbag, leather grain, metal clasp, structured silhouette, luxury retail mood'],['运动鞋','premium sneaker, sole texture, knit upper, dynamic product angle'],['珠宝项链','fine jewelry necklace, gemstone sparkle, macro detail, elegant display stand'],['太阳镜','fashion sunglasses, glossy frame, lens reflection, summer campaign mood'],['能量饮料罐','premium energy drink can, condensation, bold color blocking, clean logo area']],
+  layout:[['中心英雄构图','central hero subject, large negative space, clear first-glance focus'],['2x2卖点网格','2x2 editorial grid, each quadrant shows one product feature, clean labels'],['杂志封面版式','magazine-cover hierarchy, bold title area, subtitle and small metadata zones'],['SMM广告版式','Instagram hero campaign layout, product/person hero, concise headline, clean CTA'],['项目卡片版式','compact designed masthead, not a table, title, meta line, visual symbol, editorial spacing'],['手持打卡版式','hand holding object in foreground, landmark or use-case background, travel-art composition'],['左右对比版式','split-screen before-and-after layout, strong visual comparison, clear captions'],['爆炸分解图','exploded-view product diagram, separated layers, clean technical callouts'],['三联故事板','three-panel campaign storyboard, hero moment, use case, final brand lockup'],['货架陈列海报','premium retail shelf display, repeated product rhythm, campaign headline area']],
+  scene:[['纯净摄影棚','clean studio background, controlled shadows, premium surface'],['反光黑色台面','black reflective surface, dramatic product reflection'],['低饱和生活空间','quiet lifestyle room, product in believable use context'],['城市户外广告感','urban outdoor campaign scene, glass facade, soft crowd blur'],['高级杂志留白','minimal editorial background, large negative space, refined color palette'],['节日礼盒场景','gift box setting, ribbon, seasonal accents, premium but not cluttered'],['科技蓝灰空间','blue-gray tech environment, subtle screen glow, clean depth'],['自然材质桌面','wood, stone, linen and paper textures, warm brand-friendly scene']],
+  material:[['玻璃与液体','glass transparency, liquid refraction, crisp highlights'],['金属与碳纤维','brushed metal, carbon fiber texture, sharp machined edges'],['丝绸与服装面料','real fabric folds, silk sheen, seam and stitch details'],['纸张与包装','matte paper, embossing, foil stamping, clean packaging edges'],['屏幕与UI面板','readable interface panels, clean icons, no fake broken text'],['食物与饮品质感','condensation, foam, liquid surface, appetizing natural texture']],
+  light:[['高级柔光','large softbox lighting, soft shadow, premium commercial clarity'],['强方向光','clear directional light, strong but controlled contrast'],['月光银冷调','moonlight silver, pearl gray, cool white, quiet premium palette'],['森林绿自然调','forest green, sage, moss, cream white, natural premium mood'],['暖金节日光','warm gold highlights, subtle glow, premium gifting mood'],['科技轮廓光','thin rim light, blue-gray reflections, crisp product edges']],
+  copy:[['无文字','no visible text, product-first visual'],['短标题可读','short readable headline, clean typography, no gibberish'],['标题+3卖点','readable title plus three concise feature labels, clear hierarchy'],['中文可读海报','all Chinese text accurate and readable, strong title hierarchy'],['品牌留白','leave clean space for logo and campaign copy, no random text']]
+ }
+};
+const LIB=[
+ {mode:'portrait',title:'低光手机自拍写真',tags:['portrait','phone','low-light'],text:'成人主体 + 低光手机感 + 不完美构图 + 真实皮肤纹理 + 贴身完整衣物'},
+ {mode:'portrait',title:'红毯晚礼服人像',tags:['portrait','gown','luxury'],text:'24岁成人时尚主体 + 低领晚礼服完整覆盖 + 红毯闪光 + 高级杂志感'},
+ {mode:'portrait',title:'新中式显身材旅拍',tags:['portrait','new-chinese','travel'],text:'新中式/马面裙/旗袍结构 + 中国地标证据 + 全身竖构图 + 真实布料褶皱'},
+ {mode:'portrait',title:'运动紧身曲线',tags:['portrait','sports','i2v'],text:'运动背心/瑜伽裤/骑行短裤 + 山路或健身房 + 健康曲线 + 图生视频边缘稳定'},
+ {mode:'commercial',title:'奢华产品发布海报',tags:['commercial','product','launch'],text:'单一产品英雄 + 材质特写 + 强方向光 + 留白 + 可读标题区'},
+ {mode:'commercial',title:'品牌SMM广告',tags:['commercial','smm','campaign'],text:'品牌口号 + 人物/产品主视觉 + Instagram 4:5 + 干净CTA + 高级广告摄影'},
+ {mode:'commercial',title:'电商详情图',tags:['commercial','ecommerce','grid'],text:'主图、卖点、材质、场景、尺寸、包装、信任背书，分成清楚模块'},
+ {mode:'commercial',title:'项目卡片 Masthead',tags:['commercial','project-card','editorial'],text:'紧凑项目卡，不做表格，标题、元信息、符号和小型视觉资产'},
+ {mode:'commercial',title:'旅行通票海报',tags:['commercial','travel','poster'],text:'手持城市票据/通票，地标背景，旅行艺术海报构图'},
+ {mode:'commercial',title:'AI协作隐喻视觉',tags:['commercial','metaphor','AI'],text:'人手与机械手/界面实体化，中心构图，现代企业传播视觉'}
+];
+const AVOID={
+ portrait:'minor-coded styling, school styling, risky wardrobe failure, crude pose, overexposed fashion styling, plastic skin, waxy face, over-smoothed beauty filter, doll face, bad hands, extra fingers, distorted body, random extra person, unreadable background, text, watermark',
+ commercial:'low detail, cluttered layout, unreadable text, broken typography, random logo, watermark, fake distorted UI, muddy background, poor product shape, bad reflection, over-sharpened, low-resolution, wrong material response'
+};
+const app={
+ mode:'portrait',
+ $(id){return document.getElementById(id)},
+ fill(id,arr){const e=this.$(id);e.innerHTML='';arr.forEach((x,i)=>{const o=document.createElement('option');o.textContent=x[0];o.value=String(i);o.dataset.text=x[1];e.appendChild(o)})},
+ label(id){const e=this.$(id);return e.options?e.options[e.selectedIndex]?.textContent||'':''},
+ val(id){const e=this.$(id);return e.options?e.options[e.selectedIndex]?.dataset.text||'':e.value.trim()},
+ setByLabel(id,label){const e=this.$(id);const i=[...e.options].findIndex(o=>o.textContent===label);if(i>=0)e.selectedIndex=i},
+ init(){
+  this.fill('pSubject',DATA.portrait.subject);this.fill('pFace',DATA.portrait.face);this.fill('pBody',DATA.portrait.body);
+  this.fill('pOutfit',DATA.portrait.outfits);this.fill('pScene',DATA.portrait.scenes);this.fill('pPose',DATA.portrait.poses);
+  this.fill('pCamera',DATA.portrait.cameras);this.fill('pLight',DATA.portrait.lights);this.fill('pStyle',DATA.portrait.styles);this.fill('pRealism',DATA.portrait.realism);
+  this.fill('cType',DATA.commercial.type);this.fill('cProduct',DATA.commercial.product);this.fill('cLayout',DATA.commercial.layout);
+  this.fill('cScene',DATA.commercial.scene);this.fill('cMaterial',DATA.commercial.material);this.fill('cLight',DATA.commercial.light);this.fill('cCopy',DATA.commercial.copy);
+  this.fill('ratio',DATA.ratios);this.fill('cRatio',DATA.ratios);this.fill('format',DATA.formats);this.fill('usage',DATA.usage);
+  this.renderPresets();this.applyPreset();this.renderLibrary();
+ },
+ renderPresets(){
+  const presets=[
+   ['portrait','轻辣热裤城市写真',{pOutfit:'白色方领短上衣浅蓝高腰牛仔热裤厚底凉鞋',pScene:'夜晚街角便利店',pPose:'走路回眸抓拍',pStyle:'手机随手拍'}],
+   ['portrait','油光黑贴身职业感',{pOutfit:'油光黑深V贴身长袖上衣高腰西裤尖头高跟',pScene:'高端酒店落地窗',pPose:'正面一手扶腰',pStyle:'真实时尚写真'}],
+   ['portrait','新中式马面裙地标',{pOutfit:'蓝白青花短款旗袍上衣黑色马面半裙尖头低跟',pScene:'故宫红墙打卡',pPose:'双手自然提裙摆',pStyle:'小红书打卡图'}],
+   ['portrait','低光手机自拍针织',{pOutfit:'黑色露肩包身针织连衣裙低跟玛丽珍',pScene:'低光手机自拍房间',pPose:'坐在窗边侧身',pStyle:'手机随手拍'}],
+   ['portrait','红毯银色晚礼服',{pOutfit:'亮银极简低领晚礼服黑色细高跟',pScene:'红毯入口背景板',pPose:'整理项链',pStyle:'奢华杂志封面'}],
+   ['commercial','奢华键盘发布海报',{cType:'产品发布海报',cProduct:'奢华机械键盘',cLayout:'中心英雄构图',cScene:'反光黑色台面',cMaterial:'金属与碳纤维',cLight:'强方向光'}],
+   ['commercial','香水SMM广告',{cType:'品牌社媒广告',cProduct:'香水瓶',cLayout:'SMM广告版式',cScene:'高级杂志留白',cMaterial:'玻璃与液体',cLight:'月光银冷调'}],
+   ['commercial','护肤电商详情主图',{cType:'电商详情页主图',cProduct:'护肤精华瓶',cLayout:'2x2卖点网格',cScene:'自然材质桌面',cMaterial:'玻璃与液体',cLight:'高级柔光'}],
+   ['commercial','AI工具项目卡',{cType:'项目卡片海报',cProduct:'AI工具产品卡',cLayout:'项目卡片版式',cScene:'科技蓝灰空间',cMaterial:'屏幕与UI面板',cLight:'科技轮廓光'}]
+  ];
+  this.presets=presets;const e=this.$('preset');e.innerHTML='';presets.forEach((p,i)=>{const o=document.createElement('option');o.textContent=p[1];o.value=String(i);e.appendChild(o)});
+ },
+ setMode(m){this.mode=m;this.$('modePortrait').classList.toggle('active',m==='portrait');this.$('modeCommercial').classList.toggle('active',m==='commercial');this.$('portraitControls').classList.toggle('hidden',m!=='portrait');this.$('commercialControls').classList.toggle('hidden',m!=='commercial');this.generate()},
+ applyPreset(){
+  const p=this.presets[this.$('preset').selectedIndex]||this.presets[0];this.setMode(p[0]);
+  Object.entries(p[2]).forEach(([id,label])=>this.setByLabel(id,label));this.generate();
+ },
+ clean(s){return String(s||'').replace(/[<>]/g,'').trim()},
+ short(s){return String(s||'').split(/[,，。;]/).map(x=>x.trim()).filter(Boolean).slice(0,this.$('shortMode').checked?2:4).join(', ')},
+ portraitPrompt(){
+  const parts=[this.val('pSubject'),this.val('pFace'),this.val('pBody'),this.val('pOutfit'),this.val('pScene'),this.val('pPose'),this.val('pCamera'),this.val('pLight'),this.val('pStyle'),this.val('pRealism'),'Image2-friendly adult fashion portrait, confident and alluring editorial styling, full garment coverage, real fabric folds, natural skin texture',this.val('ratio')];
+  if(this.$('i2v').checked)parts.push('first frame for image-to-video, stable face, stable outfit edges, clean hands and readable limbs');
+  const custom=this.clean(this.$('custom').value);if(custom)parts.push(custom);
+  return parts.map(x=>this.short(x)).filter(Boolean).join(', ')+'.';
+ },
+ commercialPrompt(){
+  const brand=this.clean(this.$('brand').value)||'[brand / product name]';
+  const parts=[this.val('cType'),`brand or product: ${brand}`,this.val('cProduct'),this.val('cLayout'),this.val('cScene'),this.val('cMaterial'),this.val('cLight'),this.val('cCopy'),this.val('usage'),'Image2-friendly commercial visual, clear subject hierarchy, premium material response, clean composition',this.val('cRatio')];
+  if(this.$('i2v').checked)parts.push('usable as first frame for short ad video, subject remains centered and edges stable');
+  const custom=this.clean(this.$('custom').value);if(custom)parts.push(custom);
+  return parts.map(x=>this.short(x)).filter(Boolean).join(', ')+'.';
+ },
+ formatOutput(prompt,avoid){
+  const f=this.label('format');
+  if(/中文/.test(f))return `正向提示词：\n${prompt}\n\n避开项：\n${avoid}`;
+  if(/SDXL/.test(f))return `POSITIVE PROMPT:\n${prompt}\n\nAVOID:\n${avoid}`;
+  if(/Midjourney/.test(f))return `${prompt} --ar ${this.mode==='portrait'?'9:16':'4:5'} --style raw\n\nAvoid: ${avoid}`;
+  return `Prompt:\n${prompt}\n\nAvoid:\n${avoid}`;
+ },
+ generate(){
+  const prompt=this.mode==='portrait'?this.portraitPrompt():this.commercialPrompt();
+  const avoid=AVOID[this.mode];
+  this.$('result').textContent=this.formatOutput(prompt,avoid);
+  this.$('meta').innerHTML=this.meta().map(x=>`<span class="chip ${x[1]||''}">${x[0]}</span>`).join('');
+ },
+ meta(){
+  return this.mode==='portrait'
+   ? [[`模式: 人像`,'hot'],[`衣物: ${this.label('pOutfit')}`,''],[`场景: ${this.label('pScene')}`,''],[`姿势: ${this.label('pPose')}`,''],[`Image2友好`,'ok']]
+   : [[`模式: 商业`,'gold'],[`类型: ${this.label('cType')}`,''],[`产品: ${this.label('cProduct')}`,''],[`版式: ${this.label('cLayout')}`,''],[`Image2友好`,'ok']];
+ },
+ randomPick(id,used){
+  const e=this.$(id);let opts=[...e.options].map((o,i)=>({i,label:o.textContent})).filter(x=>!used?.has(x.label));
+  if(!opts.length)opts=[...e.options].map((o,i)=>({i,label:o.textContent}));
+  const p=opts[Math.floor(Math.random()*opts.length)];e.selectedIndex=p.i;return p.label;
+ },
+ randomize(){const ids=this.mode==='portrait'?['pOutfit','pScene','pPose','pCamera','pLight','pStyle']:['cType','cProduct','cLayout','cScene','cMaterial','cLight','cCopy'];ids.forEach(id=>this.randomPick(id));this.generate()},
+ batch(n=10){
+  const rows=[], used={outfit:new Set(),scene:new Set(),pose:new Set(),layout:new Set(),product:new Set()};
+  for(let i=1;i<=n;i++){
+   if(this.mode==='portrait'){this.randomPick('pOutfit',used.outfit);used.outfit.add(this.label('pOutfit'));this.randomPick('pScene',used.scene);used.scene.add(this.label('pScene'));this.randomPick('pPose',used.pose);used.pose.add(this.label('pPose'));this.randomPick('pLight');this.randomPick('pCamera')}
+   else{this.randomPick('cProduct',used.product);used.product.add(this.label('cProduct'));this.randomPick('cLayout',used.layout);used.layout.add(this.label('cLayout'));this.randomPick('cScene',used.scene);used.scene.add(this.label('cScene'));this.randomPick('cMaterial');this.randomPick('cLight')}
+   this.generate();
+   rows.push(`【变体 ${String(i).padStart(2,'0')}】\n${this.mode==='portrait'?`衣物: ${this.label('pOutfit')}\n场景: ${this.label('pScene')}\n姿势: ${this.label('pPose')}`:`产品: ${this.label('cProduct')}\n版式: ${this.label('cLayout')}\n场景: ${this.label('cScene')}`}\n\n${this.$('result').textContent}`);
+  }
+  this.$('batchOut').textContent=rows.join('\n\n------------------------------\n\n');this.show('batch',document.querySelectorAll('.tab')[1]);
+ },
+ show(id,btn){['output','batch','library'].forEach(x=>this.$(x).classList.toggle('hidden',x!==id));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active')},
+ renderLibrary(){
+  const q=this.clean(this.$('searchLib')?.value||'').toLowerCase(), mode=this.$('libraryMode')?.value||'all';
+  const arr=LIB.filter(x=>(mode==='all'||x.mode===mode)&&(!q||(x.title+x.tags.join(' ')+x.text).toLowerCase().includes(q)));
+  this.$('libraryGrid').innerHTML=arr.map(x=>`<div class="item"><h3>${x.title}</h3><p>${x.text}</p><div class="tags">${x.tags.map(t=>`<span class="chip">${t}</span>`).join('')}</div></div>`).join('');
+ },
+ async copyAll(){await this.copyText(this.$('result').textContent)},
+ async copyText(text){try{await navigator.clipboard.writeText(text)}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}this.toast('已复制')},
+ toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1500)}
+};
+window.addEventListener('DOMContentLoaded',()=>app.init());
+</script>
+</body>
+</html>
